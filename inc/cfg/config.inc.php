@@ -5,7 +5,7 @@ define('CAT_MIN_LENGTH', 5);
 define('TEXTAREA_MAX_LENGTH', 200);
 define('DEMO_ACCOUNT', 2);
 
-define('HOME_DIR', 'http://avatare.pixelspace.org/');
+define('HOME_DIR', 'http://');
 define('MAIL_OWNER_NAME', '');
 define('MAIL_OWNER_ADDRESS', '');
 
