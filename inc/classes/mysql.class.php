@@ -1,9 +1,6 @@
 <?php
 /**
- *
- * @author < Dan >
- * @version 0.1
- * @module Database Class
+ * @author Dan Verständig
  */
 
 /**
