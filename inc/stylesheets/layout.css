@@ -1,0 +1,310 @@
+a:link, a:visited, a:active {
+    font-family: Verdana, Helvetica, sans-serif;
+    text-decoration: underline;
+    font-size: 12px;
+    color: #08678f;
+}
+
+a:hover, a:focus {
+    font-family: Verdana, Helvetica, sans-serif;
+    text-decoration: none;
+    font-size: 12px;
+    color: #000;
+}
+
+h2 {
+    font-size: 18px;
+    color: #333;
+    text-align: left;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #ccc;
+    font-weight: bold;
+    margin: 0;
+}
+
+h3 {
+    font-size: 16px;
+    color: #333;
+    text-align: left;
+    margin: 0;
+    padding: 4px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #ccc;
+    font-family: Verdana, Helvetica, sans-serif;
+}
+
+ul.box li {
+    line-height: 24px;
+    font-size: 12px;
+}
+
+form {
+    text-align: left;
+}
+
+table td {
+    padding: 5px;
+    font-size: 12px;
+    font-family: Verdana, Helvetica, sans-serif;
+
+}
+
+div {
+    font-family: Verdana, Helvetica, sans-serif;
+    font-size: 12px;
+}
+
+div#wrapper {
+    background-color: #fff;
+    padding: 0;
+    width: 90%;
+    margin: auto;
+}
+
+div#content {
+    margin: auto;
+    padding: 5px;
+}
+
+div#navigation {
+    padding: 5px;
+}
+
+div#left {
+    float: left;
+    width: 35%;
+}
+
+div#right {
+    float: right;
+    width: 65%;
+}
+
+div#footer {
+    border-top: 1px solid #ccc;
+    margin: 5px;
+}
+
+div.mStack {
+    margin: 20px 5px;
+}
+
+p {
+    font-family: Verdana, Helvetica, sans-serif;
+    font-size: 12px;
+    line-height: 20px;
+}
+
+p#leftnav {
+    text-align: left;
+    float: left;
+    width: 60%;
+}
+
+p#breadcrumb {
+    clear: both;
+    background: #08678f;
+    color: #fff;
+    margin-top: 10px;
+    line-height: 27px;
+}
+
+p#breadcrumb a {
+    color: #fff;
+}
+
+p#rightnav {
+    text-align: right;
+    float: right;
+    width: 30%;
+}
+
+p#subtitle {
+    border-bottom: 1px solid #ccc;
+    padding: 0;
+    background: #efefef;
+    margin: 0 0 20px;
+}
+
+p.left {
+    clear: left;
+    float: left;
+    width: 200px;
+    text-align: right;
+    padding: 0;
+    margin: 0 5px 0 0;
+}
+
+p.right {
+    clear: right;
+    float: right;
+    width: 200px;
+    text-align: right;
+    margin: 0;
+    padding: 0;
+}
+
+p.text {
+    padding: 0 30px;
+}
+
+.subMenuBox {
+    text-align: left;
+    margin-left: 10px;
+    list-style: none;
+}
+
+.box {
+    text-align: left;
+    list-style: none;
+}
+
+.subMenuBox li, .box li {
+    list-style: disc;
+}
+
+.StackError {
+    margin: 0;
+    background-color: red;
+    color: #fff;
+    font-weight: bold;
+    line-height: 24px;
+    text-align: center;
+}
+
+.StackSuccess {
+    margin: 0;
+    background-color: #399710;
+    color: #fff;
+    font-weight: bold;
+    line-height: 24px;
+    text-align: center;
+}
+
+.overview {
+    width: 80%;
+    margin: auto;
+}
+
+ul#avatarlist, ul#newslist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#avatarlist, #newslist {
+    text-align: left;
+}
+
+#avatarlist li, #newslist li {
+    padding: 5px;
+}
+
+#userlist li {
+    width: 100%;
+}
+
+table#users tr:hover, table#users tr:hover td.odd {
+    background: #c1fcc5;
+}
+
+.odd {
+    background: #efefef;
+}
+
+.slider {
+    width: 5px;
+    height: 10px;
+    background-color: #f00;
+}
+
+.notes {
+    width: 380px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    background-color: #fffaea;
+}
+
+.feedback {
+    width: 380px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    background-color: #fffeee;
+}
+
+.error {
+    color: red;
+}
+
+input, select, textarea {
+    border: 1px solid #ccc;
+}
+
+.demosubmit {
+    text-decoration: line-through;
+    padding: 3px;
+    background-color: #ddd;
+}
+
+a.tooltip {
+    border-bottom: 1px dashed #333;
+    position: relative;
+    z-index: 99;
+    color: #000;
+    cursor: help;
+    text-decoration: none;
+}
+
+a.tooltip:hover, a.tooltip:focus {
+    border-bottom: 1px dashed #333;
+    z-index: 100;
+    text-decoration: none;
+    color: #000;
+    background-color: #fff;
+}
+
+a.tooltip span {
+    display: none;
+}
+
+a.tooltip:hover span, a.tooltip:focus span {
+    display: block;
+    position: absolute;
+    top: 1em;
+    left: 1em;
+    padding: 10px 5px 10px 5px;
+    border: 1px solid #333;
+    background-color: #f5f5f5;
+    color: #000;
+    text-decoration: none;
+    text-align: center;
+    width: 350px;
+}
+
+.progressbox {
+    width: 250px;
+    border: 1px solid #999;
+    height: 17px;
+    background: #ccc;
+}
+
+.progressbar {
+    background-image: url("../../img/progressbar.gif");
+    height: 14px;
+    color: #000;
+    text-align: right;
+    padding: 3px 0 0 0;
+    font-family: Verdana, Helvetica, sans-serif;
+    font-size: 10px;
+}
+
+#legend {
+    margin-left: 15px;
+    border-top: 1px dashed #ccc;
+    padding: 5px;
+}
