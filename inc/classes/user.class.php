@@ -92,13 +92,11 @@ class User
         }
         $to_address = $array['email'];
 
-        $eol = "\r\n";
-
-        $headers = "From: " . $from_name . "<" . $from_address . ">" . $eol;
-        $headers .= "Reply-To: " . $from_name . "<" . $from_address . ">" . $eol;
-        $headers .= "Return-Path: " . $from_name . "<" . $from_address . ">" . $eol;
-        $headers .= "Message-ID: <" . time() . "-" . $from_address . ">" . $eol;
-        $headers .= "X-Mailer: PHP v" . phpversion() . $eol;
+        $headers = "From: " . $from_name . "<" . $from_address . ">" . PHP_EOL;
+        $headers .= "Reply-To: " . $from_name . "<" . $from_address . ">" . PHP_EOL;
+        $headers .= "Return-Path: " . $from_name . "<" . $from_address . ">" . PHP_EOL;
+        $headers .= "Message-ID: <" . time() . "-" . $from_address . ">" . PHP_EOL;
+        $headers .= "X-Mailer: PHP v" . phpversion() . PHP_EOL;
         $headers .= "From: " . $from_name . " <" . $from_address . ">\n" .
             "Content-Type: text/plain; charset=ISO-8859-1\n";
 
