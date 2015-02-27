@@ -1,9 +1,6 @@
 <?php
 /**
- *
- * @author < Dan Verstaendig >
- * @version 0.1
- * @module Session/Loginhandler
+ * @author Dan Verständig
  */
 
 /**
