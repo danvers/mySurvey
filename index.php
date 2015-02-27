@@ -24,7 +24,8 @@ require('inc/header.php');
         <script type="text/javascript" src="inc/javascripts/effects.js"></script>
 
         <script type="text/javascript">
-            more_info = function (div_id) {
+            more_info = function (parameters) {
+                var div_id = parameters.div_id;
 
                 $('detail-' + div_id).style.display = "block";
                 $('element-' + div_id).style.paddingLeft = "20px";
@@ -290,7 +291,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             $infoComments .= '</small>';
                             ?>
                             <li id="element-<?php echo $row['id']; ?>" <?php if ($n % 2 == 0) echo 'style="background:#efefef;"'; ?>
-                                onmouseover="more_info('<?php echo $row['id'] ?>');"
+                                onmouseover="more_info({div_id : '<?php echo $row['id'] ?>'});"
                                 onmouseout="less_info('<?php echo $row['id'] ?>')">
                                 <h3 id="header-<?php echo $row['id']; ?>"
                                     style="color:#666;"><?php echo htmlspecialchars($row['title']); ?>
