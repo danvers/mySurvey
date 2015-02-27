@@ -113,7 +113,7 @@ if (isset($_GET['position']) && ($_GET['position'] == 'edit')) {
         <meta http-equiv="content-language" content="de"/>
 
         <meta name="audience" content="all"/>
-        <title>Informationen - Online Kategorisierung</title>
+        <title>News - <?php WORKSPACE_TITLE;?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
 

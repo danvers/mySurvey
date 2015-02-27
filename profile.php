@@ -16,7 +16,7 @@ if (!$SessionManager->logged_in() || !(IN_PAGE)) header("Location:index.php");
         <meta http-equiv="Content-Style-Type" content="text/css"/>
         <meta http-equiv="content-language" content="de"/>
 
-        <title>Mein Profil - Online Kategorisierung</title>
+        <title>My Profile - <?php WORKSPACE_TITLE;?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
     </head>

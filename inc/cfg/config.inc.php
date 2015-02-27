@@ -8,3 +8,5 @@ define('DEMO_ACCOUNT', 2);
 define('HOME_DIR', 'http://avatare.pixelspace.org/');
 define('MAIL_OWNER_NAME', '');
 define('MAIL_OWNER_ADDRESS', '');
+
+define('WORKSPACE_TITLE','mySurvey');
