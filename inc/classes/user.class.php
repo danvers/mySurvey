@@ -55,7 +55,7 @@ class User
             return false;
         }
 
-        $text = "dies ist eine Einladung zum Arbeitsbereich\nDeine Login-Email lautet: %s\nDein Passwort lautet: %s\n\nEinloggen kannst Du dich unter: http://www.pixelspace.org/avatare/";
+        $text = "dies ist eine Einladung zum Arbeitsbereich\nDeine Login-Email lautet: %s\nDein Passwort lautet: %s\n\nEinloggen kannst Du dich unter: ". HOME_DIR;
         $content = sprintf($text, $array['email'], $pass);
 
         $this->UserMail($array, $content, 'Seminar "Avatare..." - Einladung zum Arbeitsbereich');
@@ -151,7 +151,7 @@ class User
         $array['fistname'] = $res1['firstname'];
         $array['email'] = $res1['usermail'];
 
-        $text = "dies ist eine Einladung zum Arbeitsbereich\nDeine Login-Email lautet: %s\nDein Passwort lautet: %s\n\nEinloggen kannst Du dich unter: http://www.pixelspace.org/avatare/";
+        $text = "dies ist eine Einladung zum Arbeitsbereich\nDeine Login-Email lautet: %s\nDein Passwort lautet: %s\n\nEinloggen kannst Du dich unter: ". HOME_DIR;
 
         $content = sprintf($text, $array['email'], $pass);
 
@@ -184,7 +184,7 @@ class User
         $array['fistname'] = $res1['firstname'];
         $array['email'] = $res1['usermail'];
 
-        $text = "Dein neues Passwort lautet: %s\nDieses Passwort wurde zufällig generiert. Daher wird empfohlen es selbst zu ändern.\n\nEinloggen kannst Du dich unter: http://www.pixelspace.org/avatare/";
+        $text = "Dein neues Passwort lautet: %s\nDieses Passwort wurde zufällig generiert. Daher wird empfohlen es selbst zu ändern.\n\nEinloggen kannst Du dich unter: ". HOME_DIR;
 
         $content = sprintf($text, $pass);
 
