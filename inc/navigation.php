@@ -1,8 +1,7 @@
 <?php
 
 /**
- * @author blabla
- * @copyright 2007
+ * @author Dan Verständig
  */
 
 ?>

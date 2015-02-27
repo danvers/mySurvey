@@ -4,9 +4,7 @@
 /**
  * Security Handler
  */
-if (!defined('IN_PAGE')) {
-    header('Location:' . HOME_DIR);
-}
+if (!defined('IN_PAGE')) die();
 
 class Categories
 {

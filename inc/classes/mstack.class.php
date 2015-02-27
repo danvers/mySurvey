@@ -3,9 +3,7 @@
 /**
  * Security Handler
  */
-if (!defined('IN_PAGE')) {
-    header('Location:' . HOME_DIR);
-}
+if (!defined('IN_PAGE')) die();
 
 /**
  * This class is built upon the message stack handling from oscommerce 2.0

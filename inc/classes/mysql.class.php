@@ -6,9 +6,7 @@
 /**
  * Security Handler
  */
-if (!defined('IN_PAGE')) {
-    header('Location:' . HOME_DIR);
-}
+if (!defined('IN_PAGE')) die();
 
 require_once('inc/cfg/db_config.inc.php');
 
