@@ -99,24 +99,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         <input type="submit" value="login" id="submit"/><br/>
                     </p>
                 </form>
-                <div style="margin:2% 10%;padding:4%;border:1px solid #e9ba00;background-color:#fffef8;">
-                    <h2>Werkzeug zur Kategorisierung von Objekten in digitalen Welten</h2>
 
-                    <p>Entstanden ist das Projekt im Rahmen des Seminars <em>Avatare – Körperinszenierungen in
-                            Online-Communities, Sozialen Netzwerksites und Virtuellen Welten</em> bei Benjamin Jörissen,
-                        an der Otto-von-Guericke Universität Magdeburg im Wintersemester 2007/2008.<br/>
-                        <br/>Das Framework basiert auf einer PHP-Lösung in Verbindung zu einer MySQL Datenbank.<br/>
-                        Mit diesem Framework können unterschiedliche komplexe Objekte erfasst und kategorisiert werden.
-                        In diesem Falle wurden Avatare in virtuellen Welten systematisch untersucht. Es befindet sich
-                        noch ein Datensatz als Beispiel online.
-                        <br/><br/>
-                        Das Framework kann mit dem Demo-Konto angesehen werden: </p>
-                <pre>
-                Name:       demo@pixelspace.org
-                Passwort:   demo
-                </pre>
-
-                </div>
             <?php
             }
         } else {
