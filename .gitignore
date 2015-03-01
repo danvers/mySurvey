@@ -2,3 +2,4 @@ inc/cfg/config.inc.php
 inc/cfg/db_config.inc.php
 exports/*
 .idea/
+inc/cfg/db_config.inc.php
