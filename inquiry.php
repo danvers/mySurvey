@@ -183,7 +183,7 @@ if (isset($_GET['position']) && ($_GET['position'] == 'feedback')) {
         <meta http-equiv="Content-Style-Type" content="text/css"/>
         <meta http-equiv="content-language" content="de"/>
 
-        <title>Inquiry - <?php WORKSPACE_TITLE;?></title>
+        <title>Inquiry - <?php echo WORKSPACE_TITLE; ?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
 

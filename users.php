@@ -152,7 +152,7 @@ if (isset($_GET['action'])) {
     <meta http-equiv="Content-Style-Type" content="text/css"/>
     <meta http-equiv="content-language" content="de"/>
 
-    <title>Benutzerübersicht - Online Kategorisierung</title>
+    <title>Users - <?php echo WORKSPACE_TITLE; ?></title>
 
     <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
 </head>
@@ -173,43 +173,25 @@ if (isset($_GET['action'])) {
                     ?>
                     <div>
                         <h2>Nutzer einladen</h2>
-                        <?php
-                        if ($User->__get('userlevel') > DEMO_ACCOUNT){
-                        ?>
-                        <form action="users.php?action=add" method="post">
-                            <?php
-                            }else{
-                            ?>
-                            <form action="-">
-                                <?php
-                                }
-                                ?>
-                                <p class="left">E-mail:</p>
 
-                                <p>
-                                    <?php echo draw_input_field('email');?></p>
+                        <form id="form" action="users.php?action=add" method="post">
 
-                                <p class="left">Vorname:</p>
+                            <label for="email">E-Mail</label>
 
-                                <p><?php echo draw_input_field('firstname');?></p>
+                            <p><?php echo draw_input_field('email');?></p>
 
-                                <p class="left">Nachname:</p>
+                            <label for="firstname">Vorname</label>
 
-                                <p><?php echo draw_input_field('lastname');?></p>
-                                <?php
-                                if ($User->__get('userlevel') > DEMO_ACCOUNT) {
-                                    ?>
-                                    <p class="left">&nbsp;</p>
-                                    <p><?php echo draw_input_field('send', 'Benutzer einladen', '', 'submit', false); ?></p>
-                                <?php
-                                } else {
-                                    ?>
-                                    <p class="left">&nbsp;</p><span class="demosubmit">Benutzer einladen</span> [<a
-                                        class="tooltip" href="#">?<span style="width:200px;">Nicht mit dem Demo-Account möglich.</span></a>]
-                                <?php
-                                }
-                                ?>
-                            </form>
+                            <p><?php echo draw_input_field('firstname');?></p>
+
+                            <label for="lastname">Nachname</label>
+
+                            <p><?php echo draw_input_field('lastname');?></p>
+
+                            <div class="r2">
+                                <p><?php echo draw_input_field('send', 'Benutzer einladen', '', 'submit', false); ?></p>
+                            </div>
+                        </form>
                     </div>
                     <?php
                     break;
@@ -238,23 +220,23 @@ if (isset($_GET['action'])) {
                             <?php
                             }
                             ?>
-                            <form action="users.php?action=edit&amp;uID=<?php echo $id; ?>" method="post">
-                                <p class="left">E-mail:</p>
+                            <form id="form" action="users.php?action=edit&amp;uID=<?php echo $id; ?>" method="post">
 
-                                <p>
-                                    <?php echo draw_input_field('email', $UserData['usermail']); ?></p>
+                                <label for="email">E-Mail</label>
 
-                                <p class="left">Vorname:</p>
+                                <p><?php echo draw_input_field('email', $UserData['usermail']); ?></p>
+
+                                <label for="firstname">Vorname</label>
 
                                 <p><?php echo draw_input_field('firstname', $UserData['firstname']); ?></p>
 
-                                <p class="left">Nachname:</p>
+                                <label for="lastname">Nachname</label>
 
                                 <p><?php echo draw_input_field('lastname', $UserData['lastname']); ?></p>
 
-                                <p class="left">&nbsp;</p>
-
-                                <p><?php echo draw_input_field('send', 'Benutzerdaten ändern', '', 'submit', false); ?></p>
+                                <div class="r2">
+                                    <p><?php echo draw_input_field('send', 'Daten bearbeiten', '', 'submit', false); ?></p>
+                                </div>
                             </form>
                         </div>
                     <?php
@@ -265,12 +247,12 @@ if (isset($_GET['action'])) {
                         $id = (int)$_GET['uID'];
                         ?>
                         <h2>Benutzer löschen</h2>
-                        <form method="post" action="users.php?action=delete&amp;uID=<?echo $id; ?>">
+                        <form id="form" method="post" action="users.php?action=delete&amp;uID=<?php echo $id; ?>">
+                            <p>Benutzer wirklich löschen?</p>
 
-                            <p>Benutzer wirklich löschen?
-                                <br/><br/>
-                                <a href="javascript:history.back();">abbrechen</a>
-                                <input name="delete" type="submit" style="margin-left:10px;" value="l&ouml;schen"/>
+                            <p>
+                                <a class="btn cancel" href="javascript:history.back();">abbrechen</a>
+                                <button name="delete" class="proceed" type="submit">löschen</button>
                             </p>
 
                         </form>
@@ -315,22 +297,10 @@ if (isset($_GET['action'])) {
                             ?>
                         </td>
                         <td <?php if ($n % 2 == 0) echo 'class="odd"'; ?> style="width:43%;text-align:right;">
-                            <?php
-                            if ($User->__get('userlevel') > DEMO_ACCOUNT) {
-                                ?>
-                                <a href="users.php?position=edit&amp;uID=<?php echo $row['id']; ?>">Daten
-                                    bearbeiten</a>&nbsp;|&nbsp;
-                                <a href="users.php?position=confirm_delete&amp;uID=<?php echo $row['id'] ?>">diesen
-                                    Benutzer löschen</a>
-                            <?php
-                            } else {
-                                ?>
-                                [<a class="tooltip" href="#">?<span style="width:200px;">Nicht mit dem Demo-Account möglich.</span></a>]
-                                <span style="text-decoration:line-through">Daten bearbeiten</span>&nbsp;|&nbsp;<span
-                                    style="text-decoration:line-through">diesen Benutzer löschen</span>
-                            <?php
-                            }
-                            ?>
+                            <a href="users.php?position=edit&amp;uID=<?php echo $row['id']; ?>">Daten
+                                bearbeiten</a>&nbsp;|&nbsp;
+                            <a href="users.php?position=confirm_delete&amp;uID=<?php echo $row['id'] ?>">diesen
+                                Benutzer löschen</a>
                         </td>
                     </tr>
                     <?php

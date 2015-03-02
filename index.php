@@ -13,7 +13,7 @@ require('inc/header.php');
         <meta http-equiv="Content-Style-Type" content="text/css"/>
         <meta http-equiv="content-language" content="de"/>
 
-        <title>Start - <?php WORKSPACE_TITLE;?></title>
+        <title>Start - <?php echo WORKSPACE_TITLE; ?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
 

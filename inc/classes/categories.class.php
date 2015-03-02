@@ -148,14 +148,11 @@ class Categories
     public function listCategories($parent, $start_path, $linkPath, $display_field_num = false, $survey = 0)
     {
         $returnval = '';
-        $cat_active_flag = false;
         if (($start_path == '') && ($parent > 0)) {
             $start_path = $parent;
             if ($parent > 0) $start_path .= "_" . $parent;
         }
-        if (isset($_GET['cID']) && strpos($_GET['cID'], $parent)) {
-            $cat_active_flag = true;
-        }
+
         if ($parent != 0) {
             $returnval .= "<ul class=\"subMenuBox\">\n";
         } else {

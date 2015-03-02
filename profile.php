@@ -16,7 +16,7 @@ if (!$SessionManager->logged_in() || !(IN_PAGE)) header("Location:index.php");
         <meta http-equiv="Content-Style-Type" content="text/css"/>
         <meta http-equiv="content-language" content="de"/>
 
-        <title>My Profile - <?php WORKSPACE_TITLE;?></title>
+        <title>My Profile - <?php echo WORKSPACE_TITLE; ?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
     </head>
@@ -32,90 +32,50 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
     <div id="content">
         <div>
             <h2>Angaben zur Person</h2>
-            <?php
-            if ($User->__get('userlevel') > DEMO_ACCOUNT){
-            ?>
-            <form action="profile.php?do=edit_userdata" method="post">
-                <?php
-                }else{
-                ?>
-                <form action="-">
-                    <?php
-                    }
-                    ?>
-                    <p class="left">E-mail:</p>
 
-                    <p>
-                        <?php echo draw_input_field('usermail', $User->__get('usermail')); ?></p>
+            <form id="form" action="profile.php?do=edit_userdata" method="post">
 
-                    <p class="left">Vorname:</p>
+                <label for="usermail">E-Mail</label>
 
-                    <p><?php echo draw_input_field('firstname', $User->__get('firstname')); ?></p>
+                <p><?php echo draw_input_field('usermail', $User->__get('usermail')); ?></p>
 
-                    <p class="left">Nachname:</p>
+                <label for="firstname">Vorname</label>
 
-                    <p><?php echo draw_input_field('lastname', $User->__get('lastname')); ?></p>
+                <p><?php echo draw_input_field('firstname', $User->__get('firstname')); ?></p>
 
-                    <?php
-                    if ($User->__get('userlevel') > DEMO_ACCOUNT) {
-                        ?>
-                        <p class="left">&nbsp;</p>
-                        <p><?php echo draw_input_field('send', 'Daten ändern', '', 'submit', false); ?></p>
-                    <?php
-                    } else {
-                        ?>
-                        <p class="left">&nbsp;</p><span class="demosubmit">Daten ändern</span> [<a class="tooltip"
-                                                                                                   href="#">?<span
-                                style="width:200px;">Nicht mit dem Demo-Account möglich.</span></a>]
-                    <?php
-                    }
-                    ?>
-                </form>
+                <label for="lastname">Nachname</label>
+
+                <p><?php echo draw_input_field('lastname', $User->__get('lastname')); ?></p>
+
+                <div class="r2">
+                    <p><?php echo draw_input_field('send', 'Daten ändern', '', 'submit', false); ?></p>
+                </div>
+            </form>
         </div>
-        <br/>
 
         <div>
-            <h2>Passwort &auml;ndern</h2>
-            <?php
-            if ($User->__get('userlevel') > DEMO_ACCOUNT){
-            ?>
-            <form action="profile.php?do=edit_password" method="post">
-                <?php
-                }else{
-                ?>
-                <form action="-">
-                    <?php
-                    }
-                    ?>
-                    <p class="left">altes Passwort:</p>
+            <h2>Passwort ändern</h2>
 
-                    <p><?php echo draw_input_field('password0', '', '', 'password', false); ?></p>
+            <form id="form" action="profile.php?do=edit_password" method="post">
 
-                    <p class="left">neues Passwort:</p>
+                <label for="password0">altes Passwort</label>
 
-                    <p><?php echo draw_input_field('password1', '', '', 'password', false); ?></p>
+                <p><?php echo draw_input_field('password0', '', '', 'password', false); ?></p>
 
-                    <p class="left">Passwort (Wiederholen):</p>
+                <label for="password1">neues Passwort</label>
 
-                    <p><?php echo draw_input_field('password2', '', '', 'password', false); ?></p>
-                    <?php
-                    if ($User->__get('userlevel') > DEMO_ACCOUNT) {
-                        ?>
-                        <p class="left">&nbsp;</p>
-                        <p><?php echo draw_input_field('send', 'Passwort ändern', '', 'submit', false); ?></p>
-                    <?php
-                    } else {
-                        ?>
-                        <p class="left">&nbsp;</p><span class="demosubmit">Passwort ändern</span> [<a class="tooltip"
-                                                                                                      href="#">?<span
-                                style="width:200px;">Nicht mit dem Demo-Account möglich.</span></a>]
-                    <?php
-                    }
-                    ?>
-                </form>
+                <p><?php echo draw_input_field('password1', '', '', 'password', false); ?></p>
+
+                <label for="password2">Passwort wiederholen</label>
+
+                <p><?php echo draw_input_field('password2', '', '', 'password', false); ?></p>
+
+                <div class="r2">
+                    <p><?php echo draw_input_field('send', 'Passwort ändern', '', 'submit', false); ?></p>
+                </div>
+            </form>
         </div>
 
     </div>
-
 
 <?php require('inc/footer.php'); ?>

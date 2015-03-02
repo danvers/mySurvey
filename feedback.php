@@ -45,7 +45,7 @@ if (isset($_GET['position']) && ($_GET['position'] == 'add')) {
         <meta http-equiv="Content-Style-Type" content="text/css"/>
         <meta http-equiv="content-language" content="de"/>
 
-        <title>Feedback - <?php WORKSPACE_TITLE;?></title>
+        <title>Feedback - <?php echo WORKSPACE_TITLE; ?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
 

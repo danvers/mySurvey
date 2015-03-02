@@ -20,8 +20,7 @@ if (isset($_GET['action'])) {
 
                 $text = db_prepare_input($_POST['text']);
 
-                $db->query("INSERT INTO " . table_news . " (id, title, text, userid) VALUES ('','" . $db->escape_string($title) . "','" . $db->escape_string($text) . "','" . $User->__get('id') . "')");
-
+                $db->query("INSERT INTO " . table_news . " (title, text, userid) VALUES ('" . $db->escape_string($title) . "','" . $db->escape_string($text) . "','" . $User->__get('id') . "')");
                 $messageStack->add_session('general', 'Information wurde hinzugefügt', 'success');
                 header('Location:news.php');
             } else {
@@ -61,6 +60,7 @@ if (isset($_GET['action'])) {
             } else {
                 $db->query('SELECT usermail FROM ' . table_users . ' WHERE usermail != "' . $User->__get('usermail') . '"');
 
+                $recipients = array();
                 while ($row = $db->fetchArray()) {
                     $recipients[] = $row['usermail'];
                 }
@@ -113,7 +113,7 @@ if (isset($_GET['position']) && ($_GET['position'] == 'edit')) {
         <meta http-equiv="content-language" content="de"/>
 
         <meta name="audience" content="all"/>
-        <title>News - <?php WORKSPACE_TITLE;?></title>
+        <title>News - <?php echo WORKSPACE_TITLE; ?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
 
@@ -142,70 +142,49 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     ?>
                     <div>
                         <h2>Ankündigung/Information veröffentlichen</h2>
-                        <?php
-                        if ($User->__get('userlevel') > DEMO_ACCOUNT){
-                        ?>
-                        <form action="news.php?action=add" method="post">
-                            <?php
-                            }else{
-                            ?>
-                            <form action="-">
+
+                        <form id="form" action="news.php?action=add" method="post">
+                            <label for="news-title">Überschrift</label>
+
+                            <p>
+                                <?php echo draw_input_field('title', '', 'id="news-title"');?>
+                            </p>
+
+                            <label for="comment">Information</label>
+
+                            <p>
                                 <?php
-                                }
+                                echo draw_textarea_field('text', '60', '10', '', 'id="comment" onKeyDown="textLeft(\'comment\',\'counter\',200);"');
+
                                 ?>
-                                <p class="left">Überschrift</p>
+                            </p>
 
-                                <p>
-                                    <?php echo draw_input_field('title', '', 'style="width:300px;"');?>
-                                </p>
-
-                                <p class="left">Information</p>
-
-                                <p>
-                                    <?php
-                                    echo draw_textarea_field('text', '60', '10', '', 'id="comment" onKeyDown="textLeft(\'comment\',\'counter\',200);"');
-
-                                    ?>
-                                </p>
-
-                                <p class="left">&nbsp;</p>
-
+                            <div class="r2">
                                 <p id="counter" class="error">&nbsp;</p>
-                                <br/>
-                                <?php
-                                if ($User->__get('userlevel') > DEMO_ACCOUNT) {
-                                    ?>
-                                    <p class="left">&nbsp;</p>
-                                    <p><?php echo draw_input_field('send', 'speichern', '', 'submit', false); ?></p>
-                                <?php
-                                } else {
-                                    ?>
-                                    <p class="left">&nbsp;</p><span class="demosubmit">speichern</span> [<a
-                                        class="tooltip" href="#">?<span style="width:200px;">Nicht mit dem Demo-Account möglich.</span></a>]
-                                <?php
-                                }
-                                ?>
-                            </form>
+
+                                <p class="submit"><?php echo draw_input_field('send', 'speichern', '', 'submit', false); ?></p>
+                            </div>
+                        </form>
                     </div>
                     <?php
                     break;
                 case 'edit':
-                    $id = $_GET['eID'];
+                    $id = (int)$_GET['eID'];
 
                     $db->query('SELECT text,title FROM ' . table_news . ' WHERE id="' . $id . '" LIMIT 1');
                     $fields = $db->fetchArray();
                     ?>
                     <div>
-                        <h2>Ankündigung/Information bearbeiten</h2>
+                        <h2>Ankündigung bearbeiten</h2>
 
-                        <form action="news.php?action=edit&amp;eID=<?php echo $id;?>" method="post">
-                            <p class="left">Überschrift</p>
+                        <form id="form" action="news.php?action=edit&amp;eID=<?php echo $id;?>" method="post">
+                            <label for="news-title">Überschrift</label>
 
                             <p>
-                                <?php echo draw_input_field('title', $fields['title'], 'style="width:300px;"');?>
+                                <?php echo draw_input_field('title', $fields['title'], 'id="news-title"');?>
                             </p>
 
-                            <p class="left">Information</p>
+                            <label for="comment">Information</label>
 
                             <p>
                                 <?php
@@ -214,14 +193,11 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 ?>
                             </p>
 
-                            <p class="left">&nbsp;</p>
+                            <div class="r2">
+                                <p id="counter" class="error">&nbsp;</p>
 
-                            <p id="counter" class="error">&nbsp;</p>
-                            <br/>
-
-                            <p class="left">&nbsp;</p>
-
-                            <p><?php echo draw_input_field('send', 'speichern', '', 'submit', false);?></p>
+                                <p class="submit"><?php echo draw_input_field('send', 'speichern', '', 'submit', false); ?></p>
+                            </div>
                         </form>
                     </div>
                     <?php
@@ -231,29 +207,27 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     <div>
                         <h2>Vorschau</h2>
 
-                        <form action="news.php?action=sendmail" method="post">
-                            <p class="left">Betreff:</p>
+                        <form id="form" class="preview" action="news.php?action=sendmail" method="post">
+
+                            <label for="news-title">Betreff</label>
 
                             <p>
-                                <?php echo draw_input_field('title', $_POST['title'], 'readonly="readonly" style="width:300px;border:1px solid #fff;""');?>
+                                <?php echo draw_input_field('title', $_POST['title'], 'id="news-title" readonly="readonly"');?>
                             </p>
 
-                            <p class="left">Nachricht:</p>
+                            <label for="comment">Nachricht</label>
 
                             <p>
                                 <?php
-                                echo draw_textarea_field('text', '60', '10', $_POST['text'], 'readonly="readonly" style="border:1px solid #fff;"');
+                                echo draw_textarea_field('text', '60', '10', $_POST['text'], 'readonly="readonly" id="comment"');
                                 ?>
                             </p>
 
-                            <p class="left">&nbsp;</p>
+                            <div class="r2">
+                                <p id="counter" class="error">&nbsp;</p>
 
-                            <p id="counter" class="error">&nbsp;</p>
-                            <br/>
-
-                            <p class="left">&nbsp;</p>
-
-                            <p><?php echo draw_input_field('send', 'abschicken', '', 'submit', false);?></p>
+                                <p><?php echo draw_input_field('send', 'abschicken', '', 'submit', false);?></p>
+                            </div>
                         </form>
                     </div>
                     <?php
@@ -262,50 +236,29 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     ?>
                     <div>
                         <h2>Rundmail verfassen</h2>
-                        <?php
-                        if ($User->__get('userlevel') > DEMO_ACCOUNT){
-                        ?>
-                        <form action="news.php?position=preview" method="post">
-                            <?php
-                            }else{
-                            ?>
-                            <form action="-">
+
+                        <form id="form" action="news.php?position=preview" method="post">
+
+                            <label for="news-title">Nachricht</label>
+
+                            <p>
+                                <?php echo draw_input_field('title', '', 'id="news-title"');?>
+                            </p>
+
+                            <label for="comment">Nachricht</label>
+
+                            <p>
                                 <?php
-                                }
+                                echo draw_textarea_field('text', '60', '10', '', 'id="comment" onKeyDown="textLeft(\'comment\',\'counter\',200);"');
                                 ?>
+                            </p>
 
-                                <p class="left">Betreff:</p>
-
-                                <p>
-                                    <?php echo draw_input_field('title', '', 'style="width:300px;"');?>
-                                </p>
-
-                                <p class="left">Nachricht:</p>
-
-                                <p>
-                                    <?php
-                                    echo draw_textarea_field('text', '60', '10', '', 'id="comment" onKeyDown="textLeft(\'comment\',\'counter\',200);"');
-                                    ?>
-                                </p>
-
-                                <p class="left">&nbsp;</p>
-
+                            <div class="r2">
                                 <p id="counter" class="error">&nbsp;</p>
-                                <br/>
-                                <?php
-                                if ($User->__get('userlevel') > DEMO_ACCOUNT) {
-                                    ?>
-                                    <p class="left">&nbsp;</p>
-                                    <p><?php echo draw_input_field('send', 'Vorschau', '', 'submit', false); ?></p>
-                                <?php
-                                } else {
-                                    ?>
-                                    <p class="left">&nbsp;</p><span class="demosubmit">Vorschau</span> [<a
-                                        class="tooltip" href="#">?<span style="width:200px;">Nicht mit dem Demo-Account möglich..</span></a>]
-                                <?php
-                                }
-                                ?>
-                            </form>
+
+                                <p><?php echo draw_input_field('send', 'Vorschau', '', 'submit', false); ?></p>
+                            </div>
+                        </form>
                     </div>
                     <?php
                     break;
@@ -315,12 +268,13 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         $id = $_GET['eID'];
                         ?>
                         <h2>Eintrag löschen</h2>
-                        <form method="post" action="news.php?action=delete&amp;eID=<?echo $id; ?>">
+                        <form id="form" method="post" action="news.php?action=delete&amp;eID=<?php echo $id; ?>">
 
-                            <p>Information/Ankündigung wirklich löschen?
-                                <br/><br/>
-                                <a href="javascript:history.back();">abbrechen</a>
-                                <input name="delete" type="submit" style="margin-left:10px;" value="l&ouml;schen"/>
+                            <p>Ankündigung wirklich löschen?</p>
+
+                            <p>
+                                <a class="btn cancel" href="javascript:history.back();">abbrechen</a>
+                                <button name="delete" class="proceed" type="submit">löschen</button>
                             </p>
 
                         </form>
@@ -352,20 +306,8 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         ?>
                         <li <?php if ($n % 2 == 0) echo 'style="background:#efefef;"'; ?>>
                             <h3><?php echo date('d.m.y', $row['timestamp']); ?> - <?php echo $row['title']; ?></h3>
-                            <?php
-                            if ($User->__get('userlevel') > DEMO_ACCOUNT) {
-                                ?>
-                                <a href="news.php?position=edit&amp;eID=<?php echo $row['id']; ?>">bearbeiten</a>&nbsp;|&nbsp;
-                                <a href="news.php?position=confirm_delete&amp;eID=<?php echo $row['id']; ?>">löschen</a>
-                            <?php
-                            } else {
-                                ?>
-                                <span style="text-decoration:line-through">bearbeiten</span>&nbsp;|&nbsp;<span
-                                    style="text-decoration:line-through">löschen</span>
-                                [<a class="tooltip" href="#">?<span style="width:200px;">Nicht mit dem Demo-Account möglich.</span></a>]
-                            <?php
-                            }
-                            ?>
+                            <a href="news.php?position=edit&amp;eID=<?php echo $row['id']; ?>">bearbeiten</a>&nbsp;|&nbsp;
+                            <a href="news.php?position=confirm_delete&amp;eID=<?php echo $row['id']; ?>">löschen</a>
 
                             <p><?php echo $row['text']; ?></p>
 

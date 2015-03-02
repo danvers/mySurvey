@@ -65,7 +65,7 @@ if (isset($_GET['action'])) {
         <meta http-equiv="Content-Style-Type" content="text/css"/>
         <meta http-equiv="content-language" content="de"/>
 
-        <title>My Inquiries - <?php WORKSPACE_TITLE;?></title>
+        <title>My Inquiries - <?php echo WORKSPACE_TITLE; ?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
 
