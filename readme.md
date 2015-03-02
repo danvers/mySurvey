@@ -29,7 +29,7 @@ pass: demo
 
 ## Note
 
-This Tool is far away from being perfect, it lacks of several things e.g. better session handling, multi language support, a handy installer and even a code proper documentation and so on. 
+This tool is far away from being perfect, it lacks of several things e.g. better session handling, multi language support, a handy installer and even a code proper documentation and so on. 
 Also, please consider some security issues as well, since the idea and many parts of the code are from 2008. Feel free to build upon this framework and use it for your purpose.
  
  
