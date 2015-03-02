@@ -22,6 +22,10 @@ pass: demo
 
 4) set the db_config.inc.php in inc/cfg/ with your parameters and desired table names.
 
+## Requirements
+
+* [PHP 5.2+] (http://www.php.net)
+* [MySQL 4.0+] (http://www.mysql.com/)
 
 ## Note
 
