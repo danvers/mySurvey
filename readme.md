@@ -8,19 +8,15 @@ The idea came up in a seminar/class back in 2008 where we tried to evaluate and 
 
 You can see a demo of this framework on https://avatare.pixelspace.org/ with the following account
 
-user: demo@pixelspace.org
-
-pass: demo
+- user: demo@pixelspace.org
+- pass: demo
 
 ## Installation
 
-1) Download the Package
-
-2) Import the database tables from survey.sql
-
-3) create a user - you need to do this manually since the tool needs some further development
-
-4) set the db_config.inc.php in inc/cfg/ with your parameters and desired table names.
+1. Download the Package
+2. Import the database tables from survey.sql
+3. create a user - you need to do this manually since the tool needs some further development
+4. set the db_config.inc.php in inc/cfg/ with your parameters and desired table names.
 
 ## Requirements
 
