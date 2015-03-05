@@ -189,15 +189,12 @@ class Categories
                 $returnval .= "<li>" . $categories['name'];
             } else {
                 $returnval .= "<li><a href=\"" . $categories_string . "\">" . $categories['name'] . "</a>" . ' ' . $completed;
-
-
             }
 
             if ($display_field_num && $this->getFieldCount($categories['id']) > 0) {
                 $returnval .= ' (' . $this->getFieldCount($categories['id']) . ')';
             }
             if (array_key_exists($categories['id'], $this->categories_subs)) {
-
                 $returnval .= $this->listCategories($categories['id'], $start_path, $linkPath, $display_field_num, $survey);
             }
             $returnval .= "</li>\n";
