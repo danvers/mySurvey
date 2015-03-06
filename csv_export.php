@@ -21,7 +21,7 @@ $Avatar->cleanExports('exports/', 2);
 $db->query('SELECT id, name, params, type, notes, cat_id  FROM ' . table_fields);
 
 $fields = array();
-while ($row = $db->fetchArray()) {
+while ($row = $db->fetch()) {
     $fields[$row['id']] = array('id' => $row['id'],
         'params' => $row['params'],
         'type' => $row['type'],
@@ -35,7 +35,7 @@ $db->query('SELECT id, name FROM ' . table_categories);
 
 $categories = array();
 
-while ($row = $db->fetchArray()) {
+while ($row = $db->fetch()) {
     $categories[$row['id']] = array('id' => $row['id'],
         'name' => $row['name']
     );
@@ -79,7 +79,7 @@ fwrite($csv_dump, $first_line . "\n");
 
 $line = date('D, d M Y H:i:s') . $CSV_DELIM;
 
-while ($row = $db->fetchArray()) {
+while ($row = $db->fetch()) {
 
     $line = "";
     $line = date('D, d M Y H:i:s') . $CSV_DELIM . $row['firstname'] . ' ' . $row['lastname'] . $CSV_DELIM;

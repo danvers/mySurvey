@@ -17,10 +17,10 @@ if (isset($_GET['action'])) {
             if (strlen(db_prepare_input($_POST['text'])) >= FIELD_MIN_LENGTH && strlen(db_prepare_input($_POST['title'])) >= FIELD_MIN_LENGTH) {
 
                 $title = db_prepare_input($_POST['title']);
-
                 $text = db_prepare_input($_POST['text']);
-
-                $db->query("INSERT INTO " . table_news . " (title, text, userid) VALUES ('" . $db->escape_string($title) . "','" . $db->escape_string($text) . "','" . $User->__get('id') . "')");
+                $data = array(':title'=> $title, ':text' => $text, ':userid' => intval($User->__get('id')));
+                $db->query("INSERT INTO " . table_news . " (title, text, userid)
+                                VALUES (:title,:text,:userid)", $data);
                 $messageStack->add_session('general', 'Information wurde hinzugefügt', 'success');
                 header('Location:news.php');
             } else {
@@ -42,7 +42,12 @@ if (isset($_GET['action'])) {
                     $messageStack->add_session('general', 'Der Titel sowie der Text müssen mindestens ' . FIELD_MIN_LENGTH . ' Zeichen lang sein', 'error');
                     header('Location:news.php?position=edit&eID=' . $id);
                 } else {
-                    $db->query("UPDATE " . table_news . " SET  title= '" . $db->escape_string($postbit['title']) . "', text = '" . $db->escape_string($postbit['text']) . "' WHERE id =  '" . $id . "' LIMIT 1");
+                    $data = array(
+                                ':title'    =>  $postbit['title'],
+                                ':text'     =>  $postbit['text'],
+                                ':id'       =>  $id
+                        );
+                    $db->query("UPDATE " . table_news . " SET  title= :title, text = :text WHERE id = :id LIMIT 1",$data);
 
                     $messageStack->add_session('general', 'Information wurde bearbeitet', 'success');
                     header('Location:news.php?position=edit&eID=' . $id);
@@ -58,10 +63,10 @@ if (isset($_GET['action'])) {
 
                 header('Location:news.php?position=mail');
             } else {
-                $db->query('SELECT usermail FROM ' . table_users . ' WHERE usermail != "' . $User->__get('usermail') . '"');
+                $db->query('SELECT usermail FROM ' . table_users . ' WHERE usermail != :usermail',array(':usermail' => $User->__get('usermail')));
 
                 $recipients = array();
-                while ($row = $db->fetchArray()) {
+                while ($row = $db->fetch()) {
                     $recipients[] = $row['usermail'];
                 }
                 $title = $_POST['title'];
@@ -93,7 +98,7 @@ if (isset($_GET['action'])) {
     }
 }
 if (isset($_GET['position']) && ($_GET['position'] == 'edit')) {
-    if (!isset($_GET['eID']) || !$Message->exists($_GET['eID'], table_news)) {
+    if (!isset($_GET['eID'])) {
         header('Location:news.php');
     }
 } elseif (isset($_GET['position']) && ($_GET['position'] == 'preview')) {
@@ -171,8 +176,8 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                 case 'edit':
                     $id = (int)$_GET['eID'];
 
-                    $db->query('SELECT text,title FROM ' . table_news . ' WHERE id="' . $id . '" LIMIT 1');
-                    $fields = $db->fetchArray();
+                    $db->query('SELECT text,title FROM ' . table_news . ' WHERE id= :id LIMIT 1',array(':id'=>$id));
+                    $fields = $db->fetch();
                     ?>
                     <div>
                         <h2>Ankündigung bearbeiten</h2>
@@ -294,14 +299,14 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
             ?>
 
             <?php
-            if ($db->numRows() > 0) {
+            if ($db->rowCount() > 0) {
                 ?>
 
                 <ul id="newslist">
                     <?php
                     $n = 0;
-                    while ($row = $db->fetchArray()) {
-                        $infoComments = '<small style="color:#999;font-weight:normal;">';
+                    while ($row = $db->fetch()) {
+                        $infoComments = '<small>';
                         $infoComments .= '</small>';
                         ?>
                         <li <?php if ($n % 2 == 0) echo 'style="background:#efefef;"'; ?>>

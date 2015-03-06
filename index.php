@@ -109,7 +109,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     case 'edit':
                         $aID = $_GET['aID'];
                         $db->query('SELECT id,title,url,description FROM ' . table_survey . ' WHERE id="' . $aID . '"');
-                        $result = $db->fetchArray();
+                        $result = $db->fetch();
                         ?>
                         <h2><?php echo $result['title']; ?></h2>
                         <p class="left">URI</p>
@@ -135,7 +135,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                 ?>
 
                 <?php
-                if ($db->numRows() > 0) {
+                if ($db->rowCount() > 0) {
                     $cols = true;
                     $split = ' style="width:60%;float:right;"';
                     ?>
@@ -145,7 +145,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         <ul id="newslist">
                             <?php
                             $n = 0;
-                            while ($row = $db->fetchArray()) {
+                            while ($row = $db->fetchAll()) {
                                 $infoComments = '<small style="color:#999;font-weight:normal;">';
                                 $infoComments .= '</small>';
                                 ?>
@@ -185,7 +185,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                         $db->query('SELECT COUNT(id) AS num FROM ' . table_survey);
 
-                        $av_count_arr = $db->fetchArray();
+                        $av_count_arr = $db->fetch();
 
                         $num_avatars = $av_count_arr['num'];
 
@@ -195,28 +195,31 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                         $db->query('SELECT id FROM ' . table_fields);
 
-                        while ($row = $db->fetchArray()) {
+                        while ($row = $db->fetch()) {
                             $fields[] = $row['id'];
                         }
 
                         $db->query('SELECT COUNT(id) AS fieldsum FROM ' . table_fields);
-                        $fieldcount = $db->fetchArray();
+                        $fieldcount = $db->fetch();
 
                         $numFields = $fieldcount['fieldsum'];
 
-
-                        $seiten = ceil($num_avatars / 6) - 1;
+                        $pages = ceil($num_avatars / 6);
 
                         if (!isset($_GET['page'])) {
                             $page_param = 0;
                         } else {
-                            $page_param = $_GET['page'];
+                            $page_param = intval($_GET['page']);
                         }
-                        if ($seiten < $page_param) $page_param = $seiten;
+                        if ($pages < $page_param) $page_param = $pages;
                         $start = $page_param * 6;
-                        $db->query('SELECT ts.*, UNIX_TIMESTAMP(ts.timestamp) AS timestamp, u.firstname, u.lastname FROM ' . table_survey . ' ts, ' . table_users . ' u WHERE ts.userid = u.id ORDER BY ts.id  DESC LIMIT ' . $start . ', 6');
+                        $db->query('SELECT ts.*, UNIX_TIMESTAMP(ts.timestamp) AS timestamp, u.firstname, u.lastname
+                                      FROM ' . table_survey . ' ts, ' . table_users . ' u
+                                      WHERE ts.userid = u.id
+                                      ORDER BY ts.id
+                                      DESC LIMIT ' . $start . ', 6');
 
-                        if ($db->numRows() > 0){
+                        if ($db->rowCount() > 0){
 
                         echo 'Seite: ';
                         if ($page_param > 0) {
@@ -225,7 +228,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         <?php
                         }
 
-                        for ($i = 0; $i < $seiten; $i++) {
+                        for ($i = 0; $i < $pages; $i++) {
                             if ($page_param > $i) {
                                 ?>
                                 <a href="index.php?page=<?php echo $i; ?>"><?php echo $i + 1; ?></a>
@@ -240,7 +243,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             <?php
                             }
                         }
-                        if ($page_param < $seiten && $seiten > 1) {
+                        if ($page_param < $pages && $pages > 1) {
                             ?>
                             <a href="index.php?page=<?php echo $page_param + 1; ?>">&raquo;</a>
                         <?php
@@ -250,13 +253,12 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     <ul id="avatarlist">
                         <?php
                         $n = 0;
-                        while ($row = $db->fetchArray()) {
+                        while ($row = $db->fetch()) {
                             $fieldcount = 0;
                             foreach ($fields as $field) {
-                                if ($row['field_' . $field] !== NULL)
+                                if (!is_null($row['field_' . $field]))
                                     $fieldcount++;
                             }
-
                             $progress = 0;
                             if ($fieldcount > 0) {
                                 $progress = ($fieldcount / $numFields) * 100;
@@ -345,7 +347,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     <?php
                     } else {
                         ?>
-                        <p>noch keine Avatare.</p>
+                        <p>noch keine Einträge.</p>
                     <?php
                     }
                     ?>

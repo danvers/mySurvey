@@ -21,13 +21,13 @@ class Categories
         $this->categories_subs = array();
         $this->categories_start = array();
         $this->tree = array();
-        $categories_subs_query = $this->db->query("SELECT COUNT(id) as count, parent from " . table_categories . " GROUP BY parent");
-        while ($row = $this->db->fetchArray($categories_subs_query)) {
+        $this->db->query("SELECT COUNT(id) as count, parent from " . table_categories . " GROUP BY parent");
+        while ($row = $this->db->fetch()) {
             $this->categories_subs[$row['parent']] = $row['count'];
         }
 
-        $categories_query = $this->db->query("SELECT id, name, empty,  parent, sort_order FROM " . table_categories . " ORDER BY sort_order");
-        while ($row = $this->db->fetchArray($categories_query)) {
+        $this->db->query("SELECT id, name, empty,  parent, sort_order FROM " . table_categories . " ORDER BY sort_order");
+        while ($row = $this->db->fetch()) {
             $this->categories_start['S_' . $row['id'] . '_' . $row['parent'] . '_E'] = $row;
 
             $this->tree[$row['id']] = array('name' => $row['name'],
@@ -54,8 +54,8 @@ class Categories
      */
     public function getChildren($category)
     {
-        $this->db->query('SELECT COUNT(cat_id) AS fieldCount FROM ' . table_fields . ' WHERE cat_id ="' . $category . '"');
-        $result = $this->db->fetchArray();
+        $this->db->query('SELECT COUNT(cat_id) AS fieldCount FROM ' . table_fields . ' WHERE cat_id =:cat',array(':cat' => $category));
+        $result = $this->db->fetch();
 
         return (int)$result['fieldCount'];
     }
@@ -67,7 +67,7 @@ class Categories
      */
     public function getChildCats($parent, $depth)
     {
-        $returnval = '';
+        $result = '';
 
         $cat_subs = array();
 
@@ -78,21 +78,21 @@ class Categories
             }
         }
         if (sizeof($cat_subs) < 1) {
-            return $returnval;
+            return $result;
         }
         foreach ($cat_subs[$parent] as $v) {
 
             $categories = $this->categories_start['S_' . $v . '_' . (int)$parent . '_E'];
 
-            $returnval .= ',' . $categories['id'];
+            $result .= ',' . $categories['id'];
 
             if (array_key_exists($categories['id'], $this->categories_subs) || (array_key_exists($categories['id'], $this->categories_subs))) {
 
-                $returnval .= $this->getChildCats($categories['id'], $depth + 1);
+                $result .= $this->getChildCats($categories['id'], $depth + 1);
             }
 
         }
-        return $returnval;
+        return $result;
     }
 
     /**
@@ -103,7 +103,7 @@ class Categories
      */
     public function drawCatOptions($parent, $default, $depth)
     {
-        $returnval = '';
+        $result = '';
 
         $cat_subs = array();
         foreach ($this->categories_start as $key => $value) {
@@ -121,19 +121,18 @@ class Categories
                     $sign .= '-';
                 }
             }
-            $returnval .= '<option value="' . $categories['id'] . '"';
+            $result .= '<option value="' . $categories['id'] . '"';
             if ($categories['id'] == $default) {
-                $returnval .= ' selected="selected"';
+                $result .= ' selected="selected"';
             }
-            $returnval .= '>' . $sign . ' ' . $categories['name'] . '</option>' . "\n";
+            $result .= '>' . $sign . ' ' . $categories['name'] . '</option>' . "\n";
 
             if (array_key_exists($categories['id'], $this->categories_subs) || (array_key_exists($categories['id'], $this->categories_subs))) {
-
-                $returnval .= $this->drawCatOptions($categories['id'], $default, $depth + 1);
+                $result .= $this->drawCatOptions($categories['id'], $default, $depth + 1);
             }
 
         }
-        return $returnval;
+        return $result;
     }
 
     /**
@@ -147,16 +146,16 @@ class Categories
 
     public function listCategories($parent, $start_path, $linkPath, $display_field_num = false, $survey = 0)
     {
-        $returnval = '';
+        $result = '';
         if (($start_path == '') && ($parent > 0)) {
             $start_path = $parent;
             if ($parent > 0) $start_path .= "_" . $parent;
         }
 
         if ($parent != 0) {
-            $returnval .= "<ul class=\"subMenuBox\">\n";
+            $result .= "<ul class=\"subMenuBox\">\n";
         } else {
-            $returnval .= "<ul class=\"box\">\n";
+            $result .= "<ul class=\"box\">\n";
         }
 
         $cat_subs = array();
@@ -184,23 +183,23 @@ class Categories
             if (!$isEmpty && $linkPath['position'] == 'evaluate' && $this->isCompleted($survey, $v)) $completed = '<img alt="" src="img/complete.gif"/>';
 
             if (isset($_GET['cID']) && $v == $_GET['cID']) {
-                $returnval .= "<li><strong>" . $categories['name'] . "</strong>" . ' ' . $completed;
+                $result .= "<li><strong>" . $categories['name'] . "</strong>" . ' ' . $completed;
             } elseif ($isEmpty && $survey > 0) {
-                $returnval .= "<li>" . $categories['name'];
+                $result .= "<li>" . $categories['name'];
             } else {
-                $returnval .= "<li><a href=\"" . $categories_string . "\">" . $categories['name'] . "</a>" . ' ' . $completed;
+                $result .= "<li><a href=\"" . $categories_string . "\">" . $categories['name'] . "</a>" . ' ' . $completed;
             }
 
             if ($display_field_num && $this->getFieldCount($categories['id']) > 0) {
-                $returnval .= ' (' . $this->getFieldCount($categories['id']) . ')';
+                $result .= ' (' . $this->getFieldCount($categories['id']) . ')';
             }
             if (array_key_exists($categories['id'], $this->categories_subs)) {
-                $returnval .= $this->listCategories($categories['id'], $start_path, $linkPath, $display_field_num, $survey);
+                $result .= $this->listCategories($categories['id'], $start_path, $linkPath, $display_field_num, $survey);
             }
-            $returnval .= "</li>\n";
+            $result .= "</li>\n";
         }
-        $returnval .= "</ul>";
-        return $returnval;
+        $result .= "</ul>";
+        return $result;
     }
 
     /**
@@ -222,28 +221,25 @@ class Categories
         if ($category == 0 || $survey == 0)
             return false;
 
-
         $fields = "";
         $field_array = array();
 
-        $this->db->query('SELECT id FROM ' . table_fields . ' WHERE cat_id="' . $category . '"');
+        $this->db->query('SELECT id FROM ' . table_fields . ' WHERE cat_id=:catid',array(':catid'=>$category));
 
-
-        while ($row = $this->db->fetchArray()) {
+        while ($row = $this->db->fetch()) {
             $fields .= ', field_' . $row['id'];
             $field_array[] = $row['id'];
         }
         $fields_query = substr($fields, 1, strlen($fields));
 
-        $this->db->query('SELECT ' . $fields_query . ' FROM ' . table_survey . ' WHERE id="' . $survey . '"');
+        $this->db->query('SELECT ' . $fields_query . ' FROM ' . table_survey . ' WHERE id=:id', array(':id'=>$survey));
 
-        while ($row = $this->db->fetchArray()) {
+        while ($row = $this->db->fetch()) {
             foreach ($field_array as $field) {
                 if ($row['field_' . $field] == NULL)
                     return false;
             }
         }
-
         return true;
     }
 
@@ -253,8 +249,8 @@ class Categories
      */
     public function getFieldCount($category)
     {
-        $this->db->query('SELECT COUNT(cat_id) AS fieldCount FROM ' . table_fields . ' WHERE cat_id ="' . $category . '"');
-        $result = $this->db->fetchArray();
+        $this->db->query('SELECT COUNT(cat_id) AS fieldCount FROM ' . table_fields . ' WHERE id=:id', array(':id'=>$category));
+        $result = $this->db->fetch();
 
         return (int)$result['fieldCount'];
     }

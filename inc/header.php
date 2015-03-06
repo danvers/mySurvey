@@ -19,7 +19,7 @@ require_once('inc/cfg/config.inc.php');
 preventCaching();
 
 
-$db = new mySqlConnection();
+$db = new database();
 
 $messageStack = new messageStack();
 

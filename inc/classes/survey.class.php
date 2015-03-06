@@ -26,7 +26,7 @@ class Avatar
 
         $this->db->query('SELECT title FROM ' . table_survey . ' WHERE id="' . $avatarID . '" LIMIT 1');
 
-        $result = $this->db->fetchArray();
+        $result = $this->db->fetch();
 
         return htmlspecialchars($result['title']);
     }
@@ -34,48 +34,51 @@ class Avatar
     public function isLegal($avatarID, $userID)
     {
         $this->db->query('SELECT id FROM ' . table_survey . ' WHERE id="' . $avatarID . '" AND userid="' . $userID . '" LIMIT 1');
-        return ($this->db->numRows() == 1);
+        return ($this->db->rowCount() == 1);
     }
 
     public function delete($avatarID, $userID)
     {
+        $data = array(':id' => $avatarID, ':userid'=>$userID);
 
-        $this->db->query('SELECT id FROM ' . table_survey . ' WHERE id="' . $avatarID . '" AND userid="' . $userID . '" LIMIT 1');
+        $this->db->query('SELECT id FROM ' . table_survey . ' WHERE id=:id AND userid= :userid LIMIT 1',$data);
 
-        if ($this->db->numRows() == 1) {
-
-            $this->db->query('DELETE FROM ' . table_survey . ' WHERE id="' . $avatarID . '" AND userid="' . $userID . '" LIMIT 1');
-            $this->db->query('DELETE FROM ' . table_feedback . ' WHERE avatarid="' . $avatarID . '"');
-
+        if ($this->db->rowCount() == 1) {
+            $this->db->query('DELETE FROM ' . table_survey . ' WHERE id=:id AND userid= :userid LIMIT 1',$data);
+            $this->db->query('DELETE FROM ' . table_feedback . ' WHERE avatarid=:aid',array(':aid'=>$avatarID));
             return true;
-
-        } else {
-
-            return false;
-
         }
-
+        return false;
     }
 
     public function add($inserts, $user)
     {
-        $this->db->query("INSERT INTO " . table_survey . " ( title, url, description, userid) VALUES ('" . $this->db->escape_string($inserts['name']) . "','" . $this->db->escape_string($inserts['url']) . "','" . $this->db->escape_string($inserts['description']) . "'," . $user . ")");
-
+        $data = array(
+                ':title'        =>  $inserts['name'],
+                ':url'          =>  $inserts['url'],
+                ':description'  =>  $inserts['description'],
+                ':userid'       =>  $user
+                );
+        $this->db->query('INSERT INTO ' . table_survey . ' ( title, url, description, userid)
+                            VALUES (:title,:url,:description,:userid)',$data);
     }
-
     public function update($inserts, $avatar, $user)
     {
-
-        return $this->db->query('UPDATE ' . table_survey . ' SET title="' . $this->db->escape_string($inserts['title']) . '", url="' . $this->db->escape_string($inserts['url']) . '", description="' . $this->db->escape_string($inserts['description']) . '" WHERE id="' . $avatar . '" AND userid ="' . $user . '" LIMIT 1');
+        $data = array(
+            ':title'        =>  $inserts['title'],
+            ':url'          =>  $inserts['url'],
+            ':description'  =>  $inserts['description'],
+            ':userid'       =>  $user,
+            ':id'           =>  $avatar
+        );
+        return $this->db->query('UPDATE ' . table_survey . ' SET title=:title, url=:url, description=:description WHERE id=:id AND userid =:userid LIMIT 1', $data);
     }
 
-    public function evaluate($query, $avatar, $user)
+    public function evaluate($query, $avatar, $user,$data)
     {
-
-        $this->db->query('UPDATE ' . table_survey . ' SET ' . $query . ' WHERE id="' . $avatar . '" AND userid ="' . $user . '" LIMIT 1');
+        $this->db->query('UPDATE ' . table_survey . ' SET ' . $query . ' WHERE id="' . $avatar . '" AND userid ="' . $user . '" LIMIT 1', $data);
 
     }
-
     public function cleanExports($dir, $time)
     {
 
@@ -102,14 +105,12 @@ class Avatar
     public function getEntries()
     {
         $this->db->query('SELECT COUNT(id) AS sum FROM ' . table_survey);
-        $entries = $this->db->fetchArray();
+        $entries = $this->db->fetch();
         return $entries['sum'];
     }
 
     public function __destruct()
     {
-        unset($this->db);
+        $this->db = null;
     }
-
-
 }

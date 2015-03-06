@@ -88,6 +88,7 @@ div#right {
 div#footer {
     border-top: 1px solid #ccc;
     margin: 5px;
+    padding:10px 0;
 }
 
 div.mStack {
@@ -209,10 +210,37 @@ ul#avatarlist, ul#newslist {
     width: 100%;
 }
 
-table#users tr:hover, table#users tr:hover td.odd {
+#users tbody tr:hover,
+#users tbody tr:hover td.odd {
     background: #c1fcc5;
 }
+#users{
+    width:100%;
+}
+#users td, #users th{
+    text-align:left;
+}
+#users td.last_seen{
+    width:33%;
+}
+#users td:first-child{
+    width: 33%;
+}
+#users td:last-child,
+#users th:last-child{
+    width: 33%;
+    text-align: center;
+}
+#evaluation{
+    margin:auto;
+    width:100%;
+}
 
+#evaluation .inq_label{
+    font-weight: bold;
+    width:300px;
+    vertical-align: top;
+}
 .odd {
     background: #efefef;
 }
@@ -348,7 +376,7 @@ a.tooltip:hover span, a.tooltip:focus span {
     padding-top: 14px;
 }
 
-#form button:hover, form input[type="submit"]:hover {
+#form button:hover, form input[type="submit"]:hover,.btn:hover {
     background-color: #3979b0;
 }
 
@@ -402,6 +430,7 @@ a.tooltip:hover span, a.tooltip:focus span {
     width: 100%;
 }
 
+#evaluation tr:nth-child(odd),
 .overview tr:nth-child(odd) {
     background-color: #efefef;
 }

@@ -8,9 +8,7 @@ require_once('inc/header.php');
 if (!$SessionManager->logged_in() || !(IN_PAGE)) header("Location:index.php");
 
 $Cats = new Categories($db);
-
 $Avatar = new Avatar($db);
-
 
 if (isset($_GET['action'])) {
     switch ($_GET['action']) {
@@ -25,15 +23,12 @@ if (isset($_GET['action'])) {
 
                 $Avatar->add($postbit, $User->__get('id'));
 
-
                 $messageStack->add_session('general', 'Eintrag eingefügt Kategorisierung kann beginnen', 'success');
                 header('Location:myinquiries.php');
             } else {
                 $messageStack->add_session('general', 'Es muss ein Titel angegeben werden', 'error');
                 header('Location:inquiry.php?position=add');
             }
-
-
             break;
         case 'edit':
             if (!isset($_GET['aID']) || !$Avatar->isLegal($_GET['aID'], $User->__get('id'))) {
@@ -44,112 +39,97 @@ if (isset($_GET['action'])) {
                 $aID = $_GET['aID'];
                 if (strlen(htmlspecialchars($_POST['title']))) {
                     foreach ($_POST as $postbits => $element) {
-
                         $postbit[$postbits] = db_prepare_input($element);
-
                     }
 
                     if (!isset($postbit['url'])) $postbit['url'] = "";
                     if (!isset($postbit['description'])) $postbit['description'] = "";
 
-
                     $Avatar->update($postbit, $aID, $User->__get('id'));
-
-
                     $messageStack->add_session('general', 'Daten aktualisiert', 'success');
-
                     header('Location:inquiry.php?position=edit&aID=' . $aID);
 
                 } else {
-
                     $messageStack->add_session('general', 'Es muss ein Titel angegeben sein.', 'error');
-
                     header('Location:inquiry.php?position=edit&aID=' . $aID);
                 }
             }
             break;
         case 'evaluate':
             if (!isset($_GET['cID'])) {
-
                 $messageStack->add_session('general', 'Keine Kategorie übergeben', 'error');
                 header('Location:myinquiries.php');
             }
             if (!isset($_GET['aID']) || !$Avatar->isLegal($_GET['aID'], $User->__get('id'))) {
-
                 header('Location:myinquiries.php');
-
             } else {
-                $querystring = "";
+                $querystring = '';
                 $catID = $_GET['cID'];
                 $aID = $_GET['aID'];
                 $fields = array();
                 $checkboxes = array();
-                $db->query('SELECT id, params, type, notes  FROM ' . table_fields . ' WHERE cat_id="' . $catID . '"');
+                $db->query('SELECT id, params, type, notes  FROM ' . table_fields . ' WHERE cat_id=:catid',array(':catid'=> $catID));
+                $data = array();
+                while ($row = $db->fetch()) {
 
-                while ($row = $db->fetchArray()) {
-
-                    $add_data = array();
+                    $add_values = array();
 
                     if ($row['type'] != 1) {
                         if ($row['notes']) {
-                            $add_data = array('value' => strlen($_POST[$row['id']]) ? $_POST[$row['id']] : '',
+                            $add_values = array('value' => strlen($_POST[$row['id']]) ? $_POST[$row['id']] : '',
                                 'notes' => $_POST['note_' . $row['id']]);
                         } else {
-                            $add_data = array('value' => strlen($_POST[$row['id']]) ? $_POST[$row['id']] : '',
+                            $add_values = array('value' => strlen($_POST[$row['id']]) ? $_POST[$row['id']] : '',
                                 'notes' => '');
                         }
-                        $data = serialize($add_data);
+                        $value = serialize($add_values);
 
                         if ((strlen($_POST[$row['id']]) || (isset($_POST['note_' . $row['id']])) && strlen($_POST['note_' . $row['id']]))) {
 
                             if ($row['type'] == 3 && $_POST[$row['id']] == 0) {
-
-                                $querystring .= ', field_' . $row['id'] . ' = NULL';
+                                $data['field_' . $row['id']] = null;
                             } else {
-                                $querystring .= ', field_' . $row['id'] . ' = "' . $db->escape_string($data) . '"';
+                                $data['field_' . $row['id']] = $value;
                             }
                         } else {
-                            $querystring .= ', field_' . $row['id'] . ' = NULL';
+                            $data['field_' . $row['id']] = null;
                         }
                     } else {
 
                         $cb_params = array();
-
                         $params = unserialize($row['params']);
 
-                        foreach ($params as $value) {
-                            if ($value['id'] > 0) {
-                                if ((isset($_POST[$row['id'] . '_' . $value['id']]))) {
-                                    $cb_params[] = $value['id'];
+                        foreach ($params as $param) {
+                            if ($param['id'] > 0) {
+                                if ((isset($_POST[$row['id'] . '_' . $param['id']]))) {
+                                    $cb_params[] = $param['id'];
                                 }
                             }
                         }
 
                         $cb_fields = serialize($cb_params);
                         if ($row['notes']) {
-                            $add_data = array('value' => $cb_fields,
+                            $add_values = array('value' => $cb_fields,
                                 'notes' => $_POST['note_' . $row['id']]);
                         } else {
-                            $add_data = array('value' => $cb_fields,
+                            $add_values = array('value' => $cb_fields,
                                 'notes' => '');
                         }
 
-
-                        $data = serialize($add_data);
+                        $value = serialize($add_values);
 
                         if ((isset($_POST['note_' . $row['id']]) && strlen($_POST['note_' . $row['id']])) || sizeof($cb_params) > 0) {
-                            $querystring .= ', field_' . $row['id'] . ' = "' . $db->escape_string($data) . '"';
+                            $data['field_' . $row['id']] = $value;
                         } else {
-                            $querystring .= ', field_' . $row['id'] . ' = NULL';
+                            $data['field_' . $row['id']] = null;
                         }
-
-
                     }
+                    $querystring .= ', field_' . $row['id'] . ' = :field_'.$row['id'];
                 }
                 if (strlen($querystring)) {
-                    $querystring = substr($querystring, 1, strlen($querystring));
+                    $querystring = trim(substr($querystring, 1, strlen($querystring)));
                 }
-                $Avatar->evaluate($querystring, $aID, $User->__get('id'));
+                $Avatar->evaluate($querystring, $aID, $User->__get('id'), $data);
 
                 $messageStack->add_session('general', 'Kategorie aktualisiert', 'success');
 
@@ -260,8 +240,9 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     break;
                 case 'edit':
                     $aID = $_GET['aID'];
-                    $db->query('SELECT id,title,url,description FROM ' . table_survey . ' WHERE id="' . $aID . '" AND userid ="' . $User->__get('id') . '" LIMIT 1');
-                    $result = $db->fetchArray();
+                    $data = array(':id'=>$aID, ':userid'=>$User->__get('id'));
+                    $db->query('SELECT id,title,url,description FROM ' . table_survey . ' WHERE id = :id AND userid = :userid LIMIT 1', $data);
+                    $result = $db->fetch();
                     ?>
                     <h2>Eintrag bearbeiten</h2>
                     <form action="inquiry.php?action=edit&amp;aID=<?php echo $aID;?>" method="post">
@@ -327,21 +308,21 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             <h3><?php $catname = $Cats->__get($catID);
                                 echo $catname['name'];?></h3>
                             <?php
-                            $db->query('SELECT id FROM ' . table_fields . ' WHERE cat_id = "' . $catID . '"');
-                            if ($db->numRows() > 0) {
+                            $db->query('SELECT id FROM ' . table_fields . ' WHERE cat_id = :catid',array(':catid'=>$catID));
+                            if ($db->rowCount() > 0) {
                                 ?>
                                 <form method="post"
                                       action="inquiry.php?action=evaluate&amp;cID=<?php echo $catID; ?>&amp;aID=<?php echo $_GET['aID']; ?>">
-                                    <table cellpadding="0" cellspacing="0" style="margin:auto;width:100%;">
+                                    <table cellpadding="0" cellspacing="0" id="evaluation">
                                         <?php
                                         $db->query('SELECT * FROM ' . table_survey . ' WHERE id="' . $aID . '" AND userid ="' . $User->__get('id') . '" LIMIT 1');
-                                        $fieldinputs = $db->fetchArray();
+                                        $fieldinputs = $db->fetch();
                                         $db->query('SELECT * FROM ' . table_fields . ' WHERE cat_id = "' . $catID . '"');
                                         $n = 0;
-                                        while ($row = $db->fetchArray()) {
+                                        while ($row = $db->fetch()) {
                                             ?>
                                             <tr>
-                                                <td style="width:300px;vertical-align:top;font-weight:bold;<?php if ($n % 2 == 0) echo 'background:#efefef;'; ?>">
+                                                <td class="inq_label">
                                                     <?php echo $row['name'];
 
                                                     if (isset($row['info']) && strlen($row['info'])) {
@@ -354,7 +335,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                     ?>
                                                 </td>
 
-                                                <td style="text-align:left;<?php if ($n % 2 == 0) echo 'background:#efefef;'; ?>">
+                                                <td class="inq_data">
                                                     <?php
                                                     switch ($row['type']) {
                                                         case 2:
@@ -369,7 +350,6 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                                 echo draw_textarea_field($row['id'], '45', '5', '', 'id="' . $jsfieldname . '" onKeyDown="textLeft(\'feld_' . $row['id'] . '\',\'counter_' . $row['id'] . '\',200);"');
                                                             }
                                                             ?>
-                                                            <br/>
                                                             <p id="counter_<?php echo $row['id']?>" class="error">
                                                                 &nbsp;</p>
                                                             <?php
@@ -417,7 +397,6 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                             if ($row['notes']) {
                                                                 $jsfieldname = 'note_' . $row['id'];
                                                                 ?>
-                                                                <br/><br/>
                                                                 <span style="float:left;">Anmerkungen</span>
                                                                 <?php
                                                                 echo draw_textarea_field('note_' . $row['id'], '45', '3', stripslashes($notes), 'id="' . $jsfieldname . '" onKeyDown="textLeft(\'note_' . $row['id'] . '\',\'counter' . $row['id'] . '\',200);"');
@@ -447,8 +426,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                             if ($row['notes']) {
                                                                 $jsfieldname = 'note_' . $row['id'];
                                                                 ?>
-                                                                <br/>
-                                                                <span style="float:left;">Anmerkungen</span>
+                                                                <p>Anmerkungen</p>
                                                                 <?php
                                                                 echo draw_textarea_field('note_' . $row['id'], '45', '3', stripslashes($notes), 'id="' . $jsfieldname . '" onKeyDown="textLeft(\'note_' . $row['id'] . '\',\'counter' . $row['id'] . '\',200);"');
                                                                 ?>
@@ -473,8 +451,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                             if ($row['notes']) {
                                                                 $jsfieldname = 'note_' . $row['id'];
                                                                 ?>
-                                                                <br/><br/>
-                                                                <span>Anmerkungen</span>
+                                                                <p>Anmerkungen</p>
                                                                 <?php
                                                                 echo draw_textarea_field('note_' . $row['id'], '45', '3', stripslashes($notes), 'id="' . $jsfieldname . '" onKeyDown="textLeft(\'note_' . $row['id'] . '\',\'counter' . $row['id'] . '\',200);"');
                                                                 ?>
@@ -482,7 +459,6 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                                     &nbsp;</p>
                                                             <?php
                                                             }
-
                                                             break;
                                                     }
                                                     ?>
@@ -493,10 +469,8 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                         }
                                         ?>
                                     </table>
-                                    <div style="border-top:1px dotted #ccc;">
-                                        <p class="left">&nbsp;</p>
-
-                                        <p style="text-align:left;"><?php echo draw_input_field('send', 'Kategorie bearbeiten', '', 'submit', false); ?></p>
+                                    <div class="r2">
+                                        <p><?php echo draw_input_field('send', 'Kategorie bearbeiten', '', 'submit', false); ?></p>
                                     </div>
                                 </form>
                             <?php
@@ -532,18 +506,18 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 echo $catname['name'];?></h3>
                             <?php
                             $db->query('SELECT id FROM ' . table_fields . ' WHERE cat_id = "' . $catID . '"');
-                            if ($db->numRows() > 0) {
+                            if ($db->rowCount() > 0) {
                                 ?>
-                                <table cellpadding="0" cellspacing="0" style="margin:auto;width:100%;">
+                                <table cellpadding="0" cellspacing="0" id="evaluation">
                                     <?php
                                     $db->query('SELECT * FROM ' . table_survey . ' WHERE id="' . $aID . '" LIMIT 1');
-                                    $fieldinputs = $db->fetchArray();
+                                    $fieldinputs = $db->fetch();
                                     $db->query('SELECT * FROM ' . table_fields . ' WHERE cat_id = "' . $catID . '"');
                                     $n = 0;
-                                    while ($row = $db->fetchArray()) {
+                                    while ($row = $db->fetch()) {
                                         ?>
                                         <tr>
-                                            <td style="width:300px;vertical-align:top;font-weight:bold;<?php if ($n % 2 == 0) echo 'background:#efefef;'; ?>">
+                                            <td class="inq_label">
                                                 <?php echo $row['name'];
 
                                                 if (isset($row['info']) && strlen($row['info'])) {
@@ -678,11 +652,9 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 <?php
                                 if ($Avatar->isLegal($aID, $User->__get('id'))) {
                                     ?>
-                                    <div style="border-top:1px solid #ccc;">
-                                        <p class="left">&nbsp;</p>
-
-                                        <p style="text-align:left;">
-                                            <a href="inquiry.php?position=evaluate&amp;aID=<?php echo $aID; ?>&amp;cID=<?php echo $catID; ?>">diese
+                                    <div class="r2">
+                                        <p>
+                                            <a class="btn" href="inquiry.php?position=evaluate&amp;aID=<?php echo $aID; ?>&amp;cID=<?php echo $catID; ?>">diese
                                                 Kategorie bearbeiten</a></p>
                                     </div>
                                 <?php

@@ -26,7 +26,7 @@ xmlwriter_start_document($xml, '1.0', 'UTF-8');
 $db->query('SELECT id, name, params, type, notes, cat_id  FROM ' . table_fields);
 
 $fields = array();
-while ($row = $db->fetchArray()) {
+while ($row = $db->fetch()) {
     $fields[$row['id']] = array('id' => $row['id'],
         'params' => $row['params'],
         'type' => $row['type'],
@@ -40,7 +40,7 @@ $db->query('SELECT id, name FROM ' . table_categories);
 
 $categories = array();
 
-while ($row = $db->fetchArray()) {
+while ($row = $db->fetch()) {
 
     $categories[$row['id']] = array('id' => $row['id'],
         'name' => $row['name']
@@ -71,7 +71,7 @@ xmlwriter_write_attribute($xml, 'Avataranzahl', $entries);
 xmlwriter_write_attribute($xml, 'Feldanzahl', count($fields));
 
 $cnt = 0;
-while ($row = $db->fetchArray()) {
+while ($row = $db->fetch()) {
     $cnt++;
     xmlwriter_start_element($xml, 'Avatar');
     xmlwriter_write_attribute($xml, 'num', $cnt);

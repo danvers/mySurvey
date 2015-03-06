@@ -119,7 +119,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             <ol id="avatarlist">
                                 <?php
                                 $n = 0;
-                                while ($row = $db->fetchArray()) {
+                                while ($row = $db->fetch()) {
                                     ?>
                                     <li <?php if ($n % 2 == 0) echo 'style="background:#efefef;"'; ?>>
                                         <?php

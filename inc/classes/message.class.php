@@ -15,7 +15,6 @@ class Message
 {
 
     private $db;
-    private $tables = array(table_survey, table_feedback, table_news);
 
     public function __construct($database)
     {
@@ -24,13 +23,13 @@ class Message
 
     public function delete($avatarID, $userID)
     {
+        $data = array(':id'=> $avatarID,':userid' => $userID);
+        $this->db->query('SELECT id FROM ' . table_survey . ' WHERE id=:id AND userid=:userid LIMIT 1', $data);
 
-        $this->db->query('SELECT id FROM ' . table_survey . ' WHERE id="' . $avatarID . '" AND userid="' . $userID . '" LIMIT 1');
+        if ($this->db->rowCount() == 1) {
 
-        if ($this->db->numRows() == 1) {
-
-            $this->db->query('DELETE FROM ' . table_survey . ' WHERE id="' . $avatarID . '" AND userid="' . $userID . '" LIMIT 1');
-            $this->db->query('DELETE FROM ' . table_feedback . ' WHERE avatarid="' . $avatarID . '"');
+            $this->db->query('DELETE FROM ' . table_survey . ' WHERE id=:id AND userid=:userid LIMIT 1', $data);
+            $this->db->query('DELETE FROM ' . table_feedback . ' WHERE avatarid=:id', $data);
 
             return true;
 
@@ -39,19 +38,6 @@ class Message
             return false;
 
         }
-
-    }
-
-    public function exists($editID, $table)
-    {
-
-        if (!in_array($table, $this->tables)) {
-            return false;
-        }
-
-        $this->db->query('SELECT  id FROM ' . $table . ' WHERE  id = "' . $editID . '" LIMIT 1');
-
-        return ($this->db->numRows() == 1);
 
     }
 

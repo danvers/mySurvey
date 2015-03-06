@@ -29,38 +29,40 @@ class User
     public function changePass($pass)
     {
         $pass = md5($pass);
-        $this->db->query('UPDATE ' . table_users . ' SET userpass="' . $pass . '" WHERE id="' . $this->id . '" LIMIT 1');
+        $data = array(':pass'=> $pass, ':id'=>$this->id);
+        $this->db->query('UPDATE ' . table_users . ' SET userpass=:pass WHERE id=:id LIMIT 1' , $data);
         return ($this->db->error() == 0);
     }
 
     public function passIsValid($pass)
     {
         $pass = md5($pass);
-        $this->db->query("SELECT * FROM " . table_users . " WHERE userpass = '" . $pass . "' AND id ='" . $this->id . "'");
+        $data = array(':pass'=> $pass, ':id'=>$this->id);
+        $this->db->query('SELECT * FROM ' . table_users . ' WHERE userpass = :pass AND id =:id',$data);
 
-        if ($this->db->numRows() == 1) {
-            return true;
-        }
-        return false;
+        return ($this->db->rowCount() == 1);
     }
 
     public function createNewUser($array)
     {
-        $pass = $this->createRandomPass();
-        $this->db->query("SELECT id FROM " . table_users . " WHERE usermail = '" . $this->db->escape_string($array['email']) . "' LIMIT 1");
 
-        if ($this->db->numRows() > 0) {
+        $data = array(':mail' => $array['email']);
+        $this->db->query('SELECT id FROM ' . table_users . ' WHERE usermail = :mail LIMIT 1',$data);
+
+        if ($this->db->rowCount() > 0) {
             return false;
         }
-
+        $pass = $this->createRandomPass();
         $text = "dies ist eine Einladung zum Arbeitsbereich\nDeine Login-Email lautet: %s\nDein Passwort lautet: %s\n\nEinloggen kannst Du dich unter: " . HOME_DIR;
         $content = sprintf($text, $array['email'], $pass);
 
         $this->UserMail($array, $content, 'Seminar "Avatare..." - Einladung zum Arbeitsbereich');
 
-        $this->db->query("INSERT INTO " . table_users . "  (id,firstname,lastname,usermail,userpass,userlevel) VALUES ('','" . $array['firstname'] . "', '" . $array['lastname'] . "', '" . $array['email'] . "','" . md5($pass) . "','1')");
-
-
+        $data[':firstname'] = $array['firstname'];
+        $data[':lastname'] = $array['lastname'];
+        $data[':pass'] = md5($pass);
+        $this->db->query('INSERT INTO ' . table_users . '  (firstname,lastname,usermail,userpass,userlevel)
+                            VALUES (:firstname,:lastname,:mail,:pass,1)');
         return true;
     }
 
@@ -110,8 +112,7 @@ class User
         }
 
         if (!isset($this->cache[$field])) {
-            $query = sprintf("SELECT %s FROM " . table_users . " WHERE id = '%d';", $field, $this->id);
-            $this->db->query($query);
+            $this->db->query('SELECT '.$field. ' FROM '.table_users.' WHERE id =:id', array(':id'=> $this->id));
             $result = $this->db->fetch();
             $this->cache[$field] = $result[$field];
         }
@@ -125,10 +126,7 @@ class User
         if (!in_array($field, $this->fields)) {
             return;
         }
-
-        $querystring = sprintf("UPDATE " . table_users . " SET  %s='%s' WHERE id='%s' LIMIT 1;", $field, $this->db->escape_string($value), $this->id);
-
-        $this->db->query($querystring);
+        $this->db->query('UPDATE ' . table_users . ' SET  '.$field.'=:field WHERE id=:id LIMIT 1', array(':field'=>$value,':id'=> $this->id) );
 
         $this->cache[$field] = $value;
 
@@ -139,13 +137,13 @@ class User
 
         $pass = $this->createRandomPass();
 
-        $this->db->query("SELECT usermail,firstname,lastname FROM " . table_users . " WHERE id = '" . $this->db->escape_string($userid) . "' LIMIT 1");
+        $this->db->query('SELECT usermail,firstname,lastname FROM ' . table_users . ' WHERE id =:id LIMIT 1',array(':id'=> $userid));
 
-        $res1 = $this->db->fetchArray();
+        $result = $this->db->fetch();
 
-        $array['lastname'] = $res1['lastname'];
-        $array['fistname'] = $res1['firstname'];
-        $array['email'] = $res1['usermail'];
+        $array['lastname'] = $result['lastname'];
+        $array['fistname'] = $result['firstname'];
+        $array['email'] = $result['usermail'];
 
         $text = "dies ist eine Einladung zum Arbeitsbereich\nDeine Login-Email lautet: %s\nDein Passwort lautet: %s\n\nEinloggen kannst Du dich unter: " . HOME_DIR;
 
@@ -153,32 +151,31 @@ class User
 
         if ($this->UserMail($array, $content, 'Seminar "Avatare..." - Einladung zum Arbeitsbereich')) {
 
-            $this->db->query("UPDATE " . table_users . " SET userpass = '" . md5($pass) . "' WHERE id='" . $res1->id . "' LIMIT 1");
+            $data = array(':pass'=>md5($pass), ':id'=> $result['id']);
+            $this->db->query('UPDATE ' . table_users .' SET userpass = :pass WHERE id=:id LIMIT 1',$data);
 
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     public function isUniqueEmail($email)
     {
-        $this->db->query("SELECT id FROM " . table_users . " WHERE usermail = '" . $this->db->escape_string($email) . "' LIMIT 1");
-        return ($this->db->numRows() == 1);
+        $this->db->query('SELECT id FROM ' . table_users . ' WHERE usermail = :mail', array(':mail' => $email));
+        return ($this->db->rowCount() == 1);
     }
 
     public function resetPass($email)
     {
-
         $pass = $this->createRandomPass();
 
-        $this->db->query("SELECT usermail,id,firstname,lastname FROM " . table_users . " WHERE usermail = '" . $this->db->escape_string($email) . "' LIMIT 1");
+        $this->db->query('SELECT usermail,id,firstname,lastname FROM ' . table_users . ' WHERE usermail = :mail LIMIT 1', array(':mail'=>$email));
 
-        $res1 = $this->db->fetchArray();
+        $result = $this->db->fetch();
 
-        $array['lastname'] = $res1['lastname'];
-        $array['fistname'] = $res1['firstname'];
-        $array['email'] = $res1['usermail'];
+        $array['lastname']  = $result['lastname'];
+        $array['fistname']  = $result['firstname'];
+        $array['email']     = $result['usermail'];
 
         $text = "Dein neues Passwort lautet: %s\nDieses Passwort wurde zufällig generiert. Daher wird empfohlen es selbst zu ändern.\n\nEinloggen kannst Du dich unter: " . HOME_DIR;
 
@@ -186,23 +183,29 @@ class User
 
         if ($this->UserMail($array, $content, 'Seminar "Avatare..." - Passwortänderung')) {
 
-            $this->db->query("UPDATE " . table_users . " SET userpass = '" . md5($pass) . "' WHERE id='" . $res1->id . "' LIMIT 1");
+            $data = array(':pass'=>md5($pass), 'id:'=> $result['id']);
+            $this->db->query('UPDATE ' . table_users . ' SET userpass =:pass WHERE id=:id LIMIT 1',$data);
 
             return true;
-        } else {
-            return false;
         }
+        return false;
 
     }
 
     public function deleteUser($userid)
     {
-        $this->db->query('DELETE FROM ' . table_users . ' WHERE id="' . $userid . '" LIMIT 1');
+        $this->db->query('DELETE FROM ' . table_users . ' WHERE id=:id LIMIT 1',array(':id'=>$userid));
     }
 
-    public function editUser($userid, $data)
+    public function editUser($userid, $values)
     {
-        $this->db->query("UPDATE " . table_users . " SET  firstname ='" . $data['firstname'] . "', lastname ='" . $data['lastname'] . "', usermail ='" . $data['email'] . "' WHERE id='" . $userid . "' LIMIT 1");
+        $data = array(
+                    ':id'       =>  $userid,
+                    ':firstname' =>  $values['firstname'],
+                    ':lastname'  =>  $values['lastname'],
+                    ':mail' =>  $values['email']);
+
+        $this->db->query('UPDATE ' . table_users . ' SET  firstname =:firstname, lastname=:lastname, usermail=:mail WHERE id=:id LIMIT 1',$data);
 
     }
 

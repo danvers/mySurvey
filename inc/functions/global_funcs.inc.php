@@ -1,7 +1,7 @@
 <?php
 
 $GLOBALS['classes'] = array(
-    'mySqlConnection' => 'inc/classes/mysql.class.php',
+    'database' => 'inc/classes/database.class.php',
     'User' => 'inc/classes/user.class.php',
     'SessionManagement' => 'inc/classes/session.class.php',
     'Categories' => 'inc/classes/categories.class.php',

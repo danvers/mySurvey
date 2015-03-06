@@ -10,14 +10,14 @@ $db->__destruct();
 <div id="footer">
     <?php
     if (isset($_GET['position']) && strlen($_GET['position'])) {
-        ?>
+    ?>
         <p>
             <a href="javascript:history.back();">zurück</a>
-        </p><br/>
+        </p>
     <?php
     } else {
         ?>
-        <br/><br/>
+        <p>&nbsp;</p>
     <?php
     }
     ?>

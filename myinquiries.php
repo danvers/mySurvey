@@ -96,23 +96,24 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     <?php
                     } else {
                         $id = $_GET['aID'];
-                        $db->query('SELECT title FROM ' . table_survey . ' WHERE id="' . $id . '" AND userid="' . $User->__get('id') . '" LIMIT 1');
+                        $data = array(':id'=>$id, ':userid'=>$User->__get('id'));
+                        $db->query('SELECT title FROM ' . table_survey . ' WHERE id = :id AND userid = :userid LIMIT 1',$data);
                         $name = $db->fetch();
                         ?>
                         <h2>Eintrag löschen</h2>
-                        <form method="post" action="myinquiries.php?action=delete&amp;aID=<?echo $id; ?>">
+                        <form id="form" method="post" action="myinquiries.php?action=delete&amp;aID=<?php echo $id; ?>">
 
-                            <p>Eintrag &raquo;<?php echo $name['title']; ?>&laquo; &amp; erhobene Daten unwideruflich l&ouml;schen?
-                                <br/><br/>
-                                <a href="javascript:history.back();">abbrechen</a>
-                                <input name="delete" type="submit" style="margin-left:10px;" value="l&ouml;schen"/>
+                            <p>Eintrag &raquo;<?php echo $name['title']; ?>&laquo; &amp; erhobene Daten unwideruflich löschen?</p>
+
+                            <p>
+                                <a class="btn cancel" href="javascript:history.back();">Abbrechen</a>
+                                <button name="delete" class="proceed" type="submit">Löschen</button>
                             </p>
 
                         </form>
                     <?php
                     }
                     break;
-
             }
         } else {
             ?>
@@ -121,13 +122,13 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                 <a href="inquiry.php?position=add">neue Eintrag einstellen</a>
             </p>
             <?php
-            $db->query('SELECT comments, id,userid,url,title,description FROM ' . table_survey . ' WHERE userid="' . $User->__get('id') . '" ORDER BY id DESC');
-            if ($db->numRows() > 0) {
+            $db->query('SELECT comments, id,userid,url,title,description FROM ' . table_survey . ' WHERE userid=:id ORDER BY id DESC',array(':id'=>$User->__get('id')));
+            if ($db->rowCount() > 0) {
                 ?>
                 <ol id="avatarlist">
                     <?php
                     $n = 0;
-                    while ($row = $db->fetchArray()) {
+                    while ($row = $db->fetch()) {
                         $infoComments = '<small style="color:#999;font-weight:normal;">';
                         $numComment = $row['comments'];
 

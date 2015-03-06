@@ -132,10 +132,10 @@ if (isset($_GET['action'])) {
                 $id = $_GET['uID'];
                 $User->deleteUser($id);
                 $messageStack->add_session('general', 'Nutzer gelöscht', 'success');
-                //if(isset($_POST['deldata'])){
+
                 $db->query('DELETE FROM ' . table_survey . ' WHERE userid="' . $id . '"');
                 $messageStack->add_session('general', 'Einträge des Nutzers gelöscht', 'success');
-                //}
+
             }
 
             header('Location:users.php');
@@ -197,20 +197,15 @@ if (isset($_GET['action'])) {
                     break;
                 case 'edit':
                     if (isset($_GET['uID']) && is_numeric($_GET['uID'])) {
-                        $id = (int)$_GET['uID'];
-                        $db->query('SELECT firstname, lastname, usermail, UNIX_TIMESTAMP(last_seen) as last_online FROM ' . table_users . ' WHERE id="' . $id . '" LIMIT 1');
-                        $UserData = $db->fetchArray();
+                        $id = $_GET['uID'];
+                        $data = array(':id'=> $id);
+                        $db->query('SELECT firstname, lastname, usermail, UNIX_TIMESTAMP(last_seen) as last_online FROM ' . table_users . ' WHERE id=:id LIMIT 1',$data);
+                        $UserData = $db->fetch();
                         ?>
                         <div>
                             <h2>Nutzerdaten ändern</h2>
-
-                            <p id="subtitle">
-                                <a href="users.php?position=add">Benutzer einladen</a>&nbsp;|&nbsp;
-                                <a href="users.php?position=confirm_delete&amp;uID=<?php echo $id; ?>">diesen Benutzer
-                                    löschen</a>
-                            </p>
                             <?php
-                            if ($UserData['last_online'] == null) {
+                            if (is_null($UserData['last_online'])) {
                                 ?>
                                 <p>
                                     <strong class="error">Der Benutzer hat sich noch nicht eingeloggt.</strong> <a
@@ -235,7 +230,8 @@ if (isset($_GET['action'])) {
                                 <p><?php echo draw_input_field('lastname', $UserData['lastname']); ?></p>
 
                                 <div class="r2">
-                                    <p><?php echo draw_input_field('send', 'Daten bearbeiten', '', 'submit', false); ?></p>
+                                    <p><?php echo draw_input_field('send', 'Daten bearbeiten', '', 'submit', false); ?>
+                                    <a class="btn cancel" href="users.php?position=confirm_delete&amp;uID=<?php echo $id; ?>">diesen Benutzer löschen</a></p>
                                 </div>
                             </form>
                         </div>
@@ -251,8 +247,8 @@ if (isset($_GET['action'])) {
                             <p>Benutzer wirklich löschen?</p>
 
                             <p>
-                                <a class="btn cancel" href="javascript:history.back();">abbrechen</a>
-                                <button name="delete" class="proceed" type="submit">löschen</button>
+                                <a class="btn cancel" href="javascript:history.back();">Abbrechen</a>
+                                <button name="delete" class="proceed" type="submit">Löschen</button>
                             </p>
 
                         </form>
@@ -268,26 +264,29 @@ if (isset($_GET['action'])) {
                 <a href="news.php?position=mail">Rundmail verfassen</a>
             </p>
 
-            <table style="width:100%;" cellpadding="0" cellspacing="0" id="users">
+            <table cellpadding="0" cellspacing="0" id="users">
+                <thead>
                 <tr>
-                    <td style="width:23%;">
+                    <th>
                         <strong>Name</strong>
-                    </td>
-                    <td style="width:33%;text-align:center;">
+                    </th>
+                    <th class="last_seen">
                         <strong>zuletzt gesehen</strong>
-                    </td>
-                    <td>&nbsp;</td>
+                    </th>
+                    <th>Aktion</th>
                 </tr>
+                </thead>
+                <tbody>
                 <?php
                 $db->query('SELECT id, firstname, lastname, usermail,UNIX_TIMESTAMP(last_seen) as last_online FROM ' . table_users . ' ORDER BY id');
                 $n = 0;
-                while ($row = $db->fetchArray()) {
+                while ($row = $db->fetch()) {
                     ?>
                     <tr>
-                        <td <?php if ($n % 2 == 0) echo 'class="odd"'; ?> style="width:23%;">
+                        <td <?php if ($n % 2 == 0) echo 'class="odd"'; ?>>
                             <?php echo $row['firstname'] . ' ' . $row['lastname']; ?>
                         </td>
-                        <td <?php if ($n % 2 == 0) echo 'class="odd"'; ?> style="width:33%;text-align:center;">
+                        <td <?php if ($n % 2 == 0) echo 'class="odd"'; ?>>
                             <?php
                             if ($row['last_online'] > 0) {
                                 echo date('d.m.y H:i:s', $row['last_online']);
@@ -296,17 +295,16 @@ if (isset($_GET['action'])) {
                             }
                             ?>
                         </td>
-                        <td <?php if ($n % 2 == 0) echo 'class="odd"'; ?> style="width:43%;text-align:right;">
-                            <a href="users.php?position=edit&amp;uID=<?php echo $row['id']; ?>">Daten
-                                bearbeiten</a>&nbsp;|&nbsp;
-                            <a href="users.php?position=confirm_delete&amp;uID=<?php echo $row['id'] ?>">diesen
-                                Benutzer löschen</a>
+                        <td <?php if ($n % 2 == 0) echo 'class="odd"'; ?>>
+                            <a href="users.php?position=edit&amp;uID=<?php echo $row['id']; ?>">Daten Bearbeiten</a>&nbsp;|&nbsp;
+                            <a href="users.php?position=confirm_delete&amp;uID=<?php echo $row['id'] ?>">Löschen</a>
                         </td>
                     </tr>
                     <?php
                     $n++;
                 }
                 ?>
+                </tbody>
             </table>
         <?php
         }

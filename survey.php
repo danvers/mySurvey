@@ -153,7 +153,7 @@ if (isset($_GET['action'])) {
                 $id = $_GET['fID'];
 
                 $db->query('SELECT type FROM ' . table_fields . ' WHERE id="' . $id . '" LIMIT 1');
-                $oldfield = $db->fetchArray();
+                $oldfield = $db->fetch();
                 $postbit = null;
                 foreach ($_POST as $postbits => $element) {
                     $postbit[$postbits] = db_prepare_input($element);
@@ -230,7 +230,7 @@ if (isset($_GET['action'])) {
                 $fieldsToDelete = "";
                 $idsToDelete = "";
 
-                while ($row = $db->fetchArray()) {
+                while ($row = $db->fetch()) {
                     $fieldsToDelete .= ', DROP field_' . $row['id'];
                     $idsToDelete .= ',' . $row['id'];
                 }
@@ -294,13 +294,9 @@ if (isset($_GET['position']) && $_GET['position'] === 'edit') {
         <title>Survey - <?php echo WORKSPACE_TITLE; ?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
-
         <script type="text/javascript" src="inc/javascripts/prototype.js"></script>
-
         <script type="text/javascript" src="inc/javascripts/scriptaculous.js"></script>
-
         <script type="text/javascript" src="inc/javascripts/effects.js"></script>
-
         <script type="text/javascript" src="inc/javascripts/simplescripts.js"></script>
     </head>
 <body>
@@ -516,7 +512,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             <?php
                             $db->query('SELECT * FROM ' . table_fields . ' WHERE cat_id = "' . $catID . '"');
                             $n = 0;
-                            while ($row = $db->fetchArray()) {
+                            while ($row = $db->fetch()) {
                                 ?>
                                 <tr>
                                     <td>
@@ -583,7 +579,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                         $Fid = $_GET['fID'];
                         $db->query('SELECT * FROM ' . table_fields . ' WHERE id = "' . $Fid . '" LIMIT 1');
-                        $Fvals = $db->fetchArray();
+                        $Fvals = $db->fetch();
                         ?>
                         <h2>Feld bearbeiten</h2>
 
@@ -741,7 +737,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                         $id = $_GET['fID'];
                         $db->query('SELECT cat_id,name FROM ' . table_fields . ' WHERE id= "' . $id . '" LIMIT 1');
-                        $fieldData = $db->fetchArray();
+                        $fieldData = $db->fetch();
                         ?>
                         <h2>Feld löschen</h2>
                         <form id="form" method="post" action="survey.php?action=delete&amp;fID=<?echo $id; ?>">
@@ -767,8 +763,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                 if (isset($_GET['cID'])) {
                     $catID = (int)$_GET['cID'];
                     ?>
-                    &nbsp;|&nbsp;<a href="survey.php?position=add_field&amp;cID=<?php echo $catID; ?>">Feld
-                        hinzufügen</a>
+                     | <a href="survey.php?position=add_field&amp;cID=<?php echo $catID; ?>">Feld hinzufügen</a>
                 <?php
                 }
                 ?>
