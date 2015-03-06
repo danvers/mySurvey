@@ -63,6 +63,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 Gib einfach Deine E-Mailadresse an und Du bekommst eine E-Mail mit weiteren
                                 Informationen.
                             </p>
+
                             <label>E-Mail:</label>
 
                             <p>
