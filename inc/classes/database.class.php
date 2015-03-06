@@ -38,7 +38,6 @@ class database
     }
     public function query($query, $data = null){
         $this->stmt = $this->connection->prepare($query);
-
         if(!is_null($data)){
             $this->bind($data);
         }

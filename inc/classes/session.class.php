@@ -20,10 +20,9 @@ class SessionManagement
         $this->uid = 0;
 
         $data = array(':session_id' => $this->session_id);
-        $this->db->query("SELECT * FROM " . table_sessions . " WHERE session= :session_id", $data);
+        $this->db->query('SELECT * FROM ' . table_sessions . ' WHERE session= :session_id', $data);
 
-        $this->db->bind($data);
-        if ($this->db->rowCount() >1 ) {
+        if ($this->db->rowCount() < 1) {
 
             $data = array(
                     'session'   =>  $this->session_id,
@@ -31,17 +30,17 @@ class SessionManagement
                     'ip'        =>  $_SERVER['REMOTE_ADDR'],
                     'timestamp' =>  date("YmdHis", time())
                     );
-            $this->db->query("INSERT INTO " . table_sessions . " (session,user,ip,timestamp) VALUES (:session,:user,:ip,:timestamp)", $data);
+            $this->db->query('INSERT INTO ' . table_sessions . ' (session,user,ip,timestamp) VALUES (:session,:user,:ip,:timestamp)', $data);
         }
     }
 
     public function logout()
     {
         $_SESSION['AuthedUser'] = false;
-        @session_destroy();
         unset($_SESSION);
         $this->delete_cookie('surveyUI');
-        $this->db->select('UPDATE TABLE '. table_sessions . ' SET user=:user WHERE session=:session', array('user'=>0), array('session'=> $this->session_id) );
+        $data = array(':user'=> 0, ':session' => $this->session_id);
+        $this->db->query('UPDATE  '. table_sessions . ' SET user=:user WHERE session=:session', $data );
     }
 
     private function delete_cookie($name)
@@ -79,7 +78,6 @@ class SessionManagement
 
                 return true;
             } else {
-
                 $this->delete_cookie('surveyUI');
                 return false;
             }
@@ -98,7 +96,7 @@ class SessionManagement
 
         if (strlen($user) > 0) {
             $data =  array(':usermail'=> $user, ':userpass' => $pass);
-            $this->db->query("SELECT usermail, id, userlevel FROM " . table_users . " WHERE usermail =:usermail AND userpass =:userpass", $data);
+            $this->db->query('SELECT usermail, id, userlevel FROM ' . table_users . ' WHERE usermail =:usermail AND userpass =:userpass', $data);
 
             $row = $this->db->fetch();
 
@@ -114,7 +112,6 @@ class SessionManagement
                 return true;
             } else {
                 $_SESSION['AuthedUser'] = false;
-                @session_destroy();
             }
         }
         return false;
@@ -128,29 +125,29 @@ class SessionManagement
         if (isset($_SESSION['userid'])) {
 
             $data = array(':session' => $this->session_id, ':user'=>$_SESSION['userid']);
-            $this->db->query("DELETE FROM " . table_sessions . " WHERE session != :session AND user = :user",$data);
-
+            $this->db->query('DELETE FROM ' . table_sessions . ' WHERE session != :session AND user = :user',$data);
 
             $data = array(':timestamp' => $time, ':user'=>$_SESSION['userid'], ':cookie'=>$_SESSION['cookie'],':session'=>$this->session_id, ':ip'=>$ip);
-            $this->db->query("UPDATE " . table_sessions . " SET timestamp=:timestamp, user=:user, cookie=:cookie
-                                WHERE session=:session AND ip=:ip" , $data);
+            $this->db->query('UPDATE ' . table_sessions . ' SET timestamp=:timestamp, user=:user, cookie=:cookie
+                                WHERE session=:session AND ip=:ip' , $data);
 
             $data = array(':user' => $user);
-            $this->db->query("UPDATE " . table_users . " SET last_seen=NOW() WHERE id=:user LIMIT 1", $data);
+
+            $this->db->query('UPDATE ' . table_users . ' SET last_seen=NOW() WHERE id=:user LIMIT 1', $data);
         } else {
             $data = array(':timestamp' => $time,':user'=>0,':session'=>$this->session_id, ':ip'=>$ip);
-            $this->db->query("UPDATE " . table_sessions . " SET timestamp=:timestamp, user=:user WHERE session=:session AND ip=:ip",$data);
+            $this->db->query('UPDATE ' . table_sessions . ' SET timestamp=:timestamp, user=:user WHERE session=:session AND ip=:ip',$data);
         }
         $this->cleanUp();
     }
 
     private function cleanUp()
     {
-        $edgetime_session_user = date("YmdHis", time() - 60 * 25);
-        $edgetime_session_misc = date("YmdHis", time() - 60);
-        $this->db->query("DELETE FROM " . table_sessions . " WHERE timestamp < " . $edgetime_session_user . " AND user > 0");
-        $this->db->query("DELETE FROM " . table_sessions . " WHERE timestamp < " . $edgetime_session_misc . " AND user = 0");
-        $this->db->query('OPTIMIZE TABLE ' . table_sessions);
+       $edgetime_session_user = date("YmdHis", time() - 60 * 25);
+       $edgetime_session_misc = date("YmdHis", time() - 60);
+       $this->db->query('DELETE FROM ' . table_sessions . ' WHERE timestamp < ' . $edgetime_session_user . ' AND user > 0');
+       $this->db->query('DELETE FROM ' . table_sessions . ' WHERE timestamp < ' . $edgetime_session_misc . ' AND user = 0');
+       $this->db->query('OPTIMIZE TABLE ' . table_sessions);
 
     }
 
@@ -162,7 +159,6 @@ class SessionManagement
 
     public function logged_in()
     {
-
         if (isset($_SESSION['AuthedUser']) && $_SESSION['AuthedUser'] === true) {
             return true;
         } else {
