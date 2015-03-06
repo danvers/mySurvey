@@ -145,7 +145,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         <ul id="newslist">
                             <?php
                             $n = 0;
-                            while ($row = $db->fetchAll()) {
+                            while ($row = $db->fetch()) {
                                 $infoComments = '<small style="color:#999;font-weight:normal;">';
                                 $infoComments .= '</small>';
                                 ?>
