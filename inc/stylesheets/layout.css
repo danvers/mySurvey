@@ -232,6 +232,9 @@ ul#avatarlist, ul#newslist {
 #users td, #users th{
     text-align:left;
 }
+#users th{
+    font-weight: bold;
+}
 #users td.last_seen{
     width:33%;
 }
@@ -335,7 +338,7 @@ a.tooltip:hover span, a.tooltip:focus span {
 
 .progressbar {
     background-image: url("../../img/progressbar.gif");
-    height: 14px;
+    height: 14qx;
     color: #000;
     text-align: right;
     padding: 3px 0 0 0;
@@ -443,6 +446,7 @@ a.tooltip:hover span, a.tooltip:focus span {
 }
 #avatarlist li:nth-child(odd),
 #evaluation tr:nth-child(odd),
+#users tbody tr:nth-child(odd),
 .overview tr:nth-child(odd) {
     background-color: #efefef;
 }

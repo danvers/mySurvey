@@ -117,17 +117,13 @@ if (isset($_GET['position']) && ($_GET['position'] == 'edit')) {
         <meta http-equiv="Content-Style-Type" content="text/css"/>
         <meta http-equiv="content-language" content="de"/>
 
-        <meta name="audience" content="all"/>
-        <title>News - <?php echo WORKSPACE_TITLE; ?></title>
+        <title><?php echo TITLE;?> | <?php echo WORKSPACE_TITLE; ?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
 
         <script type="text/javascript" src="inc/javascripts/prototype.js"></script>
-
         <script type="text/javascript" src="inc/javascripts/scriptaculous.js"></script>
-
         <script type="text/javascript" src="inc/javascripts/effects.js"></script>
-
         <script type="text/javascript" src="inc/javascripts/simplescripts.js"></script>
     </head>
 
@@ -146,16 +142,16 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                     ?>
                     <div>
-                        <h2>Ankündigung/Information veröffentlichen</h2>
+                        <h2><?php echo TITLE_NEWS_ADD;?></h2>
 
                         <form id="form" action="news.php?action=add" method="post">
-                            <label for="news-title">Überschrift</label>
+                            <label for="news-title"><?php echo TEXT_MESSAGE_TITLE;?></label>
 
                             <p>
                                 <?php echo draw_input_field('title', '', 'id="news-title"');?>
                             </p>
 
-                            <label for="comment">Information</label>
+                            <label for="comment"><?php echo TEXT_MESSAGE;?></label>
 
                             <p>
                                 <?php
@@ -167,7 +163,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             <div class="r2">
                                 <p id="counter" class="error">&nbsp;</p>
 
-                                <p class="submit"><?php echo draw_input_field('send', 'speichern', '', 'submit', false); ?></p>
+                                <p class="submit"><?php echo draw_input_field('send', TEXT_SAVE, '', 'submit', false); ?></p>
                             </div>
                         </form>
                     </div>
@@ -180,16 +176,16 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     $fields = $db->fetch();
                     ?>
                     <div>
-                        <h2>Ankündigung bearbeiten</h2>
+                        <h2><?php echo TITLE_EDIT_NEWS;?></h2>
 
                         <form id="form" action="news.php?action=edit&amp;eID=<?php echo $id;?>" method="post">
-                            <label for="news-title">Überschrift</label>
+                            <label for="news-title"><?php echo TEXT_MESSAGE_TITLE;?></label>
 
                             <p>
                                 <?php echo draw_input_field('title', $fields['title'], 'id="news-title"');?>
                             </p>
 
-                            <label for="comment">Information</label>
+                            <label for="comment"><?php echo TEXT_MESSAGE;?></label>
 
                             <p>
                                 <?php
@@ -201,7 +197,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             <div class="r2">
                                 <p id="counter" class="error">&nbsp;</p>
 
-                                <p class="submit"><?php echo draw_input_field('send', 'speichern', '', 'submit', false); ?></p>
+                                <p class="submit"><?php echo draw_input_field('send', TEXT_SAVE, '', 'submit', false); ?></p>
                             </div>
                         </form>
                     </div>
@@ -210,17 +206,17 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                 case 'preview':
                     ?>
                     <div>
-                        <h2>Vorschau</h2>
+                        <h2><?php echo LABEL_PREVIEW;?></h2>
 
                         <form id="form" class="preview" action="news.php?action=sendmail" method="post">
 
-                            <label for="news-title">Betreff</label>
+                            <label for="news-title"><?php echo TEXT_MESSAGE_TITLE;?></label>
 
                             <p>
                                 <?php echo draw_input_field('title', $_POST['title'], 'id="news-title" readonly="readonly"');?>
                             </p>
 
-                            <label for="comment">Nachricht</label>
+                            <label for="comment"><?php echo TEXT_MESSAGE;?></label>
 
                             <p>
                                 <?php
@@ -231,7 +227,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             <div class="r2">
                                 <p id="counter" class="error">&nbsp;</p>
 
-                                <p><?php echo draw_input_field('send', 'abschicken', '', 'submit', false);?></p>
+                                <p><?php echo draw_input_field('send', TEXT_SUBMIT, '', 'submit', false);?></p>
                             </div>
                         </form>
                     </div>
@@ -240,28 +236,21 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                 case 'mail':
                     ?>
                     <div>
-                        <h2>Rundmail verfassen</h2>
+                        <h2><?php echo TEXT_COMPOSE;?></h2>
 
                         <form id="form" action="news.php?position=preview" method="post">
 
-                            <label for="news-title">Nachricht</label>
+                            <label for="news-title"><?php echo TEXT_MESSAGE_TITLE;?></label>
 
-                            <p>
-                                <?php echo draw_input_field('title', '', 'id="news-title"');?>
-                            </p>
+                            <p><?php echo draw_input_field('title', '', 'id="news-title"');?></p>
 
-                            <label for="comment">Nachricht</label>
+                            <label for="comment"><?php echo TEXT_MESSAGE;?></label>
 
-                            <p>
-                                <?php
-                                echo draw_textarea_field('text', '60', '10', '', 'id="comment" onKeyDown="textLeft(\'comment\',\'counter\',200);"');
-                                ?>
-                            </p>
+                            <p><?php  echo draw_textarea_field('text', '60', '10', '', 'id="comment" onKeyDown="textLeft(\'comment\',\'counter\',200);"'); ?></p>
 
                             <div class="r2">
                                 <p id="counter" class="error">&nbsp;</p>
-
-                                <p><?php echo draw_input_field('send', 'Vorschau', '', 'submit', false); ?></p>
+                                <p><?php echo draw_input_field('send', LABEL_PREVIEW, '', 'submit', false); ?></p>
                             </div>
                         </form>
                     </div>
@@ -272,14 +261,14 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     if (isset($_GET['eID']) && is_numeric($_GET['eID'])) {
                         $id = $_GET['eID'];
                         ?>
-                        <h2>Eintrag löschen</h2>
+                        <h2><?php echo TEXT_DELETE_ENTRY;?></h2>
                         <form id="form" method="post" action="news.php?action=delete&amp;eID=<?php echo $id; ?>">
 
-                            <p>Ankündigung wirklich löschen?</p>
+                            <p><?php echo TEXT_DELETE_NEWS_CONFIRM;?></p>
 
                             <p>
-                                <a class="btn cancel" href="javascript:history.back();">abbrechen</a>
-                                <button name="delete" class="proceed" type="submit">löschen</button>
+                                <a class="btn cancel" href="javascript:history.back();"><?php echo TEXT_CANCEL;?></a>
+                                <button name="delete" class="proceed" type="submit"><?php echo TEXT_DELETE;?></button>
                             </p>
 
                         </form>
@@ -289,10 +278,10 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
             }
         } else {
             ?>
-            <h2>Informationen/Ankündigungen</h2>
+            <h2><?php echo TITLE_NEWS;?></h2>
             <p id="subtitle">
-                <a href="news.php?position=add">Information/Ankündigung hinzufügen</a>&nbsp;|&nbsp;
-                <a href="news.php?position=mail">Rundmail verfassen</a>
+                <a href="news.php?position=add"><?php echo TEXT_ADD_NEWS;?></a> |
+                <a href="news.php?position=mail"><?php echo TEXT_MASS_MAIL;?></a>
             </p>
             <?php
             $db->query('SELECT tn.id, tn.title, UNIX_TIMESTAMP(tn.timestamp) AS timestamp, tn.text, u.firstname, u.lastname FROM ' . table_news . ' tn, ' . table_users . ' u WHERE tn.userid = u.id ORDER BY tn.timestamp ASC');
@@ -309,10 +298,10 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         $infoComments = '<small>';
                         $infoComments .= '</small>';
                         ?>
-                        <li <?php if ($n % 2 == 0) echo 'style="background:#efefef;"'; ?>>
+                        <li>
                             <h3><?php echo date('d.m.y', $row['timestamp']); ?> - <?php echo $row['title']; ?></h3>
-                            <a href="news.php?position=edit&amp;eID=<?php echo $row['id']; ?>">bearbeiten</a>&nbsp;|&nbsp;
-                            <a href="news.php?position=confirm_delete&amp;eID=<?php echo $row['id']; ?>">löschen</a>
+                            <a href="news.php?position=edit&amp;eID=<?php echo $row['id']; ?>"><?php echo TEXT_EDIT;?></a> |
+                            <a href="news.php?position=confirm_delete&amp;eID=<?php echo $row['id']; ?>"><?php echo TEXT_DELETE;?></a>
 
                             <p><?php echo $row['text']; ?></p>
 
@@ -325,7 +314,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
             <?php
             } else {
                 ?>
-                <p>derzeit ist keine Information/Ankündigung eingetragen</p>
+                <p><?php echo TEXT_NO_ENTRIES;?></p>
             <?php
             }
         }

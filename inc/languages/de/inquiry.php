@@ -5,3 +5,5 @@
  * Date: 07.03.2015
  * Time: 02:19
  */
+
+define('TITLE','Auswertung');

@@ -163,16 +163,13 @@ if (isset($_GET['position']) && ($_GET['position'] == 'feedback')) {
         <meta http-equiv="Content-Style-Type" content="text/css"/>
         <meta http-equiv="content-language" content="de"/>
 
-        <title>Inquiry - <?php echo WORKSPACE_TITLE; ?></title>
+        <title><?php echo TITLE;?> | <?php echo WORKSPACE_TITLE; ?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
 
         <script type="text/javascript" src="inc/javascripts/prototype.js"></script>
-
         <script type="text/javascript" src="inc/javascripts/scriptaculous.js"></script>
-
         <script type="text/javascript" src="inc/javascripts/effects.js"></script>
-
         <script type="text/javascript" src="inc/javascripts/simplescripts.js"></script>
     </head>
 

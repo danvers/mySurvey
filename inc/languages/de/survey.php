@@ -5,3 +5,5 @@
  * Date: 07.03.2015
  * Time: 02:20
  */
+
+define('TITLE','Erhebung');

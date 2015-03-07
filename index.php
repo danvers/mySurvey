@@ -13,7 +13,7 @@ require('inc/header.php');
         <meta http-equiv="Content-Style-Type" content="text/css"/>
         <meta http-equiv="content-language" content="de"/>
 
-        <title>Start - <?php echo WORKSPACE_TITLE; ?></title>
+        <title><?php echo WORKSPACE_TITLE; ?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
         <script type="text/javascript" src="inc/javascripts/prototype.js"></script>
@@ -69,7 +69,6 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
             <?php
             } else {
                 ?>
-
                 <form id="form" method="post" action="index.php?do=login">
                     <label for="mail"><?php echo LABEL_EMAIL;?></label>
 
@@ -90,7 +89,6 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
             <?php
             }
         } else {
-
             if (isset($_GET['position'])) {
                 switch ($_GET['position']) {
                     case 'edit':

@@ -18,47 +18,33 @@ if (isset($_GET['action'])) {
                 $postbit[$postbits] = db_prepare_input($element);
             }
             if (isset($postbit['email'])) {
-
                 if (!check_email($postbit['email']) || strlen($postbit['email']) < 5) {
-
-                    $messageStack->add_session('general', 'Die E-Mailadresse ist entweder zu kurz oder fehlerhaft', 'error');
+                    $messageStack->add_session('general', MSG_E_MAIL, 'error');
                     $error = true;
                 }
             }
             if (isset($postbit['firstname'])) {
-
                 if (strlen($postbit['firstname']) < NAME_MIN_LENGTH) {
-
-                    $messageStack->add_session('general', 'Der Vorname muss mindestens ' . NAME_MIN_LENGTH . ' Zeichen lang sein.', 'error');
-
+                    $messageStack->add_session('general', sprintf(MSG_E_FIRSTNAME,NAME_MIN_LENGTH), 'error');
                     $error = true;
                 }
             }
             if (isset($postbit['lastname'])) {
-
                 if (strlen($postbit['lastname']) < NAME_MIN_LENGTH) {
-
-                    $messageStack->add_session('general', 'Der Nachname muss mindestens ' . NAME_MIN_LENGTH . ' Zeichen lang sein.', 'error');
-
+                    $messageStack->add_session('general', sprintf(MSG_E_LASTNAME,NAME_MIN_LENGTH), 'error');
                     $error = true;
                 }
             }
             if ($error == false) {
-
                 if ($User->createNewUser($postbit)) {
-
-                    $messageStack->add_session('general', 'Benutzer erfolgreich hinzugefügt eine E-mail mit den Daten wurde an ' . $postbit['email'] . ' versandt.', 'success');
-
+                    $messageStack->add_session('general', sprintf(MSG_USER_ADDED, $postbit['email']), 'success');
                     header('Location:users.php');
                 } else {
-
-                    $messageStack->add_session('general', 'Der Benutzer konnte nicht hinzugefügt werden.', 'error');
-
+                    $messageStack->add_session('general', MSG_E_USER_ADD, 'error');
                     header('Location:users.php?position=add');
                 }
 
             } else {
-
                 header('Location:users.php?position=add');
             }
 
@@ -76,35 +62,28 @@ if (isset($_GET['action'])) {
                     $postbit[$postbits] = db_prepare_input($element);
                 }
                 if (isset($postbit['email'])) {
-
                     if (!check_email($postbit['email']) || strlen($postbit['email']) < 5) {
-
-                        $messageStack->add_session('general', 'Die E-Mailadresse ist entweder zu kurz oder fehlerhaft', 'error');
+                        $messageStack->add_session('general', MSG_E_MAIL, 'error');
                         $error = true;
                     }
                 }
                 if (isset($postbit['firstname'])) {
 
                     if (strlen($postbit['firstname']) < NAME_MIN_LENGTH) {
-
-                        $messageStack->add_session('general', 'Der Vorname muss mindestens ' . NAME_MIN_LENGTH . ' Zeichen lang sein.', 'error');
-
+                        $messageStack->add_session('general', sprintf(MSG_E_FIRSTNAME,NAME_MIN_LENGTH), 'error');
                         $error = true;
                     }
                 }
                 if (isset($postbit['lastname'])) {
 
                     if (strlen($postbit['lastname']) < NAME_MIN_LENGTH) {
-
-                        $messageStack->add_session('general', 'Der Der Nachname muss mindestens ' . NAME_MIN_LENGTH . ' Zeichen lang sein.', 'error');
-
+                        $messageStack->add_session('general', sprintf(MSG_E_LASTNAME,NAME_MIN_LENGTH), 'error');
                         $error = true;
                     }
                 }
                 if ($error == false) {
                     $User->editUser($id, $postbit);
-
-                    $messageStack->add_session('general', 'Benutzerdaten erfolgreich geändert.', 'success');
+                    $messageStack->add_session('general', MSG_USER_UPDATED, 'success');
                 }
                 header('Location:users.php?position=edit&uID=' . $id);
             }
@@ -117,13 +96,12 @@ if (isset($_GET['action'])) {
                 $id = $_GET['uID'];
                 $email = $User->__get('usermail');
                 if ($User->reInviteUser($id)) {
-                    $messageStack->add_session('general', 'Benutzer wurde erneut benachrichtigt eine E-mail mit den Daten wurde an ' . $email . ' versandt.', 'success');
+                    $messageStack->add_session('general', sprintf(MSG_INVITE_RESEND, $email) , 'success');
                 } else {
-                    $messageStack->add_session('general', 'Es trat ein Fehler auf, der Benutzer wurde nicht informiert.', 'error');
+                    $messageStack->add_session('general', MSG_E_INVITE, 'error');
                 }
                 header('Location:users.php?position=edit&uID=' . $id);
             }
-
             break;
 
         case 'delete':
@@ -131,11 +109,10 @@ if (isset($_GET['action'])) {
             if (isset($_GET['uID']) && is_numeric($_GET['uID'])) {
                 $id = $_GET['uID'];
                 $User->deleteUser($id);
-                $messageStack->add_session('general', 'Nutzer gelöscht', 'success');
+                $messageStack->add_session('general', MSG_USER_DELETED, 'success');
 
                 $db->query('DELETE FROM ' . table_survey . ' WHERE userid="' . $id . '"');
-                $messageStack->add_session('general', 'Einträge des Nutzers gelöscht', 'success');
-
+                $messageStack->add_session('general', MSG_USER_ENTRIES_DELETED, 'success');
             }
 
             header('Location:users.php');
@@ -152,7 +129,7 @@ if (isset($_GET['action'])) {
     <meta http-equiv="Content-Style-Type" content="text/css"/>
     <meta http-equiv="content-language" content="de"/>
 
-    <title>Users - <?php echo WORKSPACE_TITLE; ?></title>
+    <title><?php echo TITLE;?> | <?php echo WORKSPACE_TITLE; ?></title>
 
     <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
 </head>
@@ -172,24 +149,24 @@ if (isset($_GET['action'])) {
                 case 'add':
                     ?>
                     <div>
-                        <h2>Nutzer einladen</h2>
+                        <h2><?php echo TEXT_INVITE_USER;?></h2>
 
                         <form id="form" action="users.php?action=add" method="post">
 
-                            <label for="email">E-Mail</label>
+                            <label for="email"<?php echo LABEL_EMAIL;?></label>
 
                             <p><?php echo draw_input_field('email');?></p>
 
-                            <label for="firstname">Vorname</label>
+                            <label for="firstname"><?php echo LABEL_FIRSTNAME;?></label>
 
                             <p><?php echo draw_input_field('firstname');?></p>
 
-                            <label for="lastname">Nachname</label>
+                            <label for="lastname"><?php echo LABEL_LASTNAME;?></label>
 
                             <p><?php echo draw_input_field('lastname');?></p>
 
                             <div class="r2">
-                                <p><?php echo draw_input_field('send', 'Benutzer einladen', '', 'submit', false); ?></p>
+                                <p><?php echo draw_input_field('send', TEXT_INVITE_USER, '', 'submit', false); ?></p>
                             </div>
                         </form>
                     </div>
@@ -203,35 +180,34 @@ if (isset($_GET['action'])) {
                         $UserData = $db->fetch();
                         ?>
                         <div>
-                            <h2>Nutzerdaten ändern</h2>
+                            <h2><?php echo TEXT_EDIT_USER;?></h2>
                             <?php
                             if (is_null($UserData['last_online'])) {
                                 ?>
                                 <p>
-                                    <strong class="error">Der Benutzer hat sich noch nicht eingeloggt.</strong> <a
-                                        href="users.php?action=reinvite&amp;uID=<?php echo $id; ?>">Benutzer erneut
-                                        einladen.</a>
+                                    <strong class="error"><?php echo MSG_E_NOT_LOGGED_IN;?></strong> <a
+                                        href="users.php?action=reinvite&amp;uID=<?php echo $id; ?>"><?php echo TEXT_REINVITE;?></a>
                                 </p>
                             <?php
                             }
                             ?>
                             <form id="form" action="users.php?action=edit&amp;uID=<?php echo $id; ?>" method="post">
 
-                                <label for="email">E-Mail</label>
+                                <label for="email"><?php echo LABEL_EMAIL;?></label>
 
                                 <p><?php echo draw_input_field('email', $UserData['usermail']); ?></p>
 
-                                <label for="firstname">Vorname</label>
+                                <label for="firstname"><?php echo LABEL_LASTNAME;?></label>
 
                                 <p><?php echo draw_input_field('firstname', $UserData['firstname']); ?></p>
 
-                                <label for="lastname">Nachname</label>
+                                <label for="lastname"><?php echo LABEL_LASTNAME;?></label>
 
                                 <p><?php echo draw_input_field('lastname', $UserData['lastname']); ?></p>
 
                                 <div class="r2">
-                                    <p><?php echo draw_input_field('send', 'Daten bearbeiten', '', 'submit', false); ?>
-                                    <a class="btn cancel" href="users.php?position=confirm_delete&amp;uID=<?php echo $id; ?>">diesen Benutzer löschen</a></p>
+                                    <p><?php echo draw_input_field('send', TEXT_EDIT, '', 'submit', false); ?>
+                                    <a class="btn cancel" href="users.php?position=confirm_delete&amp;uID=<?php echo $id; ?>"><?php echo TEXT_DELETE_USER;?></a></p>
                                 </div>
                             </form>
                         </div>
@@ -242,13 +218,13 @@ if (isset($_GET['action'])) {
                     if (isset($_GET['uID']) && is_numeric($_GET['uID'])) {
                         $id = (int)$_GET['uID'];
                         ?>
-                        <h2>Benutzer löschen</h2>
+                        <h2><?php echo TEXT_USER_DELETE;?></h2>
                         <form id="form" method="post" action="users.php?action=delete&amp;uID=<?php echo $id; ?>">
-                            <p>Benutzer wirklich löschen?</p>
+                            <p><?php echo TEXT_USER_DELETE_CONFIRM;?></p>
 
                             <p>
-                                <a class="btn cancel" href="javascript:history.back();">Abbrechen</a>
-                                <button name="delete" class="proceed" type="submit">Löschen</button>
+                                <a class="btn cancel" href="javascript:history.back();"><?php echo TEXT_CANCEL;?></a>
+                                <button name="delete" class="proceed" type="submit"><?php echo TEXT_DELETE;?></button>
                             </p>
 
                         </form>
@@ -258,22 +234,22 @@ if (isset($_GET['action'])) {
             }
         } else {
             ?>
-            <h2>Übersicht der angemeldeten Nutzer</h2>
+            <h2><?php echo TITLE_OVERVIEW_USERS;?></h2>
             <p id="subtitle">
-                <a href="users.php?position=add">Benutzer einladen</a>&nbsp;|&nbsp;
-                <a href="news.php?position=mail">Rundmail verfassen</a>
+                <a href="users.php?position=add"><?php echo TEXT_INVITE_USER;?></a> |
+                <a href="news.php?position=mail"><?php echo TEXT_MASS_MAIL;?></a>
             </p>
 
             <table cellpadding="0" cellspacing="0" id="users">
                 <thead>
                 <tr>
                     <th>
-                        <strong>Name</strong>
+                        <?php echo TABLE_NAME ?>
                     </th>
                     <th class="last_seen">
-                        <strong>zuletzt gesehen</strong>
+                        <?php echo TABLE_LAST_SEEN?>
                     </th>
-                    <th>Aktion</th>
+                    <th><?php echo TABLE_ACTION;?></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -283,21 +259,21 @@ if (isset($_GET['action'])) {
                 while ($row = $db->fetch()) {
                     ?>
                     <tr>
-                        <td <?php if ($n % 2 == 0) echo 'class="odd"'; ?>>
+                        <td>
                             <?php echo $row['firstname'] . ' ' . $row['lastname']; ?>
                         </td>
-                        <td <?php if ($n % 2 == 0) echo 'class="odd"'; ?>>
+                        <td>
                             <?php
                             if ($row['last_online'] > 0) {
                                 echo date('d.m.y H:i:s', $row['last_online']);
                             } else {
-                                echo 'noch nie';
+                                echo TEXT_NEVER;
                             }
                             ?>
                         </td>
-                        <td <?php if ($n % 2 == 0) echo 'class="odd"'; ?>>
-                            <a href="users.php?position=edit&amp;uID=<?php echo $row['id']; ?>">Daten Bearbeiten</a>&nbsp;|&nbsp;
-                            <a href="users.php?position=confirm_delete&amp;uID=<?php echo $row['id'] ?>">Löschen</a>
+                        <td>
+                            <a href="users.php?position=edit&amp;uID=<?php echo $row['id']; ?>"><?php echo TEXT_EDIT;?></a> |
+                            <a href="users.php?position=confirm_delete&amp;uID=<?php echo $row['id'] ?>"><?php echo TEXT_DELETE;?></a>
                         </td>
                     </tr>
                     <?php
@@ -310,5 +286,4 @@ if (isset($_GET['action'])) {
         }
         ?>
     </div>
-
     <?php require('inc/footer.php'); ?>

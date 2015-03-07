@@ -291,7 +291,7 @@ if (isset($_GET['position']) && $_GET['position'] === 'edit') {
         <meta http-equiv="Content-Style-Type" content="text/css"/>
         <meta http-equiv="content-language" content="de"/>
 
-        <title>Survey - <?php echo WORKSPACE_TITLE; ?></title>
+        <title><?php echo TITLE;?> | <?php echo WORKSPACE_TITLE; ?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
         <script type="text/javascript" src="inc/javascripts/prototype.js"></script>
