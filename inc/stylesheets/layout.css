@@ -444,6 +444,9 @@ a.tooltip:hover span, a.tooltip:focus span {
     margin: auto;
     width: 100%;
 }
+.overview td:last-child{
+    width:20%;
+}
 #avatarlist li:nth-child(odd),
 #evaluation tr:nth-child(odd),
 #users tbody tr:nth-child(odd),

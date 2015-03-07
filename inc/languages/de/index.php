@@ -9,7 +9,7 @@
 define('TEXT_PASSWORD_FORGOTTEN','Passwort vergessen?<br/>Gib einfach Deine E-Mailadresse an und Du bekommst eine E-Mail mit weiteren Informationen.');
 define('TEXT_EXPORT_ALL_START','Alle Datensätze als ');
 define('TEXT_EXPORT_ALL_END','exportieren');
-define('TITLE_OVIERVEW','Übersicht');
+
 define('TEXT_PAGE_INTRO','Seite: ');
 define('TEXT_NO_COMMENTS','keine Kommentare');
 define('TEXT_ONE_COMMENT','ein Kommentar');

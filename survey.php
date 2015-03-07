@@ -125,9 +125,9 @@ if (isset($_GET['action'])) {
                     $postbit[$postbits] = db_prepare_input($element);
 
                 }
-
-                $db->query('SELECT id FROM ' . table_categories . ' WHERE name = "' . $db->escape_string($postbit['cat_name']) . '" AND id != "' . $id . '"');
-                if ($db->fetchRow() > 0) {
+                $data = array(':id'=>$id,':name'=>$postbit['cat_name']);
+                $db->query('SELECT id FROM ' . table_categories . ' WHERE name = :name AND id=:id',$data);
+                if ($db->rowCount() > 0) {
                     $messageStack->add_session('general', sprintf(MSG_E_CATEGORY_EXIST, $postbit['cat_name']), 'error');
                 } elseif (strlen($postbit['cat_name']) < CAT_MIN_LENGTH) {
                     $messageStack->add_session('general', sprintf(MSG_E_CATEGORY_EXIST, CAT_MIN_LENGTH), 'error');
@@ -344,19 +344,19 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                 case 'add_field':
                     $catname = $Cats->__get($_GET['cID']);
                     ?>
-                    <h2>Feld in die Kategorie &raquo;<?php echo $catname['name']; ?>&laquo; einfügen</h2>
+                    <h2><?php echo sprintf(TITLE_ADD_FIELD_TO_CATEGORY,$catname['name']);?></h2>
 
                     <form id="form" action="survey.php?action=add_field" method="post">
 
-                        <label for="field_name">Feldname (Kriterium)</label>
+                        <label for="field_name"><?php echo LABEL_FIELD_NAME;?></label>
 
                         <p><?php echo draw_input_field('field_name', '', 'id="news-title"'); ?></p>
 
-                        <label for="field_name">Feldname (Kriterium)</label>
+                        <label for="field_name"><?php echo LABEL_DESCRIPTION;?></label>
 
                         <p><?php echo draw_textarea_field('info', 80, 3, '', 'id="comment"'); ?></p>
 
-                        <label for="cat_id">Kategorie</label>
+                        <label for="cat_id"><?php echo LABEL_CATEGORY;?></label>
 
                         <p>
                             <select name="cat_id">
@@ -366,7 +366,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 ?>
                             </select>
                         </p>
-                        <label for="cat_id">Feldtyp</label>
+                        <label for="cat_id"><?php echo LABEL_FIELD_NAME;?></label>
 
                         <p>
                             <?php
@@ -374,7 +374,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             ?>
                         </p>
 
-                        <label for="sort_order">Reihenfolge</label>
+                        <label for="sort_order"><?php echo LABEL_SORT;?></label>
 
                         <p>
                             <?php
@@ -391,7 +391,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                         <div style="height:300px;">
                             <div id="div-polar">
-                                <label>Slider</label>
+                                <label><?php echo LABEL_SLIDER;?></label>
 
                                 <p>
                                     <?php
@@ -406,7 +406,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 echo draw_input_field('dd_value0', '&nbsp;', '', 'hidden');
                                 for ($i = 1; $i <= 7; $i++) {
                                     ?>
-                                    <label for="dd_value_<?php echo $i; ?>">Dropdown Wert <?php echo $i; ?>:</label>
+                                    <label for="dd_value_<?php echo $i; ?>"><?php echo LABEL_DD_VAL;?> <?php echo $i; ?>:</label>
                                     <p><?php echo draw_input_field('dd_value' . $i) . '<br />'; ?></p>
                                 <?php
                                 }
@@ -417,7 +417,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 echo draw_input_field('cb_value0', '&nbsp;', '', 'hidden');
                                 for ($i = 1; $i <= 7; $i++) {
                                     ?>
-                                    <label for="cb_value_<?php echo $i; ?>">Auswahlfeld <?php echo $i; ?>:</label>
+                                    <label for="cb_value_<?php echo $i; ?>"><?php echo LABEL_SELECT;?> <?php echo $i; ?>:</label>
                                     <p><?php echo draw_input_field('cb_value' . $i) . '<br />'; ?></p>
                                 <?php
                                 }
@@ -425,12 +425,12 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             </div>
                         </div>
 
-                        <label for="notes" class="chklbl">Feld für Anmerkungen</label>
+                        <label for="notes" class="chklbl"><?php echo LABEL_NOTES;?></label>
 
                         <p><?php echo draw_checkbox_field('notes'); ?></p>
 
                         <div class="r2">
-                            <p><?php echo draw_input_field('send', 'Feld hinzufügen', '', 'submit', false); ?></p>
+                            <p><?php echo draw_input_field('send', TEXT_FIELD_ADD, '', 'submit', false); ?></p>
                         </div>
                     </form>
                     <?php
@@ -492,7 +492,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         </form>
 
 
-                        <h2>Übersicht der Felder</h2>
+                        <h2><?php echo TITLE_OVIERVEW_FIELDS;?></h2>
                         <table cellpadding="0" cellspacing="0" class="overview">
                             <?php
                             $db->query('SELECT * FROM ' . table_fields . ' WHERE cat_id = "' . $catID . '"');
@@ -548,9 +548,9 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                     </td>
 
                                     <td>
-                                        <a href="survey.php?position=edit&amp;fID=<?php echo $row['id']; ?>">bearbeiten</a>
+                                        <a href="survey.php?position=edit&amp;fID=<?php echo $row['id']; ?>"><?php echo TEXT_EDIT;?></a>
                                         |
-                                        <a href="survey.php?position=confirm_delete&amp;fID=<?php echo $row['id']; ?>">löschen</a>
+                                        <a href="survey.php?position=confirm_delete&amp;fID=<?php echo $row['id']; ?>"><?php echo TEXT_DELETE;?></a>
 
                                     </td>
                                 </tr>
@@ -566,21 +566,21 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         $db->query('SELECT * FROM ' . table_fields . ' WHERE id = "' . $Fid . '" LIMIT 1');
                         $Fvals = $db->fetch();
                         ?>
-                        <h2>Feld bearbeiten</h2>
+                        <h2><?php echo TITLE_FIELD_EDIT;?></h2>
 
                         <form id="form" action="survey.php?action=edit&amp;fID=<?php echo $Fid; ?>" method="post">
-                            <label for="field_name">Feldname (Kriterium)</label>
+                            <label for="field_name"><?php echo LABEL_FIELD_NAME;?></label>
 
                             <p>
                                 <?php
                                 echo draw_input_field('field_name', $Fvals['name'], 'id="news-title"');
                                 ?>
                             </p>
-                            <label for="info">Erklärung</label>
+                            <label for="info"><?php echo LABEL_DESCRIPTION;?></label>
 
                             <p><?php echo draw_textarea_field('info', 80, 3, $Fvals['info']); ?></p>
 
-                            <label for="cat_id">Kategorie</label>
+                            <label for="cat_id"><?php echo LABEL_CATEGORY;?></label>
 
                             <p>
                                 <select name="cat_id">
@@ -590,11 +590,11 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                     ?>
                                 </select>
                             </p>
-                            <label for="field_type">Feldtyp</label>
+                            <label for="field_type"><?php echo LABEL_FIELD_TYPE;?></label>
 
                             <p><?php echo draw_pulldown_menu('field_type', getFields(), $Fvals['type'], 'onchange="showhide(this.form,1);"'); ?></p>
 
-                            <label for="sort_order">Reihenfolge</label>
+                            <label for="sort_order"><?php echo LABEL_SORT;?></label>
 
                             <p>
                                 <?php
@@ -629,7 +629,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 }
                                 ?>
                                 <div id="div-polar" <?php echo $showpol; ?>>
-                                    <label>Slider</label>
+                                    <label><?php echo LABEL_SLIDER;?></label>
                                     <?php
 
                                     if (isset($Fvals['params']) && (isset($edit_params['minVal']) || isset($edit_params['maxVal']))) {
@@ -648,7 +648,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                     echo draw_input_field('dd_value0', '&nbsp;', '', 'hidden');
                                     for ($i = 1; $i <= 7; $i++) {
                                         ?>
-                                        <label for="dd_value_<?php echo $i; ?>">Dropdown Wert <?php echo $i; ?>:</label>
+                                        <label for="dd_value_<?php echo $i; ?>"><?php echo LABEL_DD_VAL;?> <?php echo $i; ?>:</label>
                                         <p>
                                             <?php
                                             if (isset($edit_params[$i]['text'])) {
@@ -667,7 +667,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                     echo draw_input_field('cb_value0', '&nbsp;', '', 'hidden');
                                     for ($i = 1; $i <= 7; $i++) {
                                         ?>
-                                        <label for="cb_value_<?php echo $i; ?>">Auswahlfeld <?php echo $i; ?>:</label>
+                                        <label for="cb_value_<?php echo $i; ?>"><?php echo LABEL_SELECT;?>  <?php echo $i; ?>:</label>
                                         <p>
                                             <?php
 
@@ -684,13 +684,13 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 </div>
                             </div>
 
-                            <label for="notes" class="chklbl">Feld für Anmerkungen</label>
+                            <label for="notes" class="chklbl"><?php echo LABEL_NOTES;?></label>
 
                             <p><?php echo draw_checkbox_field('notes', '', $Fvals['notes']); ?></p>
 
 
                             <div class="r2">
-                                <p><?php echo draw_input_field('send', 'Feld bearbeiten', '', 'submit', false); ?></p>
+                                <p><?php echo draw_input_field('send', TEXT_SAVE, '', 'submit', false); ?></p>
                             </div>
 
                         </form>
@@ -705,16 +705,14 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         $id = $_GET['cID'];
                         $catname = $Cats->__get($_GET['cID']);
                         ?>
-                        <h2>Kategorie löschen</h2>
+                        <h2><?php echo TITLE_CAT_DELETE;?></h2>
                         <form id="form" method="post" action="survey.php?action=delete&amp;cID=<? echo $id; ?>">
 
-                            <p>Kategorie &raquo;<?php echo $catname['name']; ?>&laquo; &amp; erhobene Daten
-                                unwideruflich löschen?
-                            </p>
+                            <p><?php echo sprintf(TEXT_DELETE_CONFIRM,$catname['name']);?></p>
 
                             <p>
-                                <a class="btn cancel" href="javascript:history.back();">abbrechen</a>
-                                <button name="delete" class="proceed" type="submit">löschen</button>
+                                <a class="btn cancel" href="javascript:history.back();"><?php echo TEXT_CANCEL;?></a>
+                                <button name="delete" class="proceed" type="submit"><?php echo TEXT_DELETE;?></button>
                             </p>
                         </form>
                     <?php
@@ -724,14 +722,14 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         $db->query('SELECT cat_id,name FROM ' . table_fields . ' WHERE id= "' . $id . '" LIMIT 1');
                         $fieldData = $db->fetch();
                         ?>
-                        <h2>Feld löschen</h2>
+                        <h2><?php echo TITLE_FIELD_DELETE;?></h2>
                         <form id="form" method="post" action="survey.php?action=delete&amp;fID=<?echo $id; ?>">
 
-                            <p>Feld &raquo;<?php echo $fieldData['name']; ?>&laquo; unwideruflich löschen?</p>
+                            <p><?php echo sprintf(TEXT_DELETE_CONFIRM,$fieldData['name']);?></p>
 
                             <p>
-                                <a class="btn cancel" href="javascript:history.back();">abbrechen</a>
-                                <button name="delete" class="proceed" type="submit">löschen</button>
+                                <a class="btn cancel" href="javascript:history.back();"><?php echo TEXT_CANCEL;?></a>
+                                <button name="delete" class="proceed" type="submit"><?php echo TEXT_DELETE;?></button>
                             </p>
 
                         </form>
@@ -741,17 +739,10 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
             }
         } else {
             ?>
-            <h2>Übersicht</h2>
+            <h2><?php echo TITLE_OVIERVEW;?></h2>
+
             <p id="subtitle">
-                <a href="survey.php?position=add_category">Kategorie hinzufügen</a>
-                <?php
-                if (isset($_GET['cID'])) {
-                    $catID = (int)$_GET['cID'];
-                    ?>
-                    | <a href="survey.php?position=add_field&amp;cID=<?php echo $catID; ?>">Feld hinzufügen</a>
-                <?php
-                }
-                ?>
+                <a href="survey.php?position=add_category"><?php echo TEXT_CATEGORY_ADD;?></a>
             </p>
             <?php
             echo $Cats->listCategories(0, '', $linkpath, true);
