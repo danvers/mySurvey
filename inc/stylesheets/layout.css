@@ -58,7 +58,9 @@ div {
     font-family: Verdana, Helvetica, sans-serif;
     font-size: 12px;
 }
-
+.c{
+    clear:both;
+}
 div#wrapper {
     background-color: #fff;
     padding: 0;
@@ -85,12 +87,14 @@ div#right {
     width: 65%;
 }
 
-div#footer {
+#footer {
     border-top: 1px solid #ccc;
     margin: 5px;
     padding:10px 0;
 }
-
+#footer p{
+    height:2em;
+}
 div.mStack {
     margin: 20px 5px;
 }
@@ -125,7 +129,7 @@ p#rightnav {
     width: 30%;
 }
 
-p#subtitle {
+#subtitle {
     border-bottom: 1px solid #ccc;
     padding: 0;
     background: #efefef;
@@ -205,7 +209,16 @@ ul#avatarlist, ul#newslist {
 #avatarlist li, #newslist li {
     padding: 5px;
 }
-
+#avatarlist strong{
+    display:inline-block;
+}
+#avatarlist .progresslabel{
+    float:left;
+    line-height:19px;
+}
+#avatarlist .progresswrapper{
+    margin-left:80px;
+}
 #userlist li {
     width: 100%;
 }
@@ -429,8 +442,15 @@ a.tooltip:hover span, a.tooltip:focus span {
     margin: auto;
     width: 100%;
 }
-
+#avatarlist li:nth-child(odd),
 #evaluation tr:nth-child(odd),
 .overview tr:nth-child(odd) {
     background-color: #efefef;
+}
+#data-export{
+    list-style: none;
+    float:right;
+}
+#data-export li{
+    display:inline;
 }

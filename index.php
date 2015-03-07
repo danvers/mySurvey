@@ -16,13 +16,9 @@ require('inc/header.php');
         <title>Start - <?php echo WORKSPACE_TITLE; ?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
-
         <script type="text/javascript" src="inc/javascripts/prototype.js"></script>
-
         <script type="text/javascript" src="inc/javascripts/scriptaculous.js"></script>
-
         <script type="text/javascript" src="inc/javascripts/effects.js"></script>
-
         <script type="text/javascript">
             more_info = function (parameters) {
                 var div_id = parameters.div_id;
@@ -57,18 +53,13 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                 switch ($_GET['position']) {
                     case 'password':
                         ?>
-                        <form method="post" action="index.php?do=resendpw">
+                        <form id="form" method="post" action="index.php?do=resendpw">
                             <p class="text">
-                                Passwort vergessen?<br/>
-                                Gib einfach Deine E-Mailadresse an und Du bekommst eine E-Mail mit weiteren
-                                Informationen.
+                            <?php echo TEXT_PASSWORD_FORGOTTEN;?>
                             </p>
-
-                            <p class="left">E-Mail:</p>
-
                             <p>
-                                <input type="text" name="email"/>&nbsp;<input type="submit" value="abschicken"
-                                                                              id="submit"/><br/>
+                            <label><?php echo LABEL_EMAIL;?></label>
+                                <input type="text" name="email"/> <input type="submit" value="<?php echo TEXT_SUBMIT;?>" id="submit"/>
                             </p>
                         </form>
                         <?php
@@ -79,24 +70,20 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
             } else {
                 ?>
 
-                <form method="post" action="index.php?do=login">
-                    <p class="left">E-Mail:</p>
+                <form id="form" method="post" action="index.php?do=login">
+                    <label for="mail"><?php echo LABEL_EMAIL;?></label>
+
+                    <p><input id="mail" type="text" name="email"/></p>
+
+                    <label for="pass"><?php echo LABEL_PASSWORD;?></label>
+
+                    <p><input id="pass" type="password" name="pass"/></p>
+
+                    <label for="cookie"><?php echo LABEL_COOKIE;?></label>
 
                     <p>
-                        <input type="text" name="email"/>
-                    </p>
-
-                    <p class="left">Passwort:</p>
-
-                    <p>
-                        <input type="password" name="pass"/>
-                    </p>
-
-                    <p class="left">eingeloggt bleiben</p>
-
-                    <p>
-                        <input type="checkbox" name="staylogged"/>&nbsp;&nbsp;&nbsp;
-                        <input type="submit" value="login" id="submit"/><br/>
+                        <input id="cookie" type="checkbox" name="staylogged"/>
+                        <input type="submit" value="<?php echo TEXT_SUBMIT;?>" id="submit"/>
                     </p>
                 </form>
 
@@ -146,7 +133,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             <?php
                             $n = 0;
                             while ($row = $db->fetch()) {
-                                $infoComments = '<small style="color:#999;font-weight:normal;">';
+                                $infoComments = '<small>';
                                 $infoComments .= '</small>';
                                 ?>
                                 <li <?php if ($n % 2 == 0) echo 'style="background:#efefef;"'; ?>>
@@ -172,40 +159,27 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                 }
                 ?>
                 <div<?php echo $split; ?>>
-                    <h2>Übersicht</h2>
+                    <h2><?php echo TITLE_OVIERVEW;?></h2>
 
                     <p id="subtitle">
-		    <span style="float:right;">
-		  	Alle Datensätze als:
-			  <a href="csv_export.php">CSV</a>&nbsp;|&nbsp;
-			  <a href="txt_export.php">TXT</a>&nbsp;|&nbsp;
-			  <a href="xml_export.php">XML</a> exportieren
-			</span>
+                        <span id="data-export">
+                            <?php echo TEXT_EXPORT_ALL_START;?><a href="csv_export.php">CSV</a> | <a href="txt_export.php">TXT</a> | <a href="xml_export.php">XML</a> | <?php echo TEXT_EXPORT_ALL_END;?>
+                        </span>
+			        </ul>
                         <?php
-
                         $db->query('SELECT COUNT(id) AS num FROM ' . table_survey);
-
                         $av_count_arr = $db->fetch();
-
                         $num_avatars = $av_count_arr['num'];
-
                         $userid = $User->__get('id');
-
                         $fields = array();
-
                         $db->query('SELECT id FROM ' . table_fields);
-
                         while ($row = $db->fetch()) {
                             $fields[] = $row['id'];
                         }
-
                         $db->query('SELECT COUNT(id) AS fieldsum FROM ' . table_fields);
                         $fieldcount = $db->fetch();
-
                         $numFields = $fieldcount['fieldsum'];
-
                         $pages = ceil($num_avatars / 6);
-
                         if (!isset($_GET['page'])) {
                             $page_param = 0;
                         } else {
@@ -221,7 +195,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                         if ($db->rowCount() > 0){
 
-                        echo 'Seite: ';
+                        echo TEXT_PAGE_INTRO;
                         if ($page_param > 0) {
                             ?>
                             <a href="index.php?page=<?php echo $page_param - 1; ?>">&laquo;</a>
@@ -263,19 +237,19 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             if ($fieldcount > 0) {
                                 $progress = ($fieldcount / $numFields) * 100;
                             }
-                            $infoComments = '<small style="color:#999;font-weight:normal;">';
+                            $infoComments = '<small>';
                             $numComment = $row['comments'];
 
                             if ($numComment < 1) {
-                                $infoComments .= 'keine Kommentare';
+                                $infoComments .= ' '. TEXT_NO_COMMENTS;
                             } elseif ($numComment == 1) {
-                                $infoComments .= '1 Kommentare';
+                                $infoComments .= ' '. TEXT_ONE_COMMENT;
                             } else {
-                                $infoComments .= $row['comments'] . ' Kommentare';
+                                $infoComments .= $row['comments'] .' '. TEXT_COMMENTS;
                             }
                             $infoComments .= '</small>';
                             ?>
-                            <li id="element-<?php echo $row['id']; ?>" <?php if ($n % 2 == 0) echo 'style="background:#efefef;"'; ?>
+                            <li id="element-<?php echo $row['id']; ?>"
                                 onmouseover="more_info({div_id : '<?php echo $row['id'] ?>'});"
                                 onmouseout="less_info('<?php echo $row['id'] ?>')">
                                 <h3 id="header-<?php echo $row['id']; ?>"
@@ -294,42 +268,40 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 <div id="detail-<?php echo $row['id']; ?>" style="display:none;">
 
                                     <p>
-                                        <a href="inquiry.php?position=view&amp;cID=1&amp;aID=<?php echo $row['id']; ?>">Kategorisierung
-                                            ansehen</a>&nbsp;|&nbsp;
+                                        <a href="inquiry.php?position=view&amp;cID=1&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_VIEW_SURVEY;?></a> |
                                         <?php
                                         if ($userid === $row['userid']) {
                                             ?>
-                                            <a href="inquiry.php?position=evaluate&amp;cID=1&amp;aID=<?php echo $row['id']; ?>">Eintrag
-                                                bearbeiten</a>&nbsp;|&nbsp;
-                                            <a href="inquiry.php?position=edit&amp;aID=<?php echo $row['id']; ?>">Rahmendaten
-                                                bearbeiten</a>&nbsp;|&nbsp;
-                                            <a href="myinquiries.php?position=confirm_delete&amp;aID=<?php echo $row['id']; ?>">Eintrag
-                                                löschen</a>&nbsp;|&nbsp;
+                                            <a href="inquiry.php?position=evaluate&amp;cID=1&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_EDIT_ENTRY;?></a> |
+                                            <a href="inquiry.php?position=edit&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_EDIT_SURVEY;?></a> |
+                                            <a href="myinquiries.php?position=confirm_delete&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_DELETE_ENTRY;?></a> |
                                         <?php
                                         }
                                         ?>
-                                        <a href="feedback.php?position=view&amp;aID=<?php echo $row['id']; ?>">Feedback</a>
+                                        <a href="feedback.php?position=view&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_FEEDBACK;?></a>
                                         (<?php echo $numComment; ?>)
-                                        &nbsp;|&nbsp;Exportieren als:
-                                        <a href="csv_export.php?aID=<?php echo $row['id']; ?>">CSV</a>&nbsp;|&nbsp;
-                                        <a href="txt_export.php?aID=<?php echo $row['id']; ?>">TXT</a>&nbsp;|&nbsp;
+                                        | <?php echo TEXT_EXPORT;?>
+                                        <a href="csv_export.php?aID=<?php echo $row['id']; ?>">CSV</a> |
+                                        <a href="txt_export.php?aID=<?php echo $row['id']; ?>">TXT</a> |
                                         <a href="xml_export.php?aID=<?php echo $row['id']; ?>">XML</a>
-                                        <br/><br/>
                                         <?php if (strlen($row['url'])) { ?>
-                                            <strong>URI:</strong> <a
-                                                href="<?php echo $row['url']; ?>"><?php echo $row['url']; ?></a><br/>
+                                            <p><strong>URI</strong> <a
+                                                href="<?php echo $row['url']; ?>"><?php echo $row['url']; ?></a>
+                                            </p>
                                         <?php
                                         }
                                         if (strlen($row['description'])) {
                                             ?>
-                                            <strong>Beschreibung:</strong> <?php echo $row['description']; ?>
+                                            <p>
+                                            <strong><?php echo TEXT_DESCRIPTION?> </strong> <?php echo $row['description']; ?>
+                                            </p>
                                         <?php
                                         }
                                         ?>
                                     </p>
-                                    <strong style="float:left;line-height:19px;">Fortschritt:</strong>
+                                    <strong class="progresslabel"><?php echo TEXT_PROGRESS;?> </strong>
 
-                                    <div style="margin-left:80px;">
+                                    <div class="progresswrapper">
                                         <div class="progressbox">
                                             <div class="progressbar"
                                                  style="width:<?php echo $progress ?>%;"><?php echo $progress ?>%
@@ -347,7 +319,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     <?php
                     } else {
                         ?>
-                        <p>noch keine Einträge.</p>
+                        <p><?php echo TEXT_NO_ENTRIES;?></p>
                     <?php
                     }
                     ?>
@@ -355,9 +327,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                 <?php
                 if ($cols) {
                     ?>
-
-                    <div style="clear:both;">&nbsp;</div>
-
+                    <div class="c"></div>
                     </div>
                 <?php
                 }

@@ -17,6 +17,8 @@ require_once('inc/cfg/config.inc.php');
 preventCaching();
 
 
+get_language();
+
 $db = new database();
 
 $messageStack = new messageStack();

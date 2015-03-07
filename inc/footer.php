@@ -8,19 +8,15 @@ $db->__destruct();
 
 ?>
 <div id="footer">
+    <p>
     <?php
     if (isset($_GET['position']) && strlen($_GET['position'])) {
     ?>
-        <p>
-            <a href="javascript:history.back();">zurück</a>
-        </p>
-    <?php
-    } else {
-        ?>
-        <p>&nbsp;</p>
+        <a href="javascript:history.back();"><?php echo TEXT_BACK;?></a>
     <?php
     }
     ?>
+    </p>
 </div>
 </div>
 </body>

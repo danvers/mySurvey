@@ -9,7 +9,14 @@ $GLOBALS['classes'] = array(
     'Avatar' => 'inc/classes/survey.class.php',
     'Message' => 'inc/classes/message.class.php'
 );
+function get_language($lang = LANGUAGE_CODE){
+    $file = 'inc/languages/'.$lang.'/'.basename($_SERVER['SCRIPT_NAME']);
 
+    include('inc/languages/'.$lang.'/general.php');
+
+    include($file);
+
+}
 function __autoload($class)
 {
     if (isset($GLOBALS['classes'][$class])) {
