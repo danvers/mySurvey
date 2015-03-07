@@ -6,14 +6,12 @@
 
 define('IN_PAGE', true);
 header('Content-Type: text/html; charset=UTF-8');
-session_start();
 
+session_start();
 error_reporting(E_ALL);
 
 require_once('inc/functions/form_funcs.inc.php');
-
 require_once('inc/functions/global_funcs.inc.php');
-
 require_once('inc/cfg/config.inc.php');
 
 preventCaching();
