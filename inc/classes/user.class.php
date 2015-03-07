@@ -53,10 +53,10 @@ class User
             return false;
         }
         $pass = $this->createRandomPass();
-        $text = "dies ist eine Einladung zum Arbeitsbereich\nDeine Login-Email lautet: %s\nDein Passwort lautet: %s\n\nEinloggen kannst Du dich unter: " . HOME_DIR;
+        $text = MAIL_TEXT_INVITE;
         $content = sprintf($text, $array['email'], $pass);
 
-        $this->UserMail($array, $content, 'Seminar "Avatare..." - Einladung zum Arbeitsbereich');
+        $this->UserMail($array, $content, MAIL_TITLE_INVITE);
 
         $data[':firstname'] = $array['firstname'];
         $data[':lastname'] = $array['lastname'];
@@ -145,11 +145,11 @@ class User
         $array['fistname'] = $result['firstname'];
         $array['email'] = $result['usermail'];
 
-        $text = "dies ist eine Einladung zum Arbeitsbereich\nDeine Login-Email lautet: %s\nDein Passwort lautet: %s\n\nEinloggen kannst Du dich unter: " . HOME_DIR;
+        $text = MAIL_TEXT_INVITE;
 
         $content = sprintf($text, $array['email'], $pass);
 
-        if ($this->UserMail($array, $content, 'Seminar "Avatare..." - Einladung zum Arbeitsbereich')) {
+        if ($this->UserMail($array, $content, MAIL_TITLE_INVITE)) {
 
             $data = array(':pass'=>md5($pass), ':id'=> $result['id']);
             $this->db->query('UPDATE ' . table_users .' SET userpass = :pass WHERE id=:id LIMIT 1',$data);
@@ -177,11 +177,11 @@ class User
         $array['fistname']  = $result['firstname'];
         $array['email']     = $result['usermail'];
 
-        $text = "Dein neues Passwort lautet: %s\nDieses Passwort wurde zufällig generiert. Daher wird empfohlen es selbst zu ändern.\n\nEinloggen kannst Du dich unter: " . HOME_DIR;
+        $text = MAIL_TEXT_PASS_RESET;
 
         $content = sprintf($text, $pass);
 
-        if ($this->UserMail($array, $content, 'Seminar "Avatare..." - Passwortänderung')) {
+        if ($this->UserMail($array, $content, MAIL_TITLE_PASS_RESET)) {
 
             $data = array(':pass'=>md5($pass), 'id:'=> $result['id']);
             $this->db->query('UPDATE ' . table_users . ' SET userpass =:pass WHERE id=:id LIMIT 1',$data);

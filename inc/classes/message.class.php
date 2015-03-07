@@ -60,7 +60,6 @@ class Message
         $headers .= "X-Mailer: PHP v" . phpversion() . PHP_EOL;
         $headers .= $bcc . PHP_EOL;
 
-
         return mail($from_name, $title, $content, $headers);
     }
 

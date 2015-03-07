@@ -37,3 +37,8 @@ define('TITLE_OVIERVEW','Übersicht');
 define('MSG_ENTRY_DELETED','Eintrag gelöscht');
 define('TITLE_ENTRY_ADD','Eintrag hinzufügen');
 define('TEXT_NOTES','Anmerkungen');
+
+define('FIELD_POLAR','Polarwerte (Slider)');
+define('FIELD_CHECKBOX','Multiple Choice (Checkboxes)');
+define('FIELD_TEXTAREA','Textfeld (max. %s Zeichen)');
+define('FIELD_DROPDOWN','Dropdown');
