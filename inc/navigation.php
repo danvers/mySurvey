@@ -10,31 +10,30 @@
     if ($SessionManager->logged_in()) {
         ?>
         <p id="leftnav">
-            <a href="index.php">Übersicht</a>&nbsp;|&nbsp;
-            <a href="myinquiries.php">meine Einträge</a>
+            <a href="index.php"><?php echo NAV_OVERVIEW;?></a> |
+            <a href="myinquiries.php"><?php echo NAV_MY_ENTRIES;?></a>
             <?php
             if ($User->__get('userlevel') > 1) {
                 ?>
-                &nbsp;|&nbsp;<a href="survey.php">Bogen bearbeiten</a>&nbsp;|&nbsp;
-                <a href="users.php">Benutzer</a>&nbsp;|&nbsp;
-                <a href="news.php">Informationen</a>
+                 |
+                <a href="survey.php"><?php echo NAV_EDIT_SURVEY;?></a> |
+                <a href="users.php"><?php echo NAV_USER;?></a> |
+                <a href="news.php"><?php echo NAV_NEWS;?></a>
             <?php
             }
             ?>
         </p>
         <p id="rightnav">
-            <a href="profile.php">mein Profil</a> (<?php echo $User->__get('usermail'); ?>)&nbsp;|&nbsp;
-            <a href="index.php?do=logout">Ausloggen</a>
+            <a href="profile.php"><?php echo NAV_MY_PROFILE;?></a> (<?php echo $User->__get('usermail'); ?>) |
+            <a href="index.php?do=logout"><?php echo NAV_LOGOUT;?></a>
         </p>
-        <p id="breadcrumb">
-            &nbsp;<?php echo getPosition(); ?>
-        </p>
+        <p id="breadcrumb"><?php echo getPosition(); ?></p>
     <?php
     } else {
         if (isset($_GET['position']) && $_GET['position'] === 'password') {
             ?>
             <p id="rightnav">
-                <a href="index.php">Anmelden</a>
+                <a href="index.php"><?php echo NAV_LOGIN;?></a>
             </p>
         <?php
         } else {

@@ -84,56 +84,52 @@ function getFields()
     return $static_field_types;
 }
 
+/**
+ * @return string
+ * @description just a workaround for a breadcrumb script..
+ */
 function getPosition()
 {
-
-    $home = HOME_DIR;
-    $pie = explode("/", $_SERVER['REQUEST_URI']);
-
-    $fN = explode("/", $_SERVER['SCRIPT_NAME']);
-
-    $name = $fN[count($fN) - 1];
-    $file = $pie[count($pie) - 1];
-
-    $result = 'Du bist hier: <a href="' . $home . '">Start</a>';
-
-    if (strpos($file, 'position')) {
-
-        if ($name === 'survey.php') $result .= ' - <a href="' . $home . $name . '">Bogen</a>';
-        elseif ($name === 'inquiry.php') $result .= ' - Avatar';
-        elseif ($name === 'myinquiries.php') $result .= ' - <a href="' . $home . $name . '">Meine Avatare</a>';
-        elseif ($name === 'feedback.php') $result .= ' - Feedback';
-        elseif ($name === 'users.php') $result .= ' - <a href="' . $home . $name . '">Benutzer</a>';
-        elseif ($name === 'news.php') $result .= ' - <a href="' . $home . $name . '">Informationen</a>';
-        elseif ($name === 'profile.php') $result .= ' - <a href="' . $home . $name . '">Mein Profil</a>';
-
-        if (strpos($file, 'add_category')) {
-            $result .= ' - Kategorie hinzufügen';
-        } elseif (strpos($file, 'add_field')) {
-            $result .= ' - Feld hinzufügen';
-        } elseif (strpos($file, 'add')) {
-            $result .= ' - hinzufügen';
-        } elseif (strpos($file, 'confirm_delete')) {
-            $result .= ' - Löschen';
-        } elseif (strpos($file, 'edit')) {
-            $result .= ' - Bearbeiten';
-        } elseif (strpos($file, 'view')) {
-            $result .= ' - Ansehen';
-        } elseif (strpos($file, 'show')) {
-            $result .= ' - Bearbeiten';
-        } elseif (strpos($file, 'evaluate')) {
-            $result .= ' - Auswerten';
-        } elseif (strpos($file, 'mail')) {
-            $result .= ' - Rundmail verfassen';
+    $result[] = NAV_BREADCRUMB;
+    if(basename($_SERVER['SCRIPT_NAME']) == 'index.php'){
+        $result[] = NAV_HOME;
+    }else{
+        if(isset($_GET['position'])){
+            $result[] = '<a href="'. HOME_DIR . '">'.NAV_HOME.'</a>';
+            $result[] = '<a href="'. HOME_DIR . basename($_SERVER['SCRIPT_NAME']).'">'.TITLE.'</a>';
+        }else{
+            $result[] = '<a href="'. HOME_DIR . '">'.NAV_HOME.'</a>';
+            $result[] = TITLE;
         }
-    } else {
-        if ($name === 'survey.php') $result .= ' - Bogen';
-        elseif ($name === 'inquiry.php') $result .= ' - Avatar';
-        elseif ($name === 'myinquiries.php') $result .= ' - Meine Avatare';
-        elseif ($name === 'feedback.php') $result .= ' - Feedback';
-        elseif ($name === 'users.php') $result .= ' - Benutzer';
-        elseif ($name === 'news.php') $result .= ' - Informationen';
-        elseif ($name === 'profile.php') $result .= ' - Mein Profil';
     }
-    return str_replace('&', '&amp;', $result);
+
+    if(isset($_GET['position'])){
+        $position = $_GET['position'];
+        switch($position){
+            case 'add':
+            case 'add_field':
+            case 'add_category':
+                $result[] = NAV_ADD;
+                break;
+            case 'edit':
+            case 'evaluate':
+                $result[] = NAV_EDIT;
+                break;
+            case 'preview':
+            case 'mail':
+                $result[] = NAV_PREVIEW;
+                break;
+            case 'confirm_delete':
+                $result[] = NAV_DELETE;
+                break;
+        }
+    }
+    $ret = '';
+    for($i=0;$i<sizeof($result);$i++){
+        $ret .= $result[$i];
+        if($i>0 && $i <sizeof($result)-1){
+            $ret .=  ' &raquo; ';
+        }
+    }
+    return $ret;
 }

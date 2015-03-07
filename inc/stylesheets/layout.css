@@ -70,6 +70,7 @@ div#wrapper {
 div#content {
     margin: auto;
     padding: 5px;
+    clear:both;
 }
 
 div#navigation {
@@ -89,7 +90,7 @@ div#right {
 #footer {
     border-top: 1px solid #ccc;
     margin: 5px;
-    padding:10px 0;
+    padding:5px;
 }
 #footer p{
     height:2em;
@@ -116,6 +117,7 @@ p#breadcrumb {
     color: #fff;
     margin-top: 10px;
     line-height: 27px;
+    padding:0 8px;
 }
 
 p#breadcrumb a {

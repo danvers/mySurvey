@@ -153,7 +153,7 @@ if (isset($_GET['action'])) {
 
                         <form id="form" action="users.php?action=add" method="post">
 
-                            <label for="email"<?php echo LABEL_EMAIL;?></label>
+                            <label for="email"><?php echo LABEL_EMAIL;?></label>
 
                             <p><?php echo draw_input_field('email');?></p>
 

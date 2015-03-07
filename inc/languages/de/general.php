@@ -7,7 +7,7 @@
  */
 
 define('TEXT_SUBMIT','Senden');
-define('TEXT_BACK','Zurück');
+define('TEXT_BACK','&laquo; Zurück');
 define('TEXT_EDIT','Daten bearbeiten');
 define('LABEL_PASSWORD','Passwort');
 define('LABEL_COOKIE','Eingeloggt bleiben');
@@ -42,3 +42,20 @@ define('FIELD_POLAR','Polarwerte (Slider)');
 define('FIELD_CHECKBOX','Multiple Choice (Checkboxes)');
 define('FIELD_TEXTAREA','Textfeld (max. %s Zeichen)');
 define('FIELD_DROPDOWN','Dropdown');
+
+define('NAV_OVERVIEW','Übersicht');
+define('NAV_MY_ENTRIES','Meine Einträge');
+define('NAV_EDIT_SURVEY','Erhebung bearbeiten');
+define('NAV_USER','Benutzer');
+define('NAV_NEWS','News');
+define('NAV_LOGOUT','Abmelden');
+define('NAV_LOGIN','Anmelden');
+define('NAV_MY_PROFILE','Meine Daten');
+define('NAV_BREADCRUMB','Du bist hier: ');
+define('NAV_HOME','Start');
+
+define('NAV_ADD','Hinzufügen');
+define('NAV_EDIT','Bearbeiten');
+define('NAV_DELETE','Löschen');
+define('NAV_PREVIEW','Vorschau');
+
