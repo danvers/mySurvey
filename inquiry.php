@@ -226,7 +226,6 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         <p class="left">&nbsp;</p>
 
                         <p id="counter" class="error">&nbsp;</p>
-                        <br/>
 
                         <p class="left">&nbsp;</p>
 

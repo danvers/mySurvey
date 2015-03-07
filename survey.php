@@ -50,34 +50,37 @@ if (isset($_GET['action'])) {
                 }
                 $params = serialize($add_params);
             }
-            $db->query('SELECT id FROM ' . table_fields . ' WHERE name = "' . $db->escape_string($postbit['field_name']) . '" AND cat_id = "' . $postbit['cat_id'] . ' LIMIT 1"');
+            $data = array(':name' => $postbit['field_name'], ':catid' => $postbit['cat_id']);
+            $db->query('SELECT id FROM ' . table_fields . ' WHERE name = :name AND cat_id = :catid LIMIT 1', $data);
 
-            if ($db->fetchRow() > 0) {
-
-                $messageStack->add_session('general', 'Das Feld "' . $postbit['field_name'] . '" existiert bereits in dieser Kategorie', 'error');
+            if ($db->rowCount() > 0) {
+                $messageStack->add_session('general', sprintf(MSG_E_FIELD_EXIST, $postbit['field_name']), 'error');
 
             } elseif (!isset($postbit['field_name']) || (strlen($postbit['field_name']) < FIELD_MIN_LENGTH)) {
-                $messageStack->add_session('general', 'Der Feldname muss mindestens ' . FIELD_MIN_LENGTH . ' Zeichen lang sein', 'error');
-
+                $messageStack->add_session('general', sprintf(MSG_E_FIELD_LENGTH, FIELD_MIN_LENGTH), 'error');
                 header('Location:survey.php?position=add_field&cID=' . $postbit['cat_id']);
-
             } else {
                 $notes = 0;
                 if (isset($_POST['notes'])) {
                     $notes = 1;
                 }
-
-                $db->query("INSERT INTO " . table_fields . " (notes, name, type, cat_id, sort_order, params, info) VALUES ('" . $db->escape_string($notes) . "','" . $db->escape_string($postbit['field_name']) . "','" . $db->escape_string($postbit['field_type']) . "','" . $db->escape_string($postbit['cat_id']) . "','" . $db->escape_string($postbit['sort_order']) . "', '" . $db->escape_string($params) . "', '" . $db->escape_string($postbit['info']) . "')");
-
-                $db->query('UPDATE ' . table_categories . ' SET empty = "0" WHERE id="' . $db->escape_string($postbit['cat_id']) . '"');
-
-                $db->query("SELECT id FROM " . table_fields . " ORDER BY id DESC LIMIT 1");
-
+                $data = array(
+                    ':name'     => $postbit['field_name'],
+                    ':catid'    => $postbit['cat_id'],
+                    ':notes'    => $notes,
+                    ':type'     => $postbit['field_type'],
+                    ':sort'     => $postbit['sort_order'],
+                    ':params'   => $params,
+                    ':info'     => $postbit['info']
+                );
+                $db->query('INSERT INTO ' . table_fields . ' (notes, name, type, cat_id, sort_order, params, info)
+                                    VALUES (:notes,:name,:type,:catid,:sort,:params,:info )');
+                $db->query('UPDATE ' . table_categories . ' SET empty = 0 WHERE id="' . $postbit['cat_id'] . '"');
+                $db->query('SELECT id FROM ' . table_fields . ' ORDER BY id DESC LIMIT 1');
                 $newID = $db->fetch();
-
                 $db->query('ALTER TABLE ' . table_survey . ' add field_' . $newID['id'] . ' varchar(' . TEXTAREA_MAX_LENGTH * 2 . ')');
 
-                $messageStack->add_session('general', 'Das Feld "' . $postbit['field_name'] . '" wurde hinzugefügt', 'success');
+                $messageStack->add_session('general', sprintf(MSG_FIELD_ADDED, $postbit['field_name']), 'success');
                 header('Location:survey.php?position=edit&cID=' . $postbit['cat_id']);
             }
 
@@ -89,23 +92,20 @@ if (isset($_GET['action'])) {
                 $postbit[$postbits] = db_prepare_input($element);
             }
             $db->query('SELECT id FROM ' . table_categories . ' WHERE name = "' . $postbit['cat_name'] . '"');
-            if (strlen($postbit['cat_name']) < CAT_MIN_LENGTH || $db->fetchRow() > 0) {
-
-                $messageStack->add_session('general', 'Die Kategorie "' . $postbit['cat_name'] . '" existiert bereits oder der Name ist zu kurz', 'error');
-
+            if (strlen($postbit['cat_name']) < CAT_MIN_LENGTH || $db->rowCount() > 0) {
+                $messageStack->add_session('general', sprintf(MSG_E_CATEGORY_ADD, $postbit['cat_name']), 'error');
                 header('Location:survey.php?position=add_category');
-
             } else {
-
-
-                $db->query("INSERT INTO " . table_categories . " (name, parent, sort_order) VALUES ('" . $db->escape_string($postbit['cat_name']) . "','" . $db->escape_string($postbit['parent']) . "','" . $db->escape_string($postbit['sort_order']) . "')");
-
-
+                $data = array(
+                    ':name'     => $postbit['cat_name'],
+                    ':parent'   => $postbit['parent'],
+                    ':sort'     => $postbit['sort_order']
+                );
+                $db->query('INSERT INTO ' . table_categories . ' (name, parent, sort_order)
+                                VALUES (:name,:parent,:sort)');
                 $db->query("SELECT id FROM " . table_categories . " ORDER BY id DESC LIMIT 1");
-
                 $newID = $db->fetch();
-
-                $messageStack->add_session('general', 'Die Kategorie "' . $postbit['cat_name'] . '" wurde hinzugefügt und kann jetzt bearbeitet werden', 'success');
+                $messageStack->add_session('general', sprintf(MSG_CATEGORY_ADDED,$postbit['cat_name']), 'success');
                 header('Location:survey.php?position=edit&cID=' . $newID['id']);
             }
 
@@ -115,9 +115,7 @@ if (isset($_GET['action'])) {
             if ((!isset($_GET['cID']) || !is_numeric($_GET['cID'])) &&
                 (!isset($_GET['fID']) || !is_numeric($_GET['fID']))
             ) {
-
                 header('Location:survey.php');
-
             } elseif (isset($_GET['cID']) && is_numeric($_GET['cID'])) {
 
                 $id = $_GET['cID'];
@@ -130,29 +128,24 @@ if (isset($_GET['action'])) {
 
                 $db->query('SELECT id FROM ' . table_categories . ' WHERE name = "' . $db->escape_string($postbit['cat_name']) . '" AND id != "' . $id . '"');
                 if ($db->fetchRow() > 0) {
-
-                    $messageStack->add_session('general', 'Die Kategorie "' . $postbit['cat_name'] . '" existiert bereits', 'error');
-
+                    $messageStack->add_session('general', sprintf(MSG_E_CATEGORY_EXIST, $postbit['cat_name']), 'error');
                 } elseif (strlen($postbit['cat_name']) < CAT_MIN_LENGTH) {
-
-                    $messageStack->add_session('general', 'Der Kategoriename muss mindestens ' . CAT_MIN_LENGTH . ' Zeichen lang sein', 'error');
-
+                    $messageStack->add_session('general', sprintf(MSG_E_CATEGORY_EXIST, CAT_MIN_LENGTH), 'error');
                 } else {
-
-                    $db->query("UPDATE " . table_categories . " SET name = '" . $db->escape_string($postbit['cat_name']) . "', parent = '" . $postbit['parent'] . "', sort_order = '" . $postbit['sort_order'] . "' WHERE id='" . $id . "' LIMIT 1");
-
-                    $messageStack->add_session('general', 'Alle Änderungen übernommen', 'success');
-
+                    $data = array(
+                            ':name'=>$postbit['cat_name'],
+                            ':sort'=>$postbit['sort_order'],
+                            ':parent'=>$postbit['parent'],
+                            ':id'=>$id
+                            );
+                    $db->query('UPDATE ' . table_categories . ' SET name =:name, parent=:parent, sort_order =:sort WHERE id=:id LIMIT 1',$data);
+                    $messageStack->add_session('general', MSG_UPDATE_SUCCESS, 'success');
                 }
-
                 header('Location:survey.php?position=edit&cID=' . $id);
 
             } elseif (isset($_GET['fID']) && is_numeric($_GET['fID'])) {
-
-
                 $id = $_GET['fID'];
-
-                $db->query('SELECT type FROM ' . table_fields . ' WHERE id="' . $id . '" LIMIT 1');
+                $db->query('SELECT type FROM ' . table_fields . ' WHERE id=:id LIMIT 1',array(':id'=>$id));
                 $oldfield = $db->fetch();
                 $postbit = null;
                 foreach ($_POST as $postbits => $element) {
@@ -160,7 +153,6 @@ if (isset($_GET['action'])) {
                 }
 
                 if ($oldfield['type'] != $postbit['field_type']) {
-
                     $db->query('UPDATE ' . table_survey . ' SET field_' . $id . ' = NULL');
                 }
                 $params = '';
@@ -198,17 +190,24 @@ if (isset($_GET['action'])) {
                     $params = serialize($add_params);
                 }
                 if (strlen($postbit['field_name']) < FIELD_MIN_LENGTH) {
-                    $messageStack->add_session('general', 'Der Feldname muss mindestens ' . FIELD_MIN_LENGTH . ' Zeichen lang sein', 'error');
+                    $messageStack->add_session('general', sprintf(MSG_E_FIELD_LENGTH,FIELD_MIN_LENGTH), 'error');
                 } else {
                     $notes = 0;
                     if (isset($_POST['notes'])) $notes = 1;
-
-                    $db->query("UPDATE " . table_fields . " SET notes= '" . $db->escape_string($notes) . "',name='" . $db->escape_string($postbit['field_name']) . "', type='" . $db->escape_string($postbit['field_type']) . "', cat_id='" . $db->escape_string($postbit['cat_id']) . "', sort_order='" . $db->escape_string($postbit['sort_order']) . "', params = '" . $db->escape_string($params) . "',info = '" . $db->escape_string($postbit['info']) . "' WHERE id ='" . $id . "' LIMIT 1");
-
-                    $db->query("UPDATE " . table_categories . " SET empty ='0' WHERE id ='" . $db->escape_string($postbit['cat_id']) . "' LIMIT 1");
-
-                    $messageStack->add_session('general', 'Das Feld "' . $postbit['field_name'] . '" wurde bearbeitet', 'success');
-
+                    $data = array(
+                        ':name'     => $postbit['field_name'],
+                        ':catid'    => $postbit['cat_id'],
+                        ':notes'    => $notes,
+                        ':type'     => $postbit['field_type'],
+                        ':sort'     => $postbit['sort_order'],
+                        ':params'   => $params,
+                        ':info'     => $postbit['info'],
+                        ':id'       => $id
+                    );
+                    $db->query('UPDATE ' . table_fields . '
+                                    SET notes= :notes, name =:name, type=:type, cat_id =:catid, sort_order=:sort, params=:params, info=:info WHERE id =:id LIMIT 1',$data);
+                    $db->query('UPDATE ' . table_categories . ' SET empty = 0 WHERE id =:id LIMIT 1',array(':id'=> $postbit['cat_id']));
+                    $messageStack->add_session('general', sprintf(MSG_FIELD_UPDATED, $postbit['field_name']), 'success');
                     header('Location:survey.php?position=edit&fID=' . $id);
                 }
             }
@@ -218,13 +217,9 @@ if (isset($_GET['action'])) {
                 (!isset($_GET['fID']) || !is_numeric($_GET['fID']))
             ) {
             } elseif (isset($_GET['cID']) && is_numeric($_GET['cID'])) {
-
                 $id = $_GET['cID'];
-
                 $CatsToDelete = $id . $Cats->getChildCats($id, 0);
-
                 $db->query('DELETE FROM ' . table_categories . ' WHERE id IN(' . $CatsToDelete . ')');
-
                 $db->query('SELECT id FROM ' . table_fields . ' WHERE cat_id IN(' . $CatsToDelete . ') ');
 
                 $fieldsToDelete = "";
@@ -237,35 +232,25 @@ if (isset($_GET['action'])) {
                 $delFields = substr($fieldsToDelete, 1, strlen($fieldsToDelete));
                 $delIds = substr($idsToDelete, 1, strlen($idsToDelete));
 
-
                 if (strlen(trim($delFields))) {
                     $db->query('ALTER TABLE ' . table_survey . $delFields);
                 }
                 if (strlen(trim($delIds))) {
                     $db->query('DELETE FROM ' . table_fields . ' WHERE id IN(' . $delIds . ')');
                 }
-
-                $messageStack->add_session('general', 'Daten gelöscht', 'success');
+                $messageStack->add_session('general', MSG_DATA_DELETED, 'success');
 
             } elseif (isset($_GET['fID']) && is_numeric($_GET['fID'])) {
 
                 $id = $_GET['fID'];
-
                 $db->query('SELECT cat_id FROM ' . table_fields . ' WHERE id= "' . $id . '" LIMIT 1');
-
                 $category = $db->fetch();
-
                 $db->query('ALTER TABLE ' . table_survey . ' DROP field_' . $id);
-
                 $db->query('DELETE FROM ' . table_fields . ' WHERE id ="' . $id . '" LIMIT 1');
-
-                $messageStack->add_session('general', 'Daten gelöscht', 'success');
-
+                $messageStack->add_session('general', MSG_DATA_DELETED, 'success');
                 header('Location:survey.php?position=edit&cID=' . $category['cat_id']);
 
             }
-
-
             break;
     }
 }
@@ -291,7 +276,7 @@ if (isset($_GET['position']) && $_GET['position'] === 'edit') {
         <meta http-equiv="Content-Style-Type" content="text/css"/>
         <meta http-equiv="content-language" content="de"/>
 
-        <title><?php echo TITLE;?> | <?php echo WORKSPACE_TITLE; ?></title>
+        <title><?php echo TITLE; ?> | <?php echo WORKSPACE_TITLE; ?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
         <script type="text/javascript" src="inc/javascripts/prototype.js"></script>
@@ -313,11 +298,11 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                 case 'add_category':
                     ?>
-                    <h2>Kategorie hinzufügen</h2>
+                    <h2><?php echo TEXT_CATEGORY_ADD;?></h2>
 
                     <form id="form" action="survey.php?action=add_category" method="post">
 
-                        <label for="cat_name">Name der Kategorie</label>
+                        <label for="cat_name"><?php echo LABEL_CATEGORY;?></label>
 
                         <p>
                             <?php
@@ -325,7 +310,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             ?>
                         </p>
 
-                        <label for="parent">Parent</label>
+                        <label for="parent"><?php echo LABEL_PARENT;?></label>
 
                         <p>
                             <select name="parent">
@@ -335,7 +320,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 ?>
                             </select>
                         </p>
-                        <label for="sort_order">Parent</label>
+                        <label for="sort_order"><?php echo LABEL_SORT;?></label>
 
                         <p>
                             <?php
@@ -351,7 +336,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         </p>
 
                         <div class="r2">
-                            <p><?php echo draw_input_field('send', 'Kategorie hinzufügen', '', 'submit', false); ?></p>
+                            <p><?php echo draw_input_field('send', TEXT_CATEGORY_ADD, '', 'submit', false); ?></p>
                         </div>
                     </form>
                     <?php
@@ -459,7 +444,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         <h2>Kategorie bearbeiten</h2>
 
                         <p id="subtitle">
-                            <a href="survey.php?position=add_field&amp;cID=<?php echo $catID;?>">Feld hinzufügen</a>
+                            <a href="survey.php?position=add_field&amp;cID=<?php echo $catID; ?>">Feld hinzufügen</a>
                             |
                             <a href="survey.php?position=add_category">Kategorie hinzufügen</a>
                             |
@@ -467,7 +452,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 löschen</a>
                         </p>
 
-                        <form id="form" action="survey.php?action=edit&amp;cID=<?php echo $catID;?>" method="post">
+                        <form id="form" action="survey.php?action=edit&amp;cID=<?php echo $catID; ?>" method="post">
 
                             <label for="cat_name">Name der Kategorie</label>
 
@@ -583,7 +568,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         ?>
                         <h2>Feld bearbeiten</h2>
 
-                        <form id="form" action="survey.php?action=edit&amp;fID=<?php echo $Fid;?>" method="post">
+                        <form id="form" action="survey.php?action=edit&amp;fID=<?php echo $Fid; ?>" method="post">
                             <label for="field_name">Feldname (Kriterium)</label>
 
                             <p>
@@ -763,7 +748,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                 if (isset($_GET['cID'])) {
                     $catID = (int)$_GET['cID'];
                     ?>
-                     | <a href="survey.php?position=add_field&amp;cID=<?php echo $catID; ?>">Feld hinzufügen</a>
+                    | <a href="survey.php?position=add_field&amp;cID=<?php echo $catID; ?>">Feld hinzufügen</a>
                 <?php
                 }
                 ?>
