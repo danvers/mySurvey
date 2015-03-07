@@ -1,8 +1,6 @@
 <?php
 /**
  * @author Dan Verständig
- * @description this database class is just an old implementation based on mysql connections.
- * @todo rewrite the sql function and implement prepared statements
  */
 
 /**
