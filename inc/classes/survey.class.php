@@ -54,7 +54,7 @@ class Avatar
     public function add($inserts, $user)
     {
         $data = array(
-                ':title'        =>  $inserts['name'],
+                ':title'        =>  $inserts['title'],
                 ':url'          =>  $inserts['url'],
                 ':description'  =>  $inserts['description'],
                 ':userid'       =>  $user

@@ -250,11 +250,23 @@ ul#avatarlist, ul#newslist {
     margin:auto;
     width:100%;
 }
+#evaluation .inq_data{
+    vertical-align: top;
+}
 
 #evaluation .inq_label{
     font-weight: bold;
     width:300px;
     vertical-align: top;
+}
+#evaluation span.notes_field{
+    display:block;
+    margin:10px 0 0 0;
+    font-weight: bold;
+}
+#evaluation input[type="checkbox"]{
+    margin-right: 10px;
+    vertical-align: middle;
 }
 .odd {
     background: #efefef;
@@ -294,6 +306,11 @@ input, select, textarea {
     background-color: #ddd;
 }
 
+.add_info{
+    width:200px;
+    font-weight: normal;
+
+}
 a.tooltip {
     border-bottom: 1px dashed #333;
     position: relative;

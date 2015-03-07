@@ -17,7 +17,7 @@ define('MSG_CATEGORY_ADDED','Die Kategorie %s wurde hinzugefügt und kann jetzt 
 define('MSG_E_CATEGORY_EXIST','Die Kategorie %s existiert bereits');
 define('MSG_E_CATEGORY_LENGTH','Der Kategoriename muss mindestens %s Zeichen lang sein');
 
-define('MSG_UPDATE_SUCCESS','Alle Änderungen übernommen');
+
 
 define('MSG_FIELD_UPDATED','Das Feld %s wurde bearbeitet');
 define('MSG_DATA_DELETED','Daten gelöscht');
@@ -28,6 +28,8 @@ define('TEXT_CATEGORY_ADD','Kategorie hinzufügen');
 define('TEXT_DELETE_CONFIRM','Eintrag &raquo;%s&laquo; unwideruflich löschen?');
 define('TITLE_FIELD_DELETE','Feld löschen');
 define('TITLE_CAT_DELETE','Kategorie löschen');
+define('TITLE_CAT_EDIT','Kategorie bearbeiten');
+
 define('LABEL_NOTES','Feld für Anmerkungen');
 define('LABEL_SELECT','Auswahlfeld');
 define('LABEL_DD_VAL','Dropdown Wert');

@@ -32,4 +32,8 @@ define('MSG_E_PASS_MIN_LENGTH','Das Passwort muss aus mindestens 6 Zeichen beste
 define('MSG_PASS_RESEND','Eine E-Mail mit den Informationen wurde an %s versandt.');
 define('MSG_PROFILE_UPDATE_SUCCESS','Profildaten aktualisiert');
 define('MSG_PASS_UPDATE_SUCCESS','Passwort aktualisiert');
+define('MSG_UPDATE_SUCCESS','Alle Änderungen übernommen');
 define('TITLE_OVIERVEW','Übersicht');
+define('MSG_ENTRY_DELETED','Eintrag gelöscht');
+define('TITLE_ENTRY_ADD','Eintrag hinzufügen');
+define('TEXT_NOTES','Anmerkungen');

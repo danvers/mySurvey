@@ -9,16 +9,11 @@ require_once('inc/header.php');
 if (!$SessionManager->logged_in() || !(IN_PAGE)) header("Location:index.php");
 
 $Cats = new Categories($db);
-
 $Avatar = new Avatar($db);
 
-
 if (isset($_GET['position'])) {
-
     if (!isset($_GET['aID']) || !is_numeric($_GET['aID']) || !$Avatar->isLegal($_GET['aID'], $User->__get('id')))
-
         header('Location:myinquiries.php');
-
 }
 if (isset($_GET['action'])) {
     switch ($_GET['action']) {
@@ -31,8 +26,7 @@ if (isset($_GET['action'])) {
                 foreach ($_POST as $postbits => $element) {
                     $postbit[$postbits] = db_prepare_input($element);
                 }
-
-                $messageStack->add_session('general', 'Alle Änderungen übernommen', 'success');
+                $messageStack->add_session('general', MSG_UPDATE_SUCCESS, 'success');
 
                 header('Location:myinquiries.php?position=edit&category=' . $id);
             }
@@ -45,7 +39,7 @@ if (isset($_GET['action'])) {
                 $id = $_GET['aID'];
 
                 if ($Avatar->delete($id, $User->__get('id'))) {
-                    $messageStack->add_session('general', 'Eintrag gelöscht', 'success');
+                    $messageStack->add_session('general', MSG_ENTRY_DELETED, 'success');
                     header('Location:myinquiries.php');
                 } else {
                     header('Location:myinquiries.php');
@@ -69,10 +63,6 @@ if (isset($_GET['action'])) {
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
 
-        <script type="text/javascript" src="inc/javascripts/scriptaculous.js"></script>
-        <script type="text/javascript" src="inc/javascripts/prototype.js"></script>
-        <script type="text/javascript" src="inc/javascripts/effects.js"></script>
-        <script type="text/javascript" src="inc/javascripts/simplescripts.js"></script>
     </head>
 <body>
 <div id="wrapper">
@@ -89,7 +79,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                 case 'confirm_delete':
                     if ((!isset($_GET['aID']) || !is_numeric($_GET['aID']))) {
                         ?>
-                        <h2>Fehler, keine ID angegeben</h2>
+                        <h2><?php echo TITLE_NO_ENTRY;?></h2>
                     <?php
                     } else {
                         $id = $_GET['aID'];
@@ -97,14 +87,14 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         $db->query('SELECT title FROM ' . table_survey . ' WHERE id = :id AND userid = :userid LIMIT 1',$data);
                         $name = $db->fetch();
                         ?>
-                        <h2>Eintrag löschen</h2>
+                        <h2><?php echo TEXT_DELETE;?></h2>
                         <form id="form" method="post" action="myinquiries.php?action=delete&amp;aID=<?php echo $id; ?>">
 
-                            <p>Eintrag &raquo;<?php echo $name['title']; ?>&laquo; &amp; erhobene Daten unwideruflich löschen?</p>
+                            <p><?php echo sprintf(TEXT_DELETE_CONFIRM,$name['title']);?></p>
 
                             <p>
-                                <a class="btn cancel" href="javascript:history.back();">Abbrechen</a>
-                                <button name="delete" class="proceed" type="submit">Löschen</button>
+                                <a class="btn cancel" href="javascript:history.back();"><?php echo TEXT_CANCEL;?></a>
+                                <button name="delete" class="proceed" type="submit"><?php echo TEXT_DELETE;?></button>
                             </p>
 
                         </form>
@@ -114,58 +104,53 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
             }
         } else {
             ?>
-            <h2>Meine Avatare</h2>
+            <h2><?php echo TITLE_MY_ENTRIES;?></h2>
             <p id="subtitle">
-                <a href="inquiry.php?position=add">neue Eintrag einstellen</a>
+                <a href="inquiry.php?position=add"><?php echo TEXT_ENTRY_ADD;?></a>
             </p>
             <?php
             $db->query('SELECT comments, id,userid,url,title,description FROM ' . table_survey . ' WHERE userid=:id ORDER BY id DESC',array(':id'=>$User->__get('id')));
-            if ($db->rowCount() > 0) {
+            if ($db->rowCount() >0) {
                 ?>
                 <ol id="avatarlist">
                     <?php
                     $n = 0;
                     while ($row = $db->fetch()) {
-                        $infoComments = '<small style="color:#999;font-weight:normal;">';
+                        $infoComments = '<small>';
                         $numComment = $row['comments'];
 
                         if ($numComment < 1) {
-                            $infoComments .= 'keine Kommentare';
+                            $infoComments .= TEXT_NO_COMMENTS;
                         } elseif ($numComment == 1) {
-                            $infoComments .= '1 Kommentare';
+                            $infoComments .= TEXT_ONE_COMMENT;
                         } else {
-                            $infoComments .= $row['comments'] . ' Kommentare';
+                            $infoComments .= $row['comments'] .' ' .TEXT_COMMENTS;
                         }
                         $infoComments .= '</small>';
                         ?>
-                        <li <?php if ($n % 2 == 0) echo 'style="background:#efefef;"'; ?>>
+                        <li>
                             <h3><?php echo htmlspecialchars($row['title']); ?></h3>
 
                             <p>
-                                <a href="inquiry.php?position=evaluate&amp;cID=1&amp;aID=<?php echo $row['id']; ?>">Avatar
-                                    kategorisieren</a>&nbsp;|&nbsp;
-                                <a href="feedback.php?position=show&amp;aID=<?php echo $row['id']; ?>">Feedback</a>
-                                (<?php echo $infoComments; ?>)&nbsp;|&nbsp;
-
-                                <a href="inquiry.php?position=edit&amp;aID=<?php echo $row['id']; ?>">Rahmendaten
-                                    bearbeiten</a>&nbsp;|&nbsp;
-
-                                <a href="myinquiries.php?position=confirm_delete&amp;aID=<?php echo $row['id']; ?>">Eintrag
-                                    löschen</a>
-
-                                &nbsp;|&nbsp;Exportieren als:
-                                <a href="csv_export.php?aID=<?php echo $row['id']; ?>">CSV</a>&nbsp;|&nbsp;
-                                <a href="txt_export.php?aID=<?php echo $row['id']; ?>">TXT</a>&nbsp;|&nbsp;
+                                <a href="inquiry.php?position=evaluate&amp;cID=1&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_EDIT_ENTRY;?></a> |
+                                <a href="feedback.php?position=show&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_FEEDBACK;?></a>
+                                (<?php echo $infoComments; ?>) |
+                                <a href="inquiry.php?position=edit&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_EDIT_SURVEY;?></a> |
+                                <a href="myinquiries.php?position=confirm_delete&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_DELETE_ENTRY;?></a> |
+                                <?php echo TEXT_EXPORT;?>
+                                <a href="csv_export.php?aID=<?php echo $row['id']; ?>">CSV</a> |
+                                <a href="txt_export.php?aID=<?php echo $row['id']; ?>">TXT</a> |
                                 <a href="xml_export.php?aID=<?php echo $row['id']; ?>">XML</a>
-                                <br/><br/>
+                            </p>
+                            <p>
                                 <?php if (strlen($row['url'])) { ?>
-                                    <strong>URI:</strong> <a
+                                    <strong>URI</strong> <a
                                         href="<?php echo $row['url']; ?>"><?php echo $row['url']; ?></a><br/>
                                 <?php
                                 }
                                 if (strlen($row['description'])){
                                 ?>
-                                <strong>Beschreibung:</strong> <?php echo $row['description']; ?></p>
+                                <strong><?php echo TEXT_DESCRIPTION;?></strong> <?php echo $row['description']; ?></p>
                             <?php
                             }
                             ?>
@@ -178,7 +163,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
             <?php
             } else {
                 ?>
-                <p>noch keine Avatare bearbeitet.</p>
+                <p><?php echo TEXT_NO_ENTRIES;?></p>
             <?php
             }
         }

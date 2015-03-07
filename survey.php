@@ -441,27 +441,26 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         $catID = $_GET['cID'];
                         $fields = $Cats->__get($catID);
                         ?>
-                        <h2>Kategorie bearbeiten</h2>
+                        <h2><?php echo TITLE_CAT_EDIT;?></h2>
 
                         <p id="subtitle">
-                            <a href="survey.php?position=add_field&amp;cID=<?php echo $catID; ?>">Feld hinzufügen</a>
+                            <a href="survey.php?position=add_field&amp;cID=<?php echo $catID; ?>"><?php echo TEXT_FIELD_ADD;?></a>
                             |
-                            <a href="survey.php?position=add_category">Kategorie hinzufügen</a>
+                            <a href="survey.php?position=add_category"><?php echo TEXT_CATEGORY_ADD;?></a>
                             |
-                            <a href="survey.php?position=confirm_delete&amp;cID=<?php echo $catID; ?>">diese Kategorie
-                                löschen</a>
+                            <a href="survey.php?position=confirm_delete&amp;cID=<?php echo $catID; ?>"><?php echo TITLE_CAT_DELETE;?></a>
                         </p>
 
                         <form id="form" action="survey.php?action=edit&amp;cID=<?php echo $catID; ?>" method="post">
 
-                            <label for="cat_name">Name der Kategorie</label>
+                            <label for="cat_name"><?php echo LABEL_CATEGORY;?></label>
 
                             <p>
                                 <?php
                                 echo draw_input_field('cat_name', $fields['name'], 'id="news-title"');
                                 ?>
                             </p>
-                            <label for="parent">Parent</label>
+                            <label for="parent"><?php echo LABEL_PARENT;?></label>
 
                             <p>
                                 <select name="parent">
@@ -471,7 +470,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                     ?>
                                 </select>
                             </p>
-                            <label for="sort_order">Reihenfolge</label>
+                            <label for="sort_order"><?php echo LABEL_SORT;?></label>
 
                             <p>
                                 <?php
@@ -487,7 +486,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             </p>
 
                             <div class="r2">
-                                <p><?php echo draw_input_field('send', 'Kategorie bearbeiten', '', 'submit', false); ?></p>
+                                <p><?php echo draw_input_field('send', TEXT_SAVE, '', 'submit', false); ?></p>
                             </div>
                         </form>
 

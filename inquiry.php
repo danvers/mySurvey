@@ -13,28 +13,25 @@ $Avatar = new Avatar($db);
 if (isset($_GET['action'])) {
     switch ($_GET['action']) {
         case 'add':
-            if (strlen(htmlspecialchars($_POST['name']))) {
+            if (strlen(htmlspecialchars($_POST['title']))) {
                 $postbit = array();
                 foreach ($_POST as $postbits => $element) {
                     $postbit[$postbits] = db_prepare_input($element);
                 }
                 if (!isset($postbit['url'])) $postbit['url'] = "";
                 if (!isset($postbit['description'])) $postbit['description'] = "";
-
                 $Avatar->add($postbit, $User->__get('id'));
 
-                $messageStack->add_session('general', 'Eintrag eingefügt Kategorisierung kann beginnen', 'success');
+                $messageStack->add_session('general', MSG_ENTRY_ADDED, 'success');
                 header('Location:myinquiries.php');
             } else {
-                $messageStack->add_session('general', 'Es muss ein Titel angegeben werden', 'error');
+                $messageStack->add_session('general', MSG_E_TITLE, 'error');
                 header('Location:inquiry.php?position=add');
             }
             break;
         case 'edit':
             if (!isset($_GET['aID']) || !$Avatar->isLegal($_GET['aID'], $User->__get('id'))) {
-
                 header('Location:myinquiries.php');
-
             } else {
                 $aID = $_GET['aID'];
                 if (strlen(htmlspecialchars($_POST['title']))) {
@@ -46,18 +43,18 @@ if (isset($_GET['action'])) {
                     if (!isset($postbit['description'])) $postbit['description'] = "";
 
                     $Avatar->update($postbit, $aID, $User->__get('id'));
-                    $messageStack->add_session('general', 'Daten aktualisiert', 'success');
+                    $messageStack->add_session('general', MSG_UPDATE_SUCCESS, 'success');
                     header('Location:inquiry.php?position=edit&aID=' . $aID);
 
                 } else {
-                    $messageStack->add_session('general', 'Es muss ein Titel angegeben sein.', 'error');
+                    $messageStack->add_session('general', MSG_E_TITLE, 'error');
                     header('Location:inquiry.php?position=edit&aID=' . $aID);
                 }
             }
             break;
         case 'evaluate':
             if (!isset($_GET['cID'])) {
-                $messageStack->add_session('general', 'Keine Kategorie übergeben', 'error');
+                $messageStack->add_session('general', MSG_E_NO_CATEGORY, 'error');
                 header('Location:myinquiries.php');
             }
             if (!isset($_GET['aID']) || !$Avatar->isLegal($_GET['aID'], $User->__get('id'))) {
@@ -130,17 +127,14 @@ if (isset($_GET['action'])) {
                     $querystring = trim(substr($querystring, 1, strlen($querystring)));
                 }
                 $Avatar->evaluate($querystring, $aID, $User->__get('id'), $data);
-
-                $messageStack->add_session('general', 'Kategorie aktualisiert', 'success');
-
+                $messageStack->add_session('general', MSG_CATEGORY_UPDATED, 'success');
                 header('Location:inquiry.php?position=evaluate&cID=' . $catID . '&aID=' . $aID);
-
             }
             break;
     }
 }
 if (isset($_GET['position']) && $_GET['position'] == 'evaluate' && !isset($_GET['cID'])) {
-    $messageStack->add_session('general', 'Keine Kategorie übergeben', 'error');
+    $messageStack->add_session('general', MSG_E_NO_CATEGORY, 'error');
     header('Location:myinquiries.php');
 }
 if (isset($_GET['position']) && ($_GET['position'] == 'evaluate' || $_GET['position'] == 'edit')) {
@@ -184,52 +178,21 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
         <?php
         if (isset($_GET['position'])) {
             switch ($_GET['position']) {
-                case 'insert':
-                    ?>
-                    <h2>Titel</h2>
-                    <p>
-                        Hier steht noch nichts.
-                        <br/>
-                        An dieser Stelle sollte dann die Katalogisierung der Daten - abhängig von den Kategorien -
-                        beginnen.
-                    </p>
-                    <?php
-                    break;
                 case 'add':
                     ?>
-                    <h2>Eintrag erstellen</h2>
-                    <form action="inquiry.php?action=add" method="post">
-                        <p class="left">Name des Avatars</p>
+                    <h2><?php echo TITLE_ENTRY_ADD;?></h2>
+                    <form id="form" action="inquiry.php?action=add" method="post">
+                        <label for="news-title"><?php echo LABEL_ENTRY_TITLE;?></label>
+                        <p><?php echo draw_input_field('title', '','id="news-title"'); ?></p>
+                        <label>URI</label>
+                        <p><?php echo draw_input_field('url', '','style="width:300px;"'); ?></p>
+                        <label><?php echo TEXT_DESCRIPTION;?></label>
+                        <p><?php echo draw_textarea_field('description', '60', '10', '', 'id="comment" onKeyDown="textLeft(\'comment\',\'counter\',200);"'); ?></p>
 
-                        <p>
-                            <?php
-                            echo draw_input_field('name', '', 'style="width:300px;"');
-                            ?>
-                        </p>
-
-                        <p class="left">URI</p>
-
-                        <p>
-                            <?php
-                            echo draw_input_field('url', '', 'style="width:300px;"');
-                            ?>
-                        </p>
-
-                        <p class="left">Beschreibung</p>
-
-                        <p>
-                            <?php
-                            echo draw_textarea_field('description', '60', '10', '', 'id="comment" onKeyDown="textLeft(\'comment\',\'counter\',200);"');
-                            ?>
-                        </p>
-
-                        <p class="left">&nbsp;</p>
-
-                        <p id="counter" class="error">&nbsp;</p>
-
-                        <p class="left">&nbsp;</p>
-
-                        <p><?php echo draw_input_field('send', 'Eintrag hinzufügen', '', 'submit', false);?></p>
+                        <div class="r2">
+                            <p id="counter" class="error">&nbsp;</p>
+                            <p><?php echo draw_input_field('send', TITLE_ENTRY_ADD, '', 'submit', false);?></p>
+                        </div>
 
                     </form>
                     <?php
@@ -240,40 +203,19 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     $db->query('SELECT id,title,url,description FROM ' . table_survey . ' WHERE id = :id AND userid = :userid LIMIT 1', $data);
                     $result = $db->fetch();
                     ?>
-                    <h2>Eintrag bearbeiten</h2>
-                    <form action="inquiry.php?action=edit&amp;aID=<?php echo $aID;?>" method="post">
-                        <p class="left">Name des Avatars</p>
+                    <h2><?php echo TEXT_EDIT;?></h2>
+                    <form id="form" action="inquiry.php?action=edit&amp;aID=<?php echo $aID;?>" method="post">
+                        <label for="news-title"><?php echo LABEL_ENTRY_TITLE;?></label>
+                        <p><?php echo draw_input_field('title', $result['title'],'id="news-title"'); ?></p>
+                        <label>URI</label>
+                        <p><?php echo draw_input_field('url', $result['url'],'style="width:300px;"'); ?></p>
+                        <label><?php echo TEXT_DESCRIPTION;?></label>
+                        <p><?php  echo draw_textarea_field('description', '60', '10', $result['description'], 'id="comment" onKeyDown="textLeft(\'comment\',\'counter\',200);"'); ?></p>
 
-                        <p>
-                            <?php
-                            echo draw_input_field('title', $result['title'], 'style="width:300px;"');
-                            ?>
-                        </p>
-
-                        <p class="left">URI</p>
-
-                        <p>
-                            <?php
-                            echo draw_input_field('url', $result['url'], 'style="width:300px;"');
-                            ?>
-                        </p>
-
-                        <p class="left">Beschreibung</p>
-
-                        <p>
-                            <?php
-                            echo draw_textarea_field('description', '60', '10', $result['description'], 'id="comment" onKeyDown="textLeft(\'comment\',\'counter\',200);"');
-                            ?>
-                        </p>
-
-                        <p class="left">&nbsp;</p>
-
-                        <p id="counter" class="error">&nbsp;</p>
-                        <br/>
-
-                        <p class="left">&nbsp;</p>
-
-                        <p><?php echo draw_input_field('send', 'Eintrag bearbeiten', '', 'submit', false);?></p>
+                        <div class="r2">
+                            <p id="counter" class="error">&nbsp;</p>
+                            <p><?php echo draw_input_field('send', TEXT_EDIT, '', 'submit', false);?></p>
+                        </div>
 
                     </form>
                     <?php
@@ -287,7 +229,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                     ?>
                     <div>
-                        <h2>Kategorisierung: <?php echo $Avatar->getName($aID);?></h2>
+                        <h2><?php echo TITLE;?>: <?php echo $Avatar->getName($aID);?></h2>
 
                         <div id="left">
 
@@ -297,7 +239,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             <br/>
 
                             <p id="legend">
-                                <strong>Legende:</strong> <img src="img/complete.gif" alt=""/> = Kategorie abgearbeitet
+                                <strong><?php echo TEXT_LEGEND;?></strong> <img src="img/complete.gif" alt=""/> <?php echo TEXT_CATEGORY_COMPLETE;?>
                             </p>
                         </div>
                         <div id="right">
@@ -307,8 +249,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             $db->query('SELECT id FROM ' . table_fields . ' WHERE cat_id = :catid',array(':catid'=>$catID));
                             if ($db->rowCount() > 0) {
                                 ?>
-                                <form method="post"
-                                      action="inquiry.php?action=evaluate&amp;cID=<?php echo $catID; ?>&amp;aID=<?php echo $_GET['aID']; ?>">
+                                <form id="form" method="post" action="inquiry.php?action=evaluate&amp;cID=<?php echo $catID; ?>&amp;aID=<?php echo $_GET['aID']; ?>">
                                     <table cellpadding="0" cellspacing="0" id="evaluation">
                                         <?php
                                         $db->query('SELECT * FROM ' . table_survey . ' WHERE id="' . $aID . '" AND userid ="' . $User->__get('id') . '" LIMIT 1');
@@ -323,9 +264,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                                                     if (isset($row['info']) && strlen($row['info'])) {
                                                         ?>
-                                                        <span style="font-weight:normal;">
-					[<a class="tooltip" href="#">?<span style="width:200px;"><?php echo $row['info']; ?></span></a>]
-					</span>
+                                                        <span class="add_info">[<a class="tooltip" href="#">?<span style="width:200px;"><?php echo $row['info']; ?></span></a>]</span>
                                                     <?php
                                                     }
                                                     ?>
@@ -346,8 +285,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                                 echo draw_textarea_field($row['id'], '45', '5', '', 'id="' . $jsfieldname . '" onKeyDown="textLeft(\'feld_' . $row['id'] . '\',\'counter_' . $row['id'] . '\',200);"');
                                                             }
                                                             ?>
-                                                            <p id="counter_<?php echo $row['id']?>" class="error">
-                                                                &nbsp;</p>
+                                                            <p id="counter_<?php echo $row['id']?>" class="error">&nbsp;</p>
                                                             <?php
 
                                                             break;
@@ -371,12 +309,10 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                                             $fieldvalues = unserialize($fieldparams['value']);
                                                                             $notes = $fieldparams['notes'];
                                                                             if (in_array($value['id'], $fieldvalues)) {
-                                                                                echo draw_checkbox_field($row['id'] . '_' . $value['id'], '', 'true', 'id="' . $value['text'] . '" style="text-align:left;vertical-align:middle;"');
+                                                                                echo draw_checkbox_field($row['id'] . '_' . $value['id'], '', 'true', 'id="' . $value['text'] . '"');
                                                                             } else {
-                                                                                echo draw_checkbox_field($row['id'] . '_' . $value['id'], '', '', 'id="' . $value['text'] . '" style="text-align:left;vertical-align:middle;"');
+                                                                                echo draw_checkbox_field($row['id'] . '_' . $value['id'], '', '', 'id="' . $value['text'] . '"');
                                                                             }
-
-                                                                            echo '&nbsp;&nbsp;&nbsp;';
                                                                         }
 
                                                                     }
@@ -384,8 +320,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                                     foreach ($params as $value) {
                                                                         if ($value['id'] > 0) {
                                                                             echo '<label for="' . $value['text'] . '">' . $value['text'] . '</label>';
-                                                                            echo draw_checkbox_field($row['id'] . '_' . $value['id'], '', '', 'id="' . $value['text'] . '" style="text-align:left;vertical-align:middle;"');
-                                                                            echo '&nbsp;&nbsp;&nbsp;';
+                                                                            echo draw_checkbox_field($row['id'] . '_' . $value['id'], '', '', 'id="' . $value['text'] . '""');
                                                                         }
                                                                     }
                                                                 }
@@ -393,12 +328,11 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                             if ($row['notes']) {
                                                                 $jsfieldname = 'note_' . $row['id'];
                                                                 ?>
-                                                                <span style="float:left;">Anmerkungen</span>
+                                                                <span class="notes_field"><?php echo LABEL_NOTES;?></span>
                                                                 <?php
                                                                 echo draw_textarea_field('note_' . $row['id'], '45', '3', stripslashes($notes), 'id="' . $jsfieldname . '" onKeyDown="textLeft(\'note_' . $row['id'] . '\',\'counter' . $row['id'] . '\',200);"');
                                                                 ?>
-                                                                <p id="counter<?php echo $row['id']; ?>" class="error">
-                                                                    &nbsp;</p>
+                                                                <p id="counter<?php echo $row['id']; ?>" class="error">&nbsp;</p>
                                                             <?php
                                                             }
 
@@ -422,12 +356,11 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                             if ($row['notes']) {
                                                                 $jsfieldname = 'note_' . $row['id'];
                                                                 ?>
-                                                                <p>Anmerkungen</p>
+                                                                <span class="notes_field"><?php echo LABEL_NOTES;?></span>
                                                                 <?php
                                                                 echo draw_textarea_field('note_' . $row['id'], '45', '3', stripslashes($notes), 'id="' . $jsfieldname . '" onKeyDown="textLeft(\'note_' . $row['id'] . '\',\'counter' . $row['id'] . '\',200);"');
                                                                 ?>
-                                                                <p id="counter<?php echo $row['id']; ?>" class="error">
-                                                                    &nbsp;</p>
+                                                                <p id="counter<?php echo $row['id']; ?>" class="error">&nbsp;</p>
                                                             <?php
                                                             }
                                                             break;
@@ -447,12 +380,11 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                             if ($row['notes']) {
                                                                 $jsfieldname = 'note_' . $row['id'];
                                                                 ?>
-                                                                <p>Anmerkungen</p>
+                                                                <span class="notes_field"><?php echo LABEL_NOTES;?></span>
                                                                 <?php
                                                                 echo draw_textarea_field('note_' . $row['id'], '45', '3', stripslashes($notes), 'id="' . $jsfieldname . '" onKeyDown="textLeft(\'note_' . $row['id'] . '\',\'counter' . $row['id'] . '\',200);"');
                                                                 ?>
-                                                                <p id="counter<?php echo $row['id']; ?>" class="error">
-                                                                    &nbsp;</p>
+                                                                <p id="counter<?php echo $row['id']; ?>" class="error">&nbsp;</p>
                                                             <?php
                                                             }
                                                             break;
@@ -466,18 +398,18 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                         ?>
                                     </table>
                                     <div class="r2">
-                                        <p><?php echo draw_input_field('send', 'Kategorie bearbeiten', '', 'submit', false); ?></p>
+                                        <p><?php echo draw_input_field('send', TEXT_SAVE, '', 'submit', false); ?></p>
                                     </div>
                                 </form>
                             <?php
                             } else {
                                 ?>
-                                <p>Kategorie ist leer</p>
+                                <p><?php echo TEXT_CATEGORY_EMPTY;?></p>
                             <?php
                             }
                             ?>
                         </div>
-                        <div style="clear:both;">&nbsp;</div>
+                        <div class="c">&nbsp;</div>
                     </div>
                     <?php
                     break;
@@ -490,7 +422,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     $linkpath['filename'] = 'inquiry.php';
                     ?>
                     <div>
-                        <h2>Datenübersicht: <?php echo $Avatar->getName($aID);?></h2>
+                        <h2><?php echo TITLE_OVIERVEW;?>: <?php echo $Avatar->getName($aID);?></h2>
 
                         <div id="left">
                             <?php
@@ -518,15 +450,14 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                                                 if (isset($row['info']) && strlen($row['info'])) {
                                                     ?>
-                                                    <span style="font-weight:normal;">
-					[<a class="tooltip" href="#">?<span style="width:100px;"><?php echo $row['info']; ?></span></a>]
-					</span>
+                                                    <span class="add_info">
+					                                [<a class="tooltip" href="#">?<span><?php echo $row['info']; ?></span></a>]</span>
                                                 <?php
                                                 }
                                                 ?>
                                             </td>
 
-                                            <td style="text-align:left;<?php if ($n % 2 == 0) echo 'background:#efefef;'; ?>">
+                                            <td>
                                                 <?php
                                                 switch ($row['type']) {
                                                     case 2:
@@ -535,11 +466,10 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                         if (isset($fieldinputs['field_' . $row['id']])) {
                                                             $data = unserialize($fieldinputs['field_' . $row['id']]);
                                                         } else {
-                                                            $data['value'] = '<span class="error">Bislang keine Angabe</span>';
+                                                            $data['value'] = '<span class="error">'.TEXT_NO_CONTENT.'</span>';
                                                         }
                                                         ?>
-                                                        <div
-                                                            class="notes"><?php echo stripslashes(nl2br($data['value']));?></div>
+                                                        <div class="notes"><?php echo stripslashes(nl2br($data['value']));?></div>
                                                         <?php
 
                                                         break;
@@ -576,14 +506,12 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                             if ($row['notes'] && strlen($notes)) {
 
                                                                 ?>
-                                                                <br/><br/>
-                                                                <span>Anmerkungen:</span>
-                                                                <div
-                                                                    class="notes"><?php echo nl2br(stripslashes($notes)); ?></div>
+                                                                <span class="notes_field"><?php echo TEXT_NOTES;?></span>
+                                                                <div class="notes"><?php echo nl2br(stripslashes($notes)); ?></div>
                                                             <?php
                                                             }
                                                         } else {
-                                                            echo '<span>Keine Auswahl geroffen</span>';
+                                                            echo '<span>'.TEXT_NO_SELECTION.'</span>';
                                                         }
                                                         break;
 
@@ -597,17 +525,15 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                                 $notes = $data['notes'];
                                                                 echo drawSlider($row['id'], $defaultVal, $params['minVal'], $params['maxVal'], 1);
                                                             } else {
-                                                                //echo drawSlider($row['id'],0,$params['minVal'],$params['maxVal'],1);
-                                                                echo '<span class="error">Bislang keine Angabe</span>';
+                                                                echo '<span class="error">'.TEXT_NO_CONTENT.'</span>';
                                                             }
                                                         } else {
                                                             echo drawSlider($row['id'], 0, '', '', 1);
                                                         }
                                                         if ($row['notes'] && strlen($notes)) {
                                                             ?>
-                                                            <span>Anmerkungen:</span>
-                                                            <div
-                                                                class="notes"><?php echo nl2br(stripslashes($notes)); ?></div>
+                                                            <span class="notes_field"><?php echo TEXT_NOTES;?></span>
+                                                            <div class="notes"><?php echo nl2br(stripslashes($notes)); ?></div>
                                                         <?php
                                                         }
                                                         break;
@@ -628,10 +554,8 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                         }
                                                         if ($row['notes'] && strlen($notes)) {
                                                             ?>
-                                                            <br/><br/>
-                                                            <span>Anmerkungen:</span>
-                                                            <div
-                                                                class="notes"><?php echo nl2br(stripslashes($notes)); ?></div>
+                                                            <span class="notes_field"><?php echo TEXT_NOTES;?></span>
+                                                            <div class="notes"><?php echo nl2br(stripslashes($notes)); ?></div>
                                                         <?php
                                                         }
 
@@ -650,8 +574,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                     ?>
                                     <div class="r2">
                                         <p>
-                                            <a class="btn" href="inquiry.php?position=evaluate&amp;aID=<?php echo $aID; ?>&amp;cID=<?php echo $catID; ?>">diese
-                                                Kategorie bearbeiten</a></p>
+                                            <a class="btn" href="inquiry.php?position=evaluate&amp;aID=<?php echo $aID; ?>&amp;cID=<?php echo $catID; ?>"><?php echo TEXT_EDIT;?></a></p>
                                     </div>
                                 <?php
                                 }
@@ -659,12 +582,12 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             <?php
                             } else {
                                 ?>
-                                <p>Kategorie ist leer</p>
+                                <p><?php echo TEXT_CATEGORY_EMPTY;?></p>
                             <?php
                             }
                             ?>
                         </div>
-                        <div style="clear:both;">&nbsp;</div>
+                        <div class="c">&nbsp;</div>
                     </div>
                     <?php
                     break;
