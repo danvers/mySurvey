@@ -1,6 +1,6 @@
 ## Survey Workspace
 
-This framework basically let's you create a survey on a specific topic. It is a collaborative workspace with ACL, UserManagement, a really simple News System and some feedback/comment function.  
+This framework basically let's you create a survey on a specific topic. It is a collaborative workspace with simple ACL, UserManagement, a really simple news system and some feedback/comment function.  
 
 ## About this Framework
 
