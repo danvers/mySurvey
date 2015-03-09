@@ -35,7 +35,6 @@ class SessionManagement
 
     public function logout()
     {
-        $_SESSION['AuthedUser'] = false;
         session_unset();
         $data = array(':user'=> 0, ':session' => $this->session_id);
         $this->db->query('UPDATE  '. table_sessions . ' SET user=:user WHERE session=:session', $data );
@@ -46,7 +45,6 @@ class SessionManagement
         $expire     = time() + 60 * 60 * 24 * 7;
         $key        = hash_hmac( 'sha256', $value . $expire, COOKIE_SECRET);
         $hash       = hash_hmac( 'sha256', $value . $expire, $key );
-
         $content = base64_encode($value) . '|' . $expire . '|' . $hash;
         $data = array(':remember' => $content, ':id'=> $value);
         $this->db->query('UPDATE ' . table_users . ' SET remember=:remember WHERE usermail =:id LIMIT 1',$data);
@@ -104,8 +102,6 @@ class SessionManagement
             }
         }
         session_unset();
-        $_SESSION['AuthedUser'] = false;
-
         return false;
     }
 
@@ -181,7 +177,7 @@ class SessionManagement
     {
        $limit_user = date("YmdHis", time() - 60 * 25);
        $limit_anon = date("YmdHis", time() - 60);
-       $this->db->query('DELETE FROM ' . table_sessions . ' WHERE timestamp < ' . $limit_user . ' AND user > 0 AND cookie = 0');
+       $this->db->query('DELETE FROM ' . table_sessions . ' WHERE timestamp < ' . $limit_user . ' AND user > 0');
        $this->db->query('DELETE FROM ' . table_sessions . ' WHERE timestamp < ' . $limit_anon . ' AND user = 0');
        $this->db->query('OPTIMIZE TABLE ' . table_sessions);
 
