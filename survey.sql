@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `mysurvey_categories` (
   `sort_order` INT(3)      NOT NULL DEFAULT '0',
   `empty`      TINYINT(1)  NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-);
+) DEFAULT CHARSET=utf8;
 CREATE TABLE IF NOT EXISTS `mysurvey_feedback` (
   `id`        INT(11)      NOT NULL AUTO_INCREMENT,
   `timestamp` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `mysurvey_feedback` (
   `text`      VARCHAR(200) NOT NULL,
   `userid`    INT(11)      NOT NULL,
   PRIMARY KEY (`id`)
-);
+) DEFAULT CHARSET=utf8;
 CREATE TABLE IF NOT EXISTS `mysurvey_fields` (
   `id`         INT(11)      NOT NULL AUTO_INCREMENT,
   `info`       TEXT,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `mysurvey_fields` (
   `params`     VARCHAR(800) NOT NULL,
   `notes`      TINYINT(1)   NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-);
+) DEFAULT CHARSET=utf8;
 CREATE TABLE IF NOT EXISTS `mysurvey_news` (
   `id`        INT(11)                   NOT NULL AUTO_INCREMENT,
   `timestamp` TIMESTAMP                 NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -38,15 +38,15 @@ CREATE TABLE IF NOT EXISTS `mysurvey_news` (
   `title`     VARCHAR(50)
               COLLATE latin1_german2_ci NOT NULL,
   PRIMARY KEY (`id`)
-);
-CREATE TABLE IF NOT EXISTS `mysurvey_sessions` (
-  `user`      VARCHAR(150) NOT NULL DEFAULT '',
-  `ip`        VARCHAR(150) NOT NULL DEFAULT '0',
-  `session`   VARCHAR(32)  NOT NULL DEFAULT '',
-  `timestamp` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `cookie`    TINYINT(1)   NOT NULL,
+) DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ms_sessions` (
+  `user` varchar(150) NOT NULL DEFAULT '',
+  `ip` varchar(150) NOT NULL DEFAULT '0',
+  `session` varchar(32) NOT NULL DEFAULT '',
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `cookie` tinyint(1) NOT NULL DEFAULT '0',
   KEY `user` (`user`)
-);
+) DEFAULT CHARSET=utf8;
 CREATE TABLE IF NOT EXISTS `mysurvey_survey` (
   `id`          INT(11)      NOT NULL AUTO_INCREMENT,
   `userid`      INT(11)      NOT NULL,
@@ -81,14 +81,17 @@ CREATE TABLE IF NOT EXISTS `mysurvey_survey` (
   `field_26`    VARCHAR(400)          DEFAULT NULL,
   `field_27`    VARCHAR(400)          DEFAULT NULL,
   PRIMARY KEY (`id`)
-);
-CREATE TABLE IF NOT EXISTS `mysurvey_users` (
-  `id`        INT(11)     NOT NULL AUTO_INCREMENT,
-  `userpass`  VARCHAR(32)          DEFAULT NULL,
-  `userlevel` INT(2)               DEFAULT '0',
-  `usermail`  VARCHAR(80) NOT NULL,
-  `last_seen` TIMESTAMP   NULL     DEFAULT NULL,
-  `first`     VARCHAR(55) NOT NULL,
-  `lastname`  VARCHAR(55) NOT NULL,
+) DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ms_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userpass` varchar(60) DEFAULT NULL,
+  `userlevel` int(2) DEFAULT '0',
+  `usermail` varchar(80) NOT NULL,
+  `last_seen` timestamp NULL DEFAULT NULL,
+  `firstname` varchar(55) NOT NULL,
+  `lastname` varchar(55) NOT NULL,
+  `change_pass` varchar(32) DEFAULT NULL,
+  `expires` timestamp NULL DEFAULT NULL,
+  `remember` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-);
+) DEFAULT CHARSET=utf8;
