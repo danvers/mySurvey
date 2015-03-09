@@ -51,7 +51,6 @@ if (isset($_GET['do'])) {
                     $messageStack->add('general', sprintf(MSG_E_LASTNAME,NAME_MIN_LENGTH), 'error');
                 }
             }
-
             if (isset($postbit['usermail']) && $messageStack->size('general') < 1) {
 
                 if (check_email($postbit['usermail']) && $messageStack->size('general') < 1) {
@@ -169,7 +168,4 @@ if (isset($_GET['do'])) {
     if ($SessionManager->logged_in()) {
         $User = new User($_SESSION['userid'], $db);
     }
-}
-if (isset($_GET['page']) && $_GET['page'] == 0) {
-    header('Location: index.php');
 }

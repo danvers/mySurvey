@@ -36,21 +36,16 @@ class User
     public function changePass($pass)
     {
         $hash = $this->makehash($pass);
-
         $data = array(':pass'=> $hash, ':id'=>$this->id,':cp'=> null,':expires'=>null);
-
         $this->db->query('UPDATE ' . table_users . ' SET userpass=:pass, change_pass=:cp, expires=:expires WHERE id=:id LIMIT 1' , $data);
-
         return true;
     }
 
     public function passIsValid($pass)
     {
         $data = array(':id'=>$this->id);
-
         $this->db->query('SELECT userpass FROM ' . table_users . ' WHERE id =:id',$data);
         $hash = $this->db->fetch();
-
         return password_verify($pass,$hash['userpass']);
     }
 
@@ -75,9 +70,7 @@ class User
 
         $text = MAIL_TEXT_INVITE;
         $content = sprintf($text, $set_password_url);
-
         $this->UserMail($array, $content, MAIL_TITLE_INVITE);
-
         return true;
     }
 
@@ -120,7 +113,6 @@ class User
             $result = $this->db->fetch();
             $this->cache[$field] = $result[$field];
         }
-
         return $this->cache[$field];
     }
 
@@ -131,9 +123,7 @@ class User
             return;
         }
         $this->db->query('UPDATE ' . table_users . ' SET  '.$field.'=:field WHERE id=:id LIMIT 1', array(':field'=>$value,':id'=> $this->id) );
-
         $this->cache[$field] = $value;
-
     }
 
     public function reInviteUser($userid)
@@ -155,9 +145,7 @@ class User
         $content = sprintf($text, $array['email'], $set_password_url);
 
         if ($this->UserMail($array, $content, MAIL_TITLE_INVITE)) {
-
             $this->db->query('UPDATE ' . table_users . ' SET change_pass=:change_pass, expires =:expires WHERE id=:id LIMIT 1',$data);
-
             return true;
         }
         return false;
@@ -178,18 +166,16 @@ class User
         $array['lastname']      = $result['lastname'];
         $array['fistname']      = $result['firstname'];
         $array['email']         = $result['usermail'];
-        $data[':change_pass']    = $invite;
+        $data[':change_pass']   = $invite;
         $data[':expires']       = ($invite + 60 * 60 * 24);
-        $data[':id']             = $result['id'];
+        $data[':id']            = $result['id'];
         $set_password_url       = HOME_DIR.'index.php?position=activate&code='.md5($invite);
         $text = MAIL_TEXT_PASS_RESET;
 
         $content = sprintf($text, $set_password_url);
 
         if ($this->UserMail($array, $content, MAIL_TITLE_PASS_RESET)) {
-
             $this->db->query('UPDATE ' . table_users . ' SET change_pass=:change_pass, expires =:expires WHERE id=:id LIMIT 1',$data);
-
             return true;
         }
         return false;

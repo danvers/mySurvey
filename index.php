@@ -4,6 +4,26 @@
  * @author Dan Verständig
  */
 require('inc/header.php');
+
+if (isset($_GET['position']) && $_GET['position'] == 'activate') {
+    if(!isset($_GET['code']) || !strlen($_GET['code'])==32) {
+        header('Location:index.php');
+    }
+    $code = htmlspecialchars($_GET['code']);
+    $data = array(':code'=>$code);
+    $db->query('SELECT UNIX_TIMESTAMP(expires) as expires, usermail FROM ' . table_users . ' WHERE change_pass=:code',$data);
+    $row = $db->fetch();
+    if($db->rowCount() == 1) {
+        if ($row['expires'] < time()) {
+            $messageStack->add_session('general', PASSWORD_RESET_CODE_EXPIRED, 'error');
+            header('Location:index.php');
+        }
+    }
+}
+if (isset($_GET['page']) && $_GET['page'] == 0) {
+    header('Location: index.php');
+}
+
 ?>
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de" dir="ltr">
@@ -19,24 +39,6 @@ require('inc/header.php');
         <script type="text/javascript" src="inc/javascripts/prototype.js"></script>
         <script type="text/javascript" src="inc/javascripts/scriptaculous.js"></script>
         <script type="text/javascript" src="inc/javascripts/effects.js"></script>
-        <script type="text/javascript">
-            more_info = function (parameters) {
-                var div_id = parameters.div_id;
-
-                $('detail-' + div_id).style.display = "block";
-                $('element-' + div_id).style.paddingLeft = "20px";
-                $('header-' + div_id).style.color = "#000000";
-                $('element-' + div_id).style.backgroundImage = "url('img/avatarhover.gif')";
-                $('element-' + div_id).style.backgroundRepeat = "no-repeat";
-            };
-            less_info = function (div_id) {
-                $('detail-' + div_id).style.display = "none";
-                $('element-' + div_id).style.paddingLeft = "5px";
-                $('header-' + div_id).style.color = "#666666";
-                $('element-' + div_id).style.backgroundImage = "none";
-
-            }
-        </script>
     </head>
 
 <body>
@@ -53,11 +55,9 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                 switch ($_GET['position']) {
                     case 'password':
                         ?>
+                        <h2><?php echo TITLE_PASSWORD_FORGOTTEN;?></h2>
                         <form id="form" method="post" action="index.php?do=resendpw">
-                            <p class="text">
-                            <?php echo TEXT_PASSWORD_FORGOTTEN;?>
-                            </p>
-                            <p>
+                            <p><?php echo TEXT_PASSWORD_FORGOTTEN;?></p>
                             <label><?php echo LABEL_EMAIL;?></label>
                                 <input type="text" name="email"/> <input type="submit" value="<?php echo TEXT_SUBMIT;?>" id="submit"/>
                             </p>
@@ -67,22 +67,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     case 'activate':
                         ?>
                         <h2><?php echo TITLE_SET_PASSWORD;?></h2>
-                        <?php
-                        $code = $_GET['code'];
-                        if(strlen($code)!=32){
-                        /**
-                         * @todo code doesnt fit.
-                         */
-                        }
-                        $data = array(':code'=>$code);
-                        $db->query('SELECT UNIX_TIMESTAMP(expires) as expires, usermail FROM ' . table_users . ' WHERE change_pass=:code',$data);
-                        $row = $db->fetch();
-                        if($row['expires']<time()){
-                        /**
-                         * @todo reset period over
-                         */
-                        }
-                        ?>
+
                         <form id="form" method="post" action="index.php?do=activate">
                             <label for="mail"><?php echo LABEL_EMAIL;?></label>
 
@@ -108,6 +93,8 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
             <?php
             } else {
                 ?>
+                <h2><?php echo WORKSPACE_TITLE.' &mdash; '.TITLE_LOGIN;?></h2>
+
                 <form id="form" method="post" action="index.php?do=login">
                     <label for="mail"><?php echo LABEL_EMAIL;?></label>
 
@@ -285,11 +272,8 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             }
                             $infoComments .= '</small>';
                             ?>
-                            <li id="element-<?php echo $row['id']; ?>"
-                                onmouseover="more_info({div_id : '<?php echo $row['id'] ?>'});"
-                                onmouseout="less_info('<?php echo $row['id'] ?>')">
-                                <h3 id="header-<?php echo $row['id']; ?>"
-                                    style="color:#666;"><?php echo htmlspecialchars($row['title']); ?>
+                            <li id="element-<?php echo $row['id']; ?>">
+                                <h3 id="header-<?php echo $row['id']; ?>"><?php echo htmlspecialchars($row['title']); ?>
                                     <small style="color:#999;font-weight:normal;">
                                         am <?php echo date('d.m.y H:i', $row['timestamp']); ?>
                                         <?php
@@ -301,7 +285,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                     </small>
                                 </h3>
 
-                                <div id="detail-<?php echo $row['id']; ?>" style="display:none;">
+                                <div id="detail-<?php echo $row['id']; ?>">
 
                                     <p>
                                         <a href="inquiry.php?position=view&amp;cID=1&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_VIEW_SURVEY;?></a> |

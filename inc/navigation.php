@@ -29,7 +29,7 @@
         </p>
         <p id="breadcrumb"><?php echo getPosition(); ?></p>
     <?php
-    } else {
+    }else{
         if (isset($_GET['position']) && $_GET['position'] === 'password') {
             ?>
             <p id="rightnav">
@@ -41,7 +41,6 @@
             <p id="rightnav">
                 <a href="index.php?position=password">Passwort vergessen?</a>
             </p>
-            <p class="c"></p>
         <?php
         }
     }

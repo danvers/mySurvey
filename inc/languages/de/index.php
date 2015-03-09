@@ -24,3 +24,6 @@ define('TEXT_PROGRESS','Fortschritt');
 define('TEXT_NO_ENTRIES','noch keine Einträge');
 
 define('TITLE_SET_PASSWORD','Passwort eingeben');
+define('PASSWORD_RESET_CODE_EXPIRED','Der Zeitraum zum Zurücksetzen des Passworts ist abgelaufen.');
+define('TITLE_LOGIN','Anmeldung');
+define('TITLE_PASSWORD_FORGOTTEN','Passwort zurücksetzen');

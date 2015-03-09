@@ -74,7 +74,7 @@ div#content {
 }
 
 div#navigation {
-    padding: 5px;
+    padding: 10px 5px;
 }
 
 div#left {
@@ -126,8 +126,8 @@ p#breadcrumb a {
 
 p#rightnav {
     text-align: right;
-    float: right;
-    width: 30%;
+    float: right !important;
+    width: 33%;
 }
 
 #subtitle {
