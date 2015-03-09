@@ -18,7 +18,6 @@ class SessionManagement
         $this->db = new database();
         $this->session_id = $session_id;;
         $this->uid = 0;
-
         $data = array(':session_id' => $this->session_id);
         $this->db->query('SELECT * FROM ' . table_sessions . ' WHERE session= :session_id', $data);
 
@@ -37,81 +36,118 @@ class SessionManagement
     public function logout()
     {
         $_SESSION['AuthedUser'] = false;
-        unset($_SESSION);
-        $this->delete_cookie('surveyUI');
+        session_unset();
         $data = array(':user'=> 0, ':session' => $this->session_id);
         $this->db->query('UPDATE  '. table_sessions . ' SET user=:user WHERE session=:session', $data );
+        $this->delete_cookie('surveyUI');
     }
+    private function set_cookie($name, $value)
+    {
+        $expire     = time() + 60 * 60 * 24 * 7;
+        $key        = hash_hmac( 'sha256', $value . $expire, COOKIE_SECRET);
+        $hash       = hash_hmac( 'sha256', $value . $expire, $key );
 
+        $content = base64_encode($value) . '|' . $expire . '|' . $hash;
+        $data = array(':remember' => $content, ':id'=> $value);
+        $this->db->query('UPDATE ' . table_users . ' SET remember=:remember WHERE usermail =:id LIMIT 1',$data);
+        setcookie($name,$content,$expire);
+    }
     private function delete_cookie($name)
     {
-        setcookie($name, '', time() - 4000);
-        unset($_COOKIE[$name]);
+        setcookie($name, "", time()-3600);
     }
 
     public function login($login = '', $pass = '', $checked = 0)
     {
-
-        if ($this->authenticateUser('', '', $checked)) {
+        if($this->authenticateUser('', '')){
             return true;
         }
+
         if ($this->authenticateUser($login, $pass, $checked)) {
 
             if ($checked) {
-                $content = serialize(array('user' => $login,
-                    'pass' => $pass,
-                    'cookie' => true));
-                $this->set_cookie('surveyUI', base64_encode($content));
+                $this->set_cookie('surveyUI', $login);
             }
-
             return true;
 
-        } elseif (isset($_COOKIE['surveyUI'])) {
+        }elseif(isset($_COOKIE['surveyUI'])){
 
-            $cookie = unserialize(base64_decode($_COOKIE['surveyUI']));
+            $content = $_COOKIE['surveyUI'];
+            list( $user, $expire, $hmac ) = explode('|', $content);
 
-            if ($this->authenticateUser($cookie['user'], $cookie['pass'], $cookie['cookie'])) {
-                $content = serialize(array('user' => $cookie['user'],
-                    'pass' => $cookie['pass'],
-                    'cookie' => $cookie['cookie']));
-                $this->set_cookie('surveyUI', base64_encode($content));
-
-                return true;
-            } else {
+            if($expire < time()){
                 $this->delete_cookie('surveyUI');
                 return false;
             }
+            $key    = hash_hmac( 'sha256', $user . $expire, COOKIE_SECRET );
+            $hash   = hash_hmac( 'sha256', $user . $expire, $key );
+
+            if ( $hmac != $hash ){
+                $this->delete_cookie('surveyUI');
+                return false;
+            }
+            $data   = array(':usermail'=> base64_decode($user), ':remember'=>$content);
+            $this->db->query('SELECT u.*, s.user
+                                FROM ' . table_users . ' u LEFT JOIN '.table_sessions.' s on u.id = s.user
+                                WHERE u.usermail=:usermail AND u.remember =:remember', $data);
+            if($this->db->rowCount() == 1){
+                $row = $this->db->fetch();
+                $_SESSION['user']       = $row['username'];
+                $_SESSION['pass']       = $row['userpass'];
+                $_SESSION['email']      = $user;
+                $_SESSION['userid']     = $row['id'];
+                $_SESSION['userlevel']  = $row['userlevel'];
+                $_SESSION['AuthedUser'] = true;
+                $_SESSION['cookie']     = 1;
+                $this->updateSession($row['id']);
+                return true;
+            }
         }
+        session_unset();
+        $_SESSION['AuthedUser'] = false;
+
         return false;
     }
 
     public function authenticateUser($user = '', $pass = '', $checked = 0)
     {
-
-        if (isset($_SESSION['user']) && isset($_SESSION['pass']) && isset($_SESSION['AuthedUser']) && $_SESSION['AuthedUser'] == true && isset($_SESSION['cookie'])) {
-            $user = $_SESSION['user'];
-            $pass = $_SESSION['pass'];
-            $checked = $_SESSION['cookie'];
+        if ( (isset($_SESSION['user']) && isset($_SESSION['pass']) ) &&
+             (isset($_SESSION['AuthedUser']) && $_SESSION['AuthedUser'] == true) ) {
+            $user   = $_SESSION['user'];
+            $pass   = $_SESSION['pass'];
+            $uid    = $_SESSION['userid'];
+            $data   = array(':usermail'=> $user, ':userpass'=>$pass,':userid'=>$uid);
+            $this->db->query('SELECT u.id, s.user
+                                FROM ' . table_users . ' u LEFT JOIN '.table_sessions.' s on u.id = s.user
+                                WHERE u.usermail =:usermail AND u.userpass =:userpass AND s.user =:userid', $data);
+            if($this->db->rowCount() == 1){
+                return true;
+            }
         }
 
         if (strlen($user) > 0) {
-            $data =  array(':usermail'=> $user, ':userpass' => $pass);
-            $this->db->query('SELECT usermail, id, userlevel FROM ' . table_users . ' WHERE usermail =:usermail AND userpass =:userpass', $data);
+            $data =  array(':usermail'=> $user);
+            $this->db->query('SELECT userpass FROM ' . table_users . ' WHERE usermail =:usermail', $data);
+            $pass_check = $this->db->fetch();
+            $hash = $pass_check['userpass'];
 
-            $row = $this->db->fetch();
+            if($this->db->rowCount()==1) {
+                if (password_verify($pass, $hash)) {
 
-            if (is_array($row)) {
-                $_SESSION['user'] = $user;
-                $_SESSION['pass'] = $pass;
-                $_SESSION['email'] = $row['usermail'];
-                $_SESSION['userid'] = $row['id'];
-                $_SESSION['userlevel'] = $row['userlevel'];
-                $_SESSION['AuthedUser'] = true;
-                $_SESSION['cookie'] = $checked;
-                $this->updateSession($row['id']);
-                return true;
-            } else {
-                $_SESSION['AuthedUser'] = false;
+                    $this->db->query('SELECT * FROM ' . table_users . ' WHERE usermail =:usermail', $data);
+                    $row = $this->db->fetch();
+                    $_SESSION['user']       = $user;
+                    $_SESSION['pass']       = $hash;
+                    $_SESSION['email']      = $row['usermail'];
+                    $_SESSION['userid']     = $row['id'];
+                    $_SESSION['userlevel']  = $row['userlevel'];
+                    $_SESSION['AuthedUser'] = true;
+                    $_SESSION['cookie']     = $checked;
+                    $this->updateSession($row['id']);
+                    return true;
+                } else {
+                    $_SESSION['AuthedUser'] = false;
+                }
             }
         }
         return false;
@@ -143,27 +179,17 @@ class SessionManagement
 
     private function cleanUp()
     {
-       $edgetime_session_user = date("YmdHis", time() - 60 * 25);
-       $edgetime_session_misc = date("YmdHis", time() - 60);
-       $this->db->query('DELETE FROM ' . table_sessions . ' WHERE timestamp < ' . $edgetime_session_user . ' AND user > 0');
-       $this->db->query('DELETE FROM ' . table_sessions . ' WHERE timestamp < ' . $edgetime_session_misc . ' AND user = 0');
+       $limit_user = date("YmdHis", time() - 60 * 25);
+       $limit_anon = date("YmdHis", time() - 60);
+       $this->db->query('DELETE FROM ' . table_sessions . ' WHERE timestamp < ' . $limit_user . ' AND user > 0 AND cookie = 0');
+       $this->db->query('DELETE FROM ' . table_sessions . ' WHERE timestamp < ' . $limit_anon . ' AND user = 0');
        $this->db->query('OPTIMIZE TABLE ' . table_sessions);
 
     }
 
-    private function set_cookie($name, $value)
-    {
-        setcookie($name, $value, time() + 60 * 60 * 24 * 30);
-        $_COOKIE[$name] = $value;
-    }
-
     public function logged_in()
     {
-        if (isset($_SESSION['AuthedUser']) && $_SESSION['AuthedUser'] === true) {
-            return true;
-        } else {
-            return false;
-        }
+        return (isset($_SESSION['AuthedUser']) && $_SESSION['AuthedUser'] === true);
     }
 
     public function __destruct()

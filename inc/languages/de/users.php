@@ -31,8 +31,3 @@ define('TABLE_LAST_SEEN','Zuletzt online');
 define('TABLE_ACTION','Aktion');
 define('TEXT_NEVER','noch nie');
 
-define('MAIL_TITLE_PASS_RESET', WORKSPACE_TITLE .' - Passwortänderung');
-define('MAIL_TEXT_PASS_RESET', 'Dein neues Passwort lautet: %s\nDieses Passwort wurde zufällig generiert. Daher wird empfohlen es selbst zu ändern.\n\nEinloggen kannst Du dich unter: ' . HOME_DIR);
-
-define('MAIL_TITLE_INVITE', WORKSPACE_TITLE .' - Einladung zum Arbeitsbereich');
-define('MAIL_TEXT_INVITE', 'dies ist eine Einladung zum Arbeitsbereich\nDeine Login-Email lautet: %s\nDein Passwort lautet: %s\n\nEinloggen kannst Du dich unter: ' . HOME_DIR);

@@ -64,6 +64,45 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         </form>
                         <?php
                         break;
+                    case 'activate':
+                        ?>
+                        <h2><?php echo TITLE_SET_PASSWORD;?></h2>
+                        <?php
+                        $code = $_GET['code'];
+                        if(strlen($code)!=32){
+                        /**
+                         * @todo code doesnt fit.
+                         */
+                        }
+                        $data = array(':code'=>$code);
+                        $db->query('SELECT UNIX_TIMESTAMP(expires) as expires, usermail FROM ' . table_users . ' WHERE change_pass=:code',$data);
+                        $row = $db->fetch();
+                        if($row['expires']<time()){
+                        /**
+                         * @todo reset period over
+                         */
+                        }
+                        ?>
+                        <form id="form" method="post" action="index.php?do=activate">
+                            <label for="mail"><?php echo LABEL_EMAIL;?></label>
+
+                            <p><input readonly="readonly" id="mail" type="text" name="email" value="<?php echo $row['usermail'];?>"/></p>
+
+                            <label for="pass"><?php echo LABEL_PASSWORD;?></label>
+
+                            <p><input id="pass" type="password" name="pass"/></p>
+
+                            <label for="pass"><?php echo LABEL_PASSWORD_RPT;?></label>
+                            <p><input id="pass_rpt" type="password" name="pass_rpt"/></p>
+
+                            <div class="r2">
+                            <p> <input type="hidden" value="<?php echo $code;?>" name="code"/>
+                                <input type="submit" value="<?php echo TEXT_SUBMIT;?>" id="submit"/>
+                            </p>
+                            </div>
+                        </form>
+                        <?php
+                        break;
                 }
                 ?>
             <?php
@@ -81,11 +120,10 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     <label for="cookie"><?php echo LABEL_COOKIE;?></label>
 
                     <p>
-                        <input id="cookie" type="checkbox" name="staylogged"/>
+                        <input id="cookie" type="checkbox" name="stay"/>
                         <input type="submit" value="<?php echo TEXT_SUBMIT;?>" id="submit"/>
                     </p>
                 </form>
-
             <?php
             }
         } else {

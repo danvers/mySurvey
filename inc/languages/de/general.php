@@ -10,6 +10,7 @@ define('TEXT_SUBMIT','Senden');
 define('TEXT_BACK','&laquo; Zurück');
 define('TEXT_EDIT','Daten bearbeiten');
 define('LABEL_PASSWORD','Passwort');
+define('LABEL_PASSWORD_RPT','Passwort wiederholen');
 define('LABEL_COOKIE','Eingeloggt bleiben');
 define('LABEL_EMAIL','E-Mail');
 define('TEXT_CANCEL','Abbrechen');
@@ -59,3 +60,8 @@ define('NAV_EDIT','Bearbeiten');
 define('NAV_DELETE','Löschen');
 define('NAV_PREVIEW','Vorschau');
 
+define('MAIL_TITLE_PASS_RESET', WORKSPACE_TITLE .' - Passwortänderung');
+define('MAIL_TEXT_PASS_RESET', 'Diese E-Mail wurde gesendet, weil dein Passwort zurückgesetzt werden soll. Dein neues Passwort kannst Du unter folgendem Link eingeben: %s\n\nEinloggen kannst Du dich unter: ' . HOME_DIR);
+
+define('MAIL_TITLE_INVITE', WORKSPACE_TITLE .' - Einladung zum Arbeitsbereich');
+define('MAIL_TEXT_INVITE', 'dies ist eine Einladung zum Arbeitsbereich\nBitte nutze den folgenden Link, um dein Passwort festzulegen: %s\n\nEinloggen kannst Du dich danach unter: ' . HOME_DIR);

@@ -22,3 +22,5 @@ define('TEXT_FEEDBACK','Feedback');
 define('TEXT_EXPORT','Exportieren als');
 define('TEXT_PROGRESS','Fortschritt');
 define('TEXT_NO_ENTRIES','noch keine Einträge');
+
+define('TITLE_SET_PASSWORD','Passwort eingeben');

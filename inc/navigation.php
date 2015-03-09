@@ -36,11 +36,12 @@
                 <a href="index.php"><?php echo NAV_LOGIN;?></a>
             </p>
         <?php
-        } else {
+        } elseif(!isset($_GET['position'])|| $_GET['position'] != 'activate') {
             ?>
             <p id="rightnav">
                 <a href="index.php?position=password">Passwort vergessen?</a>
             </p>
+            <p class="c"></p>
         <?php
         }
     }

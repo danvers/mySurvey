@@ -15,7 +15,7 @@ class User
 {
 
     private $db, $id;
-
+    private $options;
     private $cache = array();
     private $fields = array('firstname',
         'lastname', 'usermail', 'userlevel', 'userpass', 'id');
@@ -24,57 +24,61 @@ class User
     {
         $this->db = $database;
         $this->id = $id;
+        $this->options = array(
+                            'cost' => 11,
+                            'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM)
+                            );
     }
 
+    public function makeHash($pass){
+        return password_hash($pass, PASSWORD_BCRYPT, $this->options);
+    }
     public function changePass($pass)
     {
-        $pass = md5($pass);
-        $data = array(':pass'=> $pass, ':id'=>$this->id);
-        $this->db->query('UPDATE ' . table_users . ' SET userpass=:pass WHERE id=:id LIMIT 1' , $data);
-        return ($this->db->error() == 0);
+        $hash = $this->makehash($pass);
+
+        $data = array(':pass'=> $hash, ':id'=>$this->id,':cp'=> null,':expires'=>null);
+
+        $this->db->query('UPDATE ' . table_users . ' SET userpass=:pass, change_pass=:cp, expires=:expires WHERE id=:id LIMIT 1' , $data);
+
+        return true;
     }
 
     public function passIsValid($pass)
     {
-        $pass = md5($pass);
-        $data = array(':pass'=> $pass, ':id'=>$this->id);
-        $this->db->query('SELECT * FROM ' . table_users . ' WHERE userpass = :pass AND id =:id',$data);
+        $data = array(':id'=>$this->id);
 
-        return ($this->db->rowCount() == 1);
+        $this->db->query('SELECT userpass FROM ' . table_users . ' WHERE id =:id',$data);
+        $hash = $this->db->fetch();
+
+        return password_verify($pass,$hash['userpass']);
     }
 
     public function createNewUser($array)
     {
-
         $data = array(':mail' => $array['email']);
         $this->db->query('SELECT id FROM ' . table_users . ' WHERE usermail = :mail LIMIT 1',$data);
 
         if ($this->db->rowCount() > 0) {
             return false;
         }
-        $pass = $this->createRandomPass();
+
+        $invite = time();
+        $code = md5($invite);
+        $data[':firstname']     = $array['firstname'];
+        $data[':lastname']      = $array['lastname'];
+        $data[':changepass']    = $code;
+        $data[':expires']       = ($invite + 60 * 60 * 24 * 7);
+        $set_password_url       = HOME_DIR.'index.php?position=activate&code='.$code;
+        $this->db->query('INSERT INTO ' . table_users . '  (firstname,lastname,usermail,userlevel,expires,change_pass)
+                            VALUES (:firstname,:lastname,:mail,1,FROM_UNIXTIME(:expires),:changepass)',$data);
+
         $text = MAIL_TEXT_INVITE;
-        $content = sprintf($text, $array['email'], $pass);
+        $content = sprintf($text, $set_password_url);
 
         $this->UserMail($array, $content, MAIL_TITLE_INVITE);
 
-        $data[':firstname'] = $array['firstname'];
-        $data[':lastname'] = $array['lastname'];
-        $data[':pass'] = md5($pass);
-        $this->db->query('INSERT INTO ' . table_users . '  (firstname,lastname,usermail,userpass,userlevel)
-                            VALUES (:firstname,:lastname,:mail,:pass,1)');
         return true;
-    }
-
-    private function createRandomPass()
-    {
-        $password = "";
-        $pw = "ABCDEFGHJKMNOPQRSTUVWXYZabcdefghjkmnopqrstuvwxyz0123456789";
-        srand((double)microtime() * 1000000);
-        for ($i = 1; $i <= 5; $i++) {
-            $password .= $pw{rand(0, strlen($pw) - 1)};
-        }
-        return $password;
     }
 
     private function UserMail($array, $content, $subject)
@@ -134,25 +138,25 @@ class User
 
     public function reInviteUser($userid)
     {
-
-        $pass = $this->createRandomPass();
-
         $this->db->query('SELECT usermail,firstname,lastname FROM ' . table_users . ' WHERE id =:id LIMIT 1',array(':id'=> $userid));
 
         $result = $this->db->fetch();
 
-        $array['lastname'] = $result['lastname'];
-        $array['fistname'] = $result['firstname'];
-        $array['email'] = $result['usermail'];
-
+        $invite = time();
+        $array['lastname']      = $result['lastname'];
+        $array['fistname']      = $result['firstname'];
+        $array['email']         = $result['usermail'];
+        $data[':change_pass']    = $invite;
+        $data[':expires']       = ($invite + 60 * 60 * 24 * 7);
+        $data[':id']             = $result['id'];
+        $set_password_url       = HOME_DIR.'index.php?position=activate&code='.md5($invite);
         $text = MAIL_TEXT_INVITE;
 
-        $content = sprintf($text, $array['email'], $pass);
+        $content = sprintf($text, $array['email'], $set_password_url);
 
         if ($this->UserMail($array, $content, MAIL_TITLE_INVITE)) {
 
-            $data = array(':pass'=>md5($pass), ':id'=> $result['id']);
-            $this->db->query('UPDATE ' . table_users .' SET userpass = :pass WHERE id=:id LIMIT 1',$data);
+            $this->db->query('UPDATE ' . table_users . ' SET change_pass=:change_pass, expires =:expires WHERE id=:id LIMIT 1',$data);
 
             return true;
         }
@@ -167,24 +171,24 @@ class User
 
     public function resetPass($email)
     {
-        $pass = $this->createRandomPass();
-
         $this->db->query('SELECT usermail,id,firstname,lastname FROM ' . table_users . ' WHERE usermail = :mail LIMIT 1', array(':mail'=>$email));
 
         $result = $this->db->fetch();
-
-        $array['lastname']  = $result['lastname'];
-        $array['fistname']  = $result['firstname'];
-        $array['email']     = $result['usermail'];
-
+        $invite = time();
+        $array['lastname']      = $result['lastname'];
+        $array['fistname']      = $result['firstname'];
+        $array['email']         = $result['usermail'];
+        $data[':change_pass']    = $invite;
+        $data[':expires']       = ($invite + 60 * 60 * 24);
+        $data[':id']             = $result['id'];
+        $set_password_url       = HOME_DIR.'index.php?position=activate&code='.md5($invite);
         $text = MAIL_TEXT_PASS_RESET;
 
-        $content = sprintf($text, $pass);
+        $content = sprintf($text, $set_password_url);
 
         if ($this->UserMail($array, $content, MAIL_TITLE_PASS_RESET)) {
 
-            $data = array(':pass'=>md5($pass), 'id:'=> $result['id']);
-            $this->db->query('UPDATE ' . table_users . ' SET userpass =:pass WHERE id=:id LIMIT 1',$data);
+            $this->db->query('UPDATE ' . table_users . ' SET change_pass=:change_pass, expires =:expires WHERE id=:id LIMIT 1',$data);
 
             return true;
         }

@@ -16,7 +16,6 @@ require_once('inc/cfg/config.inc.php');
 
 preventCaching();
 
-
 get_language();
 
 $db = new database();
@@ -24,7 +23,6 @@ $db = new database();
 $messageStack = new messageStack();
 
 $SessionManager = new SessionManagement(session_id());
-
 
 if (isset($_GET['do'])) {
 
@@ -71,58 +69,61 @@ if (isset($_GET['do'])) {
                         $User = new User($userid, $db);
                     }
                     $messageStack->add('general', MSG_PROFILE_UPDATE_SUCCESS, 'success');
-
                 }
-
             }
 
             break;
 
+        case 'activate':
 
-        case 'edit_password':
+            $pw_a   = htmlspecialchars($_POST["pass"]);
+            $pw_b   = htmlspecialchars($_POST["pass_rpt"]);
 
-            $User = new User($_SESSION['userid'], $db);
-            $userid = $_SESSION['userid'];
-            $usermail = $User->__get('usermail');
-
-            $pw_old = htmlspecialchars($_POST["password0"]);
-
-            $pw_a = htmlspecialchars($_POST["password1"]);
-
-            $pw_b = htmlspecialchars($_POST["password2"]);
-
-            if ($User->passIsValid($pw_old) && strlen($pw_a) > 5) {
-
-                if ($pw_a === $pw_b) {
-
-                    if ($User->changePass($pw_b)) {
-
-                        $SessionManager->logout();
-
-                        $SessionManager->login($usermail, md5($pw_b), 1);
-
-                        $User = new User($userid, $db);
-
-                        $messageStack->add('general', MSG_PASS_UPDATE_SUCCESS, 'success');
-
-
-                    } else {
-
-                        $messageStack->add('general', MSG_E_PASS_UPDATE_ERROR, 'error');
-
-                    }
+            if ($pw_a === $pw_b) {
+                $data = array(':code'=>$_POST['code']);
+                $db->query('SELECT UNIX_TIMESTAMP(expires) as expires, usermail,id FROM ' . table_users . ' WHERE change_pass=:code',$data);
+                $row = $db->fetch();
+                $User = new User($row['id'],$db);
+                $User->changePass($pw_b);
+                if ($User->changePass($pw_b)) {
+                    $SessionManager->login($row['usermail'], $pw_b);
+                    $messageStack->add_session('general', MSG_PASS_UPDATE_SUCCESS, 'success');
+                    header('Location: index.php');
                 } else {
-
-                    $messageStack->add('general', MSG_E_PASS_RPT, 'error');
-
+                    $messageStack->add('general', MSG_E_PASS_UPDATE_ERROR, 'error');
                 }
             } else {
+                $messageStack->add('general', MSG_E_PASS_RPT, 'error');
+            }
 
+            break;
+        case 'edit_password':
+
+            $User   = new User($_SESSION['userid'], $db);
+            $id     = $_SESSION['userid'];
+            $mail   = $User->__get('usermail');
+            $stay   = $_SESSION['cookie'];
+            $pw_old = htmlspecialchars($_POST["password0"]);
+            $pw_a   = htmlspecialchars($_POST["password1"]);
+            $pw_b   = htmlspecialchars($_POST["password2"]);
+
+            if ($User->passIsValid($pw_old)) {
+
+                if ($pw_a === $pw_b) {
+                    if ($User->changePass($pw_b)) {
+                        $SessionManager->logout();
+                        $SessionManager->login($mail, $pw_b, $stay);
+                        $messageStack->add('general', MSG_PASS_UPDATE_SUCCESS, 'success');
+                    } else {
+                        $messageStack->add('general', MSG_E_PASS_UPDATE_ERROR, 'error');
+                    }
+                } else {
+                    $messageStack->add('general', MSG_E_PASS_RPT, 'error');
+                }
+            } else {
                 $messageStack->add('general', MSG_E_PASS_MIN_LENGTH, 'error');
-
             }
             break;
-
 
         case 'resendpw':
 
@@ -148,16 +149,14 @@ if (isset($_GET['do'])) {
 
         case 'login':
 
-            $email = htmlspecialchars($_POST['email']);
-            $pass = htmlspecialchars($_POST['pass']);
+            $email  = htmlspecialchars($_POST['email']);
+            $pass   = htmlspecialchars($_POST['pass']);
+            $stay   = isset($_POST['stay']) ? 1 : 0;
+            $SessionManager->login($email, $pass, $stay);
 
-            if (isset($_POST['staylogged'])) {
-                $SessionManager->login($email, md5($pass), 1);
-            } else {
-                $SessionManager->login($email, md5($pass), 0);
-            }
             if ($SessionManager->logged_in()) {
                 $User = new User($_SESSION['userid'], $db);
+
                 header('Location: index.php');
             } else {
                 $messageStack->add_session('general', MSG_E_LOGIN, 'error');
@@ -166,7 +165,7 @@ if (isset($_GET['do'])) {
             break;
     }
 } else {
-    $SessionManager->login('', '');
+    $SessionManager->login();
     if ($SessionManager->logged_in()) {
         $User = new User($_SESSION['userid'], $db);
     }
