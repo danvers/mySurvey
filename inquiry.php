@@ -236,8 +236,6 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             <?php
                             echo $Cats->listCategories(0, 1, $linkpath, false, $aID);
                             ?>
-                            <br/>
-
                             <p id="legend">
                                 <strong><?php echo TEXT_LEGEND;?></strong> <img src="img/complete.gif" alt=""/> <?php echo TEXT_CATEGORY_COMPLETE;?>
                             </p>
@@ -264,7 +262,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                                                     if (isset($row['info']) && strlen($row['info'])) {
                                                         ?>
-                                                        <span class="add_info">[<a class="tooltip" href="#">?<span style="width:200px;"><?php echo $row['info']; ?></span></a>]</span>
+                                                        <span class="add_info">[<a class="tooltip" href="#">?<span><?php echo $row['info']; ?></span></a>]</span>
                                                     <?php
                                                     }
                                                     ?>
@@ -397,7 +395,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                         }
                                         ?>
                                     </table>
-                                    <div class="r2">
+                                    <div>
                                         <p><?php echo draw_input_field('send', TEXT_SAVE, '', 'submit', false); ?></p>
                                     </div>
                                 </form>

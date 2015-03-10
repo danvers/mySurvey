@@ -60,8 +60,14 @@ define('NAV_EDIT','Bearbeiten');
 define('NAV_DELETE','Löschen');
 define('NAV_PREVIEW','Vorschau');
 
+define('TITLE_NEWS','Information');
+
 define('MAIL_TITLE_PASS_RESET', WORKSPACE_TITLE .' - Passwortänderung');
 define('MAIL_TEXT_PASS_RESET', 'Diese E-Mail wurde gesendet, weil dein Passwort zurückgesetzt werden soll. Dein neues Passwort kannst Du unter folgendem Link eingeben: %s\n\nEinloggen kannst Du dich unter: ' . HOME_DIR);
 
 define('MAIL_TITLE_INVITE', WORKSPACE_TITLE .' - Einladung zum Arbeitsbereich');
 define('MAIL_TEXT_INVITE', 'dies ist eine Einladung zum Arbeitsbereich\nBitte nutze den folgenden Link, um dein Passwort festzulegen: %s\n\nEinloggen kannst Du dich danach unter: ' . HOME_DIR);
+
+define('TEXT_MY_COMMENT','von mir');
+define('TEXT_COMMENT_BY','von');
+define('TEXT_CREATED','erstellt am');

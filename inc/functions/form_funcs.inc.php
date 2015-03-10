@@ -212,7 +212,7 @@ function drawSlider($name, $default = 0, $min = '', $max = '', $view = 0)
     $fieldset .= '<p style="text-align:right;float:right;">' . $max . '</p>';
 
     $fieldset .= '</div>';
-    $fieldset .= '<div style="clear:both;">&nbsp;</div>';
+    $fieldset .= '<div class="c"></div>';
 
     if ($view != 0) {
         $fieldset .= "<script type=\"text/javascript\">

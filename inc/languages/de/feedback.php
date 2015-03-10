@@ -13,6 +13,4 @@ define('TEXT_SUBMIT_FEEDBACK','Feedback abgeben');
 define('TEXT_FEEDBACK_ADD','Kommentar schreiben');
 define('TEXT_NO_COMMENTS','Noch keine Kommentare vorhanden');
 
-define('TEXT_MY_COMMENT','von mir');
-define('TEXT_COMMENT_BY','von');
-define('TEXT_CREATED','erstellt am');
+

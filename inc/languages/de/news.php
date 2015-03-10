@@ -13,7 +13,7 @@ define('TEXT_MESSAGE','Nachricht');
 define('TEXT_MESSAGE_TITLE','Betreff');
 define('LABEL_PREVIEW','Vorschau');
 define('TEXT_DELETE_NEWS_CONFIRM','Ankündigung wirklich löschen?');
-define('TITLE_NEWS','Informationen, Ankündigungen');
+
 define('TITLE_EDIT_NEWS','Ankündigung bearbeiten');
 define('TITLE_NEWS_ADD','Ankündigung/Information veröffentlichen');
 define('TEXT_ADD_NEWS','Ankündigung hinzufügen');
