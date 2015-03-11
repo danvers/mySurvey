@@ -278,7 +278,7 @@ if (isset($_GET['position']) && $_GET['position'] === 'edit') {
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <script type="text/javascript" src="inc/javascripts/simplescripts.js"></script>
+        <script type="text/javascript" src="inc/javascripts/helper.js"></script>
     </head>
 <body>
 <div id="wrapper">

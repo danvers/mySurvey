@@ -113,8 +113,6 @@ ul#avatarlist, ul#newslist {
     float:left;
     line-height:19px;
 }
-
-
 #users tbody tr:hover,
 #users tbody tr:hover {
     background: #c1fcc5 !important;
@@ -192,11 +190,12 @@ input, select, textarea {
     font-size: 80%;
     padding:2px 5px;
     font-weight: bold;
-    color:#888;
+    color:#777;
 }
 .progressbar {
     width:40%;
-    height:25px !important;
+    margin:1em 0;
+    height:25px;
 }
 
 #form input, #form textarea, #form select {

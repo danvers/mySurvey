@@ -159,18 +159,12 @@ if (isset($_GET['position']) && ($_GET['position'] == 'feedback')) {
 
         <title><?php echo TITLE;?> | <?php echo WORKSPACE_TITLE; ?></title>
 
-        <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
-        <!--
-
-        <script type="text/javascript" src="inc/javascripts/prototype.js"></script>
-        <script type="text/javascript" src="inc/javascripts/scriptaculous.js"></script>
-        <script type="text/javascript" src="inc/javascripts/effects.js"></script>
-        <script type="text/javascript" src="inc/javascripts/simplescripts.js"></script>
-        !-->
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <script type="text/javascript" src="inc/javascripts/simplescripts.js"></script>
-        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
         <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+        <script type="text/javascript" src="inc/javascripts/helper.js"></script>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
+
     </head>
 
 <body>

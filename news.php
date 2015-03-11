@@ -106,10 +106,11 @@ if (isset($_GET['position']) && ($_GET['position'] == 'edit')) {
 
         <title><?php echo TITLE;?> | <?php echo WORKSPACE_TITLE; ?></title>
 
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+        <script type="text/javascript" src="inc/javascripts/helper.js"></script>
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <script type="text/javascript" src="inc/javascripts/simplescripts.js"></script>
     </head>
 
 <body>
@@ -139,7 +140,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                             <p>
                                 <?php
-                                echo draw_textarea_field('text', '60', '10', '', 'id="comment"');
+                                echo draw_textarea_field('text', '60', '10', '', 'id="comment" data-limit="400"');
                                 ?>
                             </p>
 
@@ -171,7 +172,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                             <p>
                                 <?php
-                                echo draw_textarea_field('text', '60', '10', $fields['text'], 'id="comment"');
+                                echo draw_textarea_field('text', '60', '10', $fields['text'], 'id="comment" data-limit="400"');
 
                                 ?>
                             </p>
@@ -226,10 +227,9 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                             <label for="comment"><?php echo TEXT_MESSAGE;?></label>
 
-                            <p><?php  echo draw_textarea_field('text', '60', '10', '', 'id="comment"'); ?></p>
-                            <p id="t_comment" class="error"></p>
+                            <p><?php echo draw_textarea_field('text', '60', '10', '', 'id="comment" data-limit="0"'); ?></p>
+                            <p id="t_comment" class="error">&nbsp;</p>
                             <div class="r2">
-
                                 <p><?php echo draw_input_field('send', LABEL_PREVIEW, '', 'submit', false); ?></p>
                             </div>
                         </form>
