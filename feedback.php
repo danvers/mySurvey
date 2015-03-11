@@ -52,9 +52,10 @@ if (isset($_GET['position']) && ($_GET['position'] == 'add')) {
 
         <title><?php echo TITLE;?> | <?php echo WORKSPACE_TITLE; ?></title>
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script type="text/javascript" src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
         <script type="text/javascript" src="inc/javascripts/helper.js"></script>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
     </head>
 

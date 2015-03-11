@@ -269,7 +269,7 @@ if (isset($_GET['position']) && $_GET['position'] === 'edit') {
 }
 ?>
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de" dir="ltr">
+    <html xmlns:s="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de" dir="ltr">
 
     <head>
         <meta http-equiv="Content-Script-Type" content="text/javascript"/>
@@ -278,20 +278,19 @@ if (isset($_GET['position']) && $_GET['position'] === 'edit') {
 
         <title><?php echo TITLE; ?> | <?php echo WORKSPACE_TITLE; ?></title>
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script type="text/javascript" src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
         <script type="text/javascript" src="inc/javascripts/helper.js"></script>
         <link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
 
     </head>
 <body>
-<div id="wrapper">
-<?php
-require('inc/navigation.php');
-
-if ($messageStack->size('general') > 0) echo $messageStack->output('general');
-?>
+    <div id="wrapper">
+    <?php
+    require('inc/navigation.php');
+    if ($messageStack->size('general') > 0) echo $messageStack->output('general');
+    ?>
     <div id="content">
         <?php
         if (isset($_GET['position'])) {
@@ -737,6 +736,5 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
             <?php
         }
         ?>
-    </div>
-
+        </div>
 <?php require('inc/footer.php'); ?>

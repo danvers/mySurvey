@@ -62,7 +62,7 @@ class Categories
 
     /**
      * @param $parent   id of the parent category
-     * @param $depth    depth of category
+     * @param int $depth   depth of category
      * @return string nested category elements
      */
     public function getChildCats($parent, $depth)
