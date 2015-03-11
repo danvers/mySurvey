@@ -20,3 +20,8 @@ define('TEXT_ADD_NEWS','Ankündigung hinzufügen');
 define('TEXT_MASS_MAIL','Rundmail verfassen');
 define('TEXT_NO_ENTRIES','Derzeit ist keine Information/Ankündigung eingetragen');
 define('TEXT_DELETE_ENTRY','Eintrag löschen');
+
+define('MSG_MAIL_SENT','Rundmail wurde an alle Benutzer verschickt');
+define('MSG_E_TEXT_MIN_LENGTH','Betreff und Text müssen mindestens %s Zeichen lang sein');
+define('MSG_POST_ADDED','Information/Ankündigung hinzugefügt');
+define('MSG_POST_EDITED','Information/Ankündigung aktualisiert');

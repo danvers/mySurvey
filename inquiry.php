@@ -168,7 +168,6 @@ if (isset($_GET['position']) && ($_GET['position'] == 'feedback')) {
         <script type="text/javascript" src="inc/javascripts/simplescripts.js"></script>
         !-->
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <script type="text/javascript" src="inc/javascripts/limiter.js"></script>
         <script type="text/javascript" src="inc/javascripts/simplescripts.js"></script>
         <link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
         <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>

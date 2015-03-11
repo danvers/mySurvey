@@ -245,9 +245,8 @@ class Categories
      */
     public function getFieldCount($category)
     {
-        $this->db->query('SELECT COUNT(cat_id) AS fieldCount FROM ' . table_fields . ' WHERE id=:id', array(':id'=>$category));
+        $this->db->query('SELECT COUNT(cat_id) AS fieldCount FROM ' . table_fields . ' WHERE cat_id=:id', array(':id'=>$category));
         $result = $this->db->fetch();
-
         return (int)$result['fieldCount'];
     }
 

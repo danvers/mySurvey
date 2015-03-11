@@ -140,7 +140,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             ?>
                             <li>
                                 <h3><?php echo date('d.m.y', $row['timestamp']); ?>
-                                    - <?php echo $row['title']; ?></h3>
+                                    - <?php echo $row['title']; ?>
                                 <?php
                                 if ($User->__get('userlevel') > 2) {
                                     ?>
@@ -148,7 +148,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                     <a href="news.php?position=confirm_delete&amp;eID=<?php echo $row['id']; ?>"><?php echo TEXT_DELETE; ?></a>
                                 <?php
                                 }
-                                ?>
+                                ?></h3>
                                 <p><?php echo $row['text']; ?></p>
                             </li>
                             <?php

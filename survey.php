@@ -102,7 +102,7 @@ if (isset($_GET['action'])) {
                     ':sort'     => $postbit['sort_order']
                 );
                 $db->query('INSERT INTO ' . table_categories . ' (name, parent, sort_order)
-                                VALUES (:name,:parent,:sort)');
+                                VALUES (:name,:parent,:sort)',$data);
                 $db->query("SELECT id FROM " . table_categories . " ORDER BY id DESC LIMIT 1");
                 $newID = $db->fetch();
                 $messageStack->add_session('general', sprintf(MSG_CATEGORY_ADDED,$postbit['cat_name']), 'success');
@@ -127,9 +127,7 @@ if (isset($_GET['action'])) {
                 }
                 $data = array(':id'=>$id,':name'=>$postbit['cat_name']);
                 $db->query('SELECT id FROM ' . table_categories . ' WHERE name = :name AND id=:id',$data);
-                if ($db->rowCount() > 0) {
-                    $messageStack->add_session('general', sprintf(MSG_E_CATEGORY_EXIST, $postbit['cat_name']), 'error');
-                } elseif (strlen($postbit['cat_name']) < CAT_MIN_LENGTH) {
+                if (strlen($postbit['cat_name']) < CAT_MIN_LENGTH) {
                     $messageStack->add_session('general', sprintf(MSG_E_CATEGORY_EXIST, CAT_MIN_LENGTH), 'error');
                 } else {
                     $data = array(
@@ -247,10 +245,10 @@ if (isset($_GET['action'])) {
                 $category = $db->fetch();
                 $db->query('ALTER TABLE ' . table_survey . ' DROP field_' . $id);
                 $db->query('DELETE FROM ' . table_fields . ' WHERE id ="' . $id . '" LIMIT 1');
-                $messageStack->add_session('general', MSG_DATA_DELETED, 'success');
-                header('Location:survey.php?position=edit&cID=' . $category['cat_id']);
 
+                $messageStack->add_session('general', MSG_DATA_DELETED, 'success');
             }
+            header('Location:survey.php?position=edit&cID=' . $category['cat_id']);
             break;
     }
 }
@@ -514,7 +512,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                     foreach ($params as $value) {
                                                         if ($value['id'] > 0 && isset($value['text']) && strlen($value['text'])) {
                                                             echo '<label for="' . $value['id'] . '">' . $value['text'] . '</label>';
-                                                            echo draw_checkbox_field($row['id'], $value['id'], '', 'style="text-align:left;vertical-align:middle;"');
+                                                            echo draw_checkbox_field($row['id'], $value['id'], '');
                                                             echo ' ';
                                                         }
                                                     }
@@ -606,21 +604,13 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 ?>
                             </p>
 
-                            <div style="height:300px;">
+                            <div>
                                 <?php
                                 $showpol = "";
                                 $showdd = "";
                                 $showcb = "";
                                 $edit_params = "";
-                                if ($Fvals['type'] != 0) {
-                                    $showpol = 'style="display:none;"';
-                                }
-                                if ($Fvals['type'] != 3) {
-                                    $showdd = 'style="display:none;"';
-                                }
-                                if ($Fvals['type'] != 1) {
-                                    $showcb = 'style="display:none;"';
-                                }
+
                                 if ($Fvals['type'] == 0 || $Fvals['type'] == 1 || $Fvals['type'] == 3 && isset($Fvals['params'])) {
                                     $edit_params = unserialize($Fvals['params']);
                                 }
@@ -703,7 +693,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         $catname = $Cats->__get($_GET['cID']);
                         ?>
                         <h2><?php echo TITLE_CAT_DELETE;?></h2>
-                        <form id="form" method="post" action="survey.php?action=delete&amp;cID=<? echo $id; ?>">
+                        <form id="form" method="post" action="survey.php?action=delete&amp;cID=<?php echo $id; ?>">
 
                             <p><?php echo sprintf(TEXT_DELETE_CONFIRM,$catname['name']);?></p>
 
@@ -741,8 +731,12 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
             <p id="subtitle">
                 <a href="survey.php?position=add_category"><?php echo TEXT_CATEGORY_ADD;?></a>
             </p>
+            <div class="menu">
             <?php
             echo $Cats->listCategories(0, '', $linkpath, true);
+            ?>
+            </div>
+            <?php
         }
         ?>
     </div>

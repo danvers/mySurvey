@@ -21,10 +21,10 @@ if (isset($_GET['action'])) {
                 $data = array(':title'=> $title, ':text' => $text, ':userid' => intval($User->__get('id')));
                 $db->query("INSERT INTO " . table_news . " (title, text, userid)
                                 VALUES (:title,:text,:userid)", $data);
-                $messageStack->add_session('general', 'Information wurde hinzugefügt', 'success');
+                $messageStack->add_session('general', MSG_POST_ADDED, 'success');
                 header('Location:news.php');
             } else {
-                $messageStack->add_session('general', 'Titel sowie Text müssen aus min. ' . FIELD_MIN_LENGTH . ' Zeichen bestehen', 'error');
+                $messageStack->add_session('general', sprintf(MSG_E_TEXT_MIN_LENGTH, FIELD_MIN_LENGTH), 'error');
                 header('Location:news.php?position=add');
             }
             break;
@@ -39,7 +39,7 @@ if (isset($_GET['action'])) {
                     $postbit[$postbits] = db_prepare_input($element);
                 }
                 if (strlen($postbit['title']) < FIELD_MIN_LENGTH || strlen($postbit['text']) < FIELD_MIN_LENGTH) {
-                    $messageStack->add_session('general', 'Der Titel sowie der Text müssen mindestens ' . FIELD_MIN_LENGTH . ' Zeichen lang sein', 'error');
+                    $messageStack->add_session('general', sprintf(MSG_E_TEXT_MIN_LENGTH, FIELD_MIN_LENGTH), 'error');
                     header('Location:news.php?position=edit&eID=' . $id);
                 } else {
                     $data = array(
@@ -48,8 +48,7 @@ if (isset($_GET['action'])) {
                                 ':id'       =>  $id
                         );
                     $db->query("UPDATE " . table_news . " SET  title= :title, text = :text WHERE id = :id LIMIT 1",$data);
-
-                    $messageStack->add_session('general', 'Information wurde bearbeitet', 'success');
+                    $messageStack->add_session('general', MSG_POST_EDITED, 'success');
                     header('Location:news.php?position=edit&eID=' . $id);
                 }
             }
@@ -58,9 +57,7 @@ if (isset($_GET['action'])) {
         case 'sendmail':
 
             if (strlen(htmlspecialchars($_POST['title'])) < FIELD_MIN_LENGTH || strlen(htmlspecialchars($_POST['text'])) < FIELD_MIN_LENGTH) {
-
-                $messageStack->add_session('general', 'Betreff sowie Text müssen aus min. ' . FIELD_MIN_LENGTH . ' Zeichen bestehen', 'error');
-
+                $messageStack->add_session('general', sprintf(MSG_E_TEXT_MIN_LENGTH, FIELD_MIN_LENGTH), 'error');
                 header('Location:news.php?position=mail');
             } else {
                 $db->query('SELECT usermail FROM ' . table_users . ' WHERE usermail != :usermail',array(':usermail' => $User->__get('usermail')));
@@ -71,29 +68,19 @@ if (isset($_GET['action'])) {
                 }
                 $title = $_POST['title'];
                 $content = $_POST['text'];
-
                 $Message->massMail($User, $recipients, $content, $title);
-
-                $messageStack->add_session('general', 'Rundmail wurde an alle Benutzer verschickt', 'success');
-
+                $messageStack->add_session('general', MSG_MAIL_SENT, 'success');
                 header('Location:news.php');
             }
             break;
 
         case 'delete':
             if (isset($_GET['eID']) && is_numeric($_GET['eID'])) {
-
                 $id = $_GET['eID'];
-
                 $db->query('DELETE FROM ' . table_news . ' WHERE id ="' . $id . '" LIMIT 1');
-
-                $messageStack->add_session('general', 'Information/Ankündigung gelöscht', 'success');
-
+                $messageStack->add_session('general', MSG_POST_DELETED, 'success');
                 header('Location:news.php');
-
             }
-
-
             break;
     }
 }
@@ -103,7 +90,7 @@ if (isset($_GET['position']) && ($_GET['position'] == 'edit')) {
     }
 } elseif (isset($_GET['position']) && ($_GET['position'] == 'preview')) {
     if (strlen(htmlspecialchars($_POST['title'])) < FIELD_MIN_LENGTH || strlen(htmlspecialchars($_POST['text'])) < FIELD_MIN_LENGTH) {
-        $messageStack->add_session('general', 'Betreff sowie Text müssen aus min. ' . FIELD_MIN_LENGTH . ' Zeichen bestehen', 'error');
+        $messageStack->add_session('general', sprintf(MSG_E_TEXT_MIN_LENGTH, FIELD_MIN_LENGTH), 'error');
 
         header('Location:news.php?position=mail');
     }
@@ -122,7 +109,7 @@ if (isset($_GET['position']) && ($_GET['position'] == 'edit')) {
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <script type="text/javascript" src="inc/javascripts/limiter.js"></script>
+        <script type="text/javascript" src="inc/javascripts/simplescripts.js"></script>
     </head>
 
 <body>
@@ -292,9 +279,9 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         $infoComments .= '</small>';
                         ?>
                         <li>
-                            <h3><?php echo date('d.m.y', $row['timestamp']); ?> - <?php echo $row['title']; ?></h3>
+                            <h3><?php echo date('d.m.y', $row['timestamp']); ?> - <?php echo $row['title']; ?>
                             <a href="news.php?position=edit&amp;eID=<?php echo $row['id']; ?>"><?php echo TEXT_EDIT;?></a> |
-                            <a href="news.php?position=confirm_delete&amp;eID=<?php echo $row['id']; ?>"><?php echo TEXT_DELETE;?></a>
+                            <a href="news.php?position=confirm_delete&amp;eID=<?php echo $row['id']; ?>"><?php echo TEXT_DELETE;?></a></h3>
 
                             <p><?php echo $row['text']; ?></p>
 
