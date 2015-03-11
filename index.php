@@ -166,7 +166,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                 <p id="subtitle">
                         <span id="data-export">
-                            <?php echo TEXT_EXPORT_ALL_START; ?><a href="csv_export.php">CSV</a> | <a href="txt_export.php">TXT</a> | <a href="xml_export.php">XML</a> | <?php echo TEXT_EXPORT_ALL_END; ?>
+                            <?php echo TEXT_EXPORT_ALL_START; ?><a href="csv_export.php">CSV</a> | <a href="txt_export.php">TXT</a> | <a href="xml_export.php">XML</a> <?php echo TEXT_EXPORT_ALL_END; ?>
                         </span>
                     </ul>
                     <?php
@@ -270,17 +270,18 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 <p>
                                     <a href="inquiry.php?position=view&amp;cID=1&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_VIEW_SURVEY; ?></a>
                                     |
+                                    <a href="feedback.php?position=view&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_FEEDBACK; ?></a>
+                                    (<?php echo $infoComments; ?>)
+                                    |
                                     <?php
                                     if ($userid === $row['userid']) {
                                         ?>
-                                        <a href="inquiry.php?position=evaluate&amp;cID=1&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_EDIT_ENTRY; ?></a> |
                                         <a href="inquiry.php?position=edit&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_EDIT_SURVEY; ?></a> |
-                                        <a href="myinquiries.php?position=confirm_delete&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_DELETE_ENTRY; ?></a> |
+                                        <a href="inquiry.php?position=evaluate&amp;cID=1&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_EDIT_ENTRY; ?></a> |
+                                        <a href="myinquiries.php?position=confirm_delete&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_DELETE_ENTRY; ?></a>
                                     <?php
                                     }
                                     ?>
-                                    <a href="feedback.php?position=view&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_FEEDBACK; ?></a>
-                                    (<?php echo $numComment; ?>)
                                     | <?php echo TEXT_EXPORT; ?>
                                     <a href="csv_export.php?aID=<?php echo $row['id']; ?>">CSV</a> |
                                     <a href="txt_export.php?aID=<?php echo $row['id']; ?>">TXT</a> |

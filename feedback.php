@@ -52,6 +52,9 @@ if (isset($_GET['position']) && ($_GET['position'] == 'add')) {
 
         <title><?php echo TITLE;?> | <?php echo WORKSPACE_TITLE; ?></title>
 
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+        <script type="text/javascript" src="inc/javascripts/helper.js"></script>
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
     </head>
 
@@ -78,13 +81,14 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             <label><?php echo TEXT_SUBMIT_FEEDBACK;?></label>
                             <p>
                                 <?php
-                                echo draw_textarea_field('feedback', '60', '10', '', 'id="comment" onKeyDown="textLeft(\'comment\',\'counter\',200);"');
+                                echo draw_textarea_field('feedback', '60', '10', '', 'id="comment" data-limit="200"');
+
                                 echo draw_hidden_field('aID', $aID);
                                 ?>
                             </p>
 
                             <div class="r2">
-                                <p id="counter" class="error">&nbsp;</p>
+                                <p id="t_comment" class="error">&nbsp;</p>
                                 <p><?php echo draw_input_field('send', TEXT_SUBMIT, '', 'submit', false);?></p>
                             </div>
                         </form>

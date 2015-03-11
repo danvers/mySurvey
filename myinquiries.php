@@ -133,7 +133,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                             <p>
                                 <a href="inquiry.php?position=evaluate&amp;cID=1&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_EDIT_ENTRY;?></a> |
-                                <a href="feedback.php?position=show&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_FEEDBACK;?></a>
+                                <a href="feedback.php?position=view&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_FEEDBACK;?></a>
                                 (<?php echo $infoComments; ?>) |
                                 <a href="inquiry.php?position=edit&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_EDIT_SURVEY;?></a> |
                                 <a href="myinquiries.php?position=confirm_delete&amp;aID=<?php echo $row['id']; ?>"><?php echo TEXT_DELETE_ENTRY;?></a> |

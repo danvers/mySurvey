@@ -178,8 +178,6 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             </p>
                             <p id="t_comment" class="error"></p>
                             <div class="r2">
-
-
                                 <p class="submit"><?php echo draw_input_field('send', TEXT_SAVE, '', 'submit', false); ?></p>
                             </div>
                         </form>
