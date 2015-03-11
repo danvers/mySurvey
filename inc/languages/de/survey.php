@@ -41,3 +41,4 @@ define('TITLE_FIELD_EDIT','Feld bearbeiten');
 define('TITLE_OVIERVEW_FIELDS','Übersicht der Felder');
 define('TITLE_ADD_FIELD_TO_CATEGORY','Feld in die Kategorie &raquo;%s&laquo; einfügen');
 define('TEXT_FIELD_ADD','Feld hinzufügen');
+define('TEXT_NO_FIELDS','Noch sind keine Felder in dieser Kategorie vorhanden');

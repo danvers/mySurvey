@@ -75,9 +75,7 @@ function getFields()
     );
 
     for ($x = 0; $x < sizeof($static_field_type_array); $x++) {
-
         $static_field_types[$x]['id'] = $x;
-
         $static_field_types[$x]['text'] = $static_field_type_array[$x];
     }
 

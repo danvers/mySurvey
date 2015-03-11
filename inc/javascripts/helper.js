@@ -25,9 +25,7 @@ $(document).ready(function() {
             if(textlimit == 0) return false;
         }
         var remain = parseInt(textlimit - tlength);
-
-        $(this).css('border-color','#ccc');
-
+        $(this).removeClass('tae');
         if(remain <= (textlimit / 2)){
             $('#t_'+($(this).attr('id'))).text(remain);
         }else{
@@ -36,7 +34,7 @@ $(document).ready(function() {
 
         if (remain <= 0 && e.which !== 0 && e.charCode !== 0) {
             $(this).val((tval).substring(0, tlength - 1));
-            $(this).css('border-color', '#b1423e');
+            $(this).addClass('tae');
         }
     });
 });

@@ -346,7 +346,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                         <label for="field_name"><?php echo LABEL_FIELD_NAME;?></label>
 
-                        <p><?php echo draw_input_field('field_name', '', 'id="news-title"'); ?></p>
+                        <p><?php echo draw_input_field('field_name', '', 'class="n-title"'); ?></p>
 
                         <label for="field_name"><?php echo LABEL_DESCRIPTION;?></label>
 
@@ -453,7 +453,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                             <p>
                                 <?php
-                                echo draw_input_field('cat_name', $fields['name'], 'id="news-title"');
+                                echo draw_input_field('cat_name', $fields['name'], 'class="n-title"');
                                 ?>
                             </p>
                             <label for="parent"><?php echo LABEL_PARENT;?></label>
@@ -492,6 +492,11 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             <?php
                             $db->query('SELECT * FROM ' . table_fields . ' WHERE cat_id = "' . $catID . '"');
                             $n = 0;
+                            if($db->rowCount()==0){
+                                ?>
+                                <p><?php echo TEXT_NO_FIELDS;?></p>
+                                <?php
+                            }
                             while ($row = $db->fetch()) {
                                 ?>
                                 <tr>
@@ -568,7 +573,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                             <p>
                                 <?php
-                                echo draw_input_field('field_name', $Fvals['name'], 'id="news-title"');
+                                echo draw_input_field('field_name', $Fvals['name'], 'class="n-title"');
                                 ?>
                             </p>
                             <label for="info"><?php echo LABEL_DESCRIPTION;?></label>

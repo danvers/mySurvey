@@ -130,10 +130,10 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         <h2><?php echo TITLE_NEWS_ADD;?></h2>
 
                         <form id="form" action="news.php?action=add" method="post">
-                            <label for="news-title"><?php echo TEXT_MESSAGE_TITLE;?></label>
+                            <label for="n-title"><?php echo TEXT_MESSAGE_TITLE;?></label>
 
                             <p>
-                                <?php echo draw_input_field('title', '', 'id="news-title"');?>
+                                <?php echo draw_input_field('title', '', 'class="n-title"');?>
                             </p>
 
                             <label for="comment"><?php echo TEXT_MESSAGE;?></label>
@@ -162,10 +162,10 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         <h2><?php echo TITLE_EDIT_NEWS;?></h2>
 
                         <form id="form" action="news.php?action=edit&amp;eID=<?php echo $id;?>" method="post">
-                            <label for="news-title"><?php echo TEXT_MESSAGE_TITLE;?></label>
+                            <label for="n-title"><?php echo TEXT_MESSAGE_TITLE;?></label>
 
                             <p>
-                                <?php echo draw_input_field('title', $fields['title'], 'id="news-title"');?>
+                                <?php echo draw_input_field('title', $fields['title'], 'class="n-title"');?>
                             </p>
 
                             <label for="comment"><?php echo TEXT_MESSAGE;?></label>
@@ -193,10 +193,10 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                         <form id="form" class="preview" action="news.php?action=sendmail" method="post">
 
-                            <label for="news-title"><?php echo TEXT_MESSAGE_TITLE;?></label>
+                            <label for="n-title"><?php echo TEXT_MESSAGE_TITLE;?></label>
 
                             <p>
-                                <?php echo draw_input_field('title', $_POST['title'], 'id="news-title" readonly="readonly"');?>
+                                <?php echo draw_input_field('title', $_POST['title'], 'class="n-title" readonly="readonly"');?>
                             </p>
 
                             <label for="comment"><?php echo TEXT_MESSAGE;?></label>
@@ -221,9 +221,9 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                         <form id="form" action="news.php?position=preview" method="post">
 
-                            <label for="news-title"><?php echo TEXT_MESSAGE_TITLE;?></label>
+                            <label for="n-title"><?php echo TEXT_MESSAGE_TITLE;?></label>
 
-                            <p><?php echo draw_input_field('title', '', 'id="news-title"');?></p>
+                            <p><?php echo draw_input_field('title', '', 'class="n-title"');?></p>
 
                             <label for="comment"><?php echo TEXT_MESSAGE;?></label>
 

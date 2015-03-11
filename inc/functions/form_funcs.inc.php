@@ -221,9 +221,6 @@ function drawSlider($name, $default = 0, $min = '', $max = '', $view = 0){
                             });
                             '.$js_disable.'
                             </script>';
-
-
-
     $fieldset .= '<div class"c"></div></div>';
 
     return $fieldset;

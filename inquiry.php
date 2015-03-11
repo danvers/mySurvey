@@ -182,10 +182,10 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     ?>
                     <h2><?php echo TITLE_ENTRY_ADD;?></h2>
                     <form id="form" action="inquiry.php?action=add" method="post">
-                        <label for="news-title"><?php echo LABEL_ENTRY_TITLE;?></label>
-                        <p><?php echo draw_input_field('title', '','id="news-title"'); ?></p>
+                        <label for="n-title"><?php echo LABEL_ENTRY_TITLE;?></label>
+                        <p><?php echo draw_input_field('title', '','class="n-title"'); ?></p>
                         <label>URI</label>
-                        <p><?php echo draw_input_field('url'); ?></p>
+                        <p><?php echo draw_input_field('url','','class="n-title"'); ?></p>
                         <label><?php echo TEXT_DESCRIPTION;?></label>
                         <p><?php echo draw_textarea_field('description', '60', '10', '', 'id="comment"'); ?></p>
 
@@ -205,8 +205,8 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     ?>
                     <h2><?php echo TEXT_EDIT;?></h2>
                     <form id="form" action="inquiry.php?action=edit&amp;aID=<?php echo $aID;?>" method="post">
-                        <label for="news-title"><?php echo LABEL_ENTRY_TITLE;?></label>
-                        <p><?php echo draw_input_field('title', $result['title'],'id="news-title"'); ?></p>
+                        <label for="n-title"><?php echo LABEL_ENTRY_TITLE;?></label>
+                        <p><?php echo draw_input_field('title', $result['title'],'class="n-title"'); ?></p>
                         <label>URI</label>
                         <p><?php echo draw_input_field('url', $result['url']); ?></p>
                         <label><?php echo TEXT_DESCRIPTION;?></label>

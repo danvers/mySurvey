@@ -176,6 +176,7 @@ ul#avatarlist, ul#newslist {
     background-color: #fffaea;
 }
 .error { color: #b1423e; }
+.tae{ border-color: #b1423e;}
 input, select, textarea {
     border: 1px solid #ccc;
 }
@@ -196,6 +197,7 @@ input, select, textarea {
     width:40%;
     margin:1em 0;
     height:25px;
+    color:lightgreen;
 }
 
 #form input, #form textarea, #form select {
@@ -203,6 +205,10 @@ input, select, textarea {
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px;
+}
+#form input[type="text"],
+#form input[type="password"]{
+    width:300px;
 }
 #form input[type="submit"] {
     margin-left: 10px;
@@ -263,10 +269,10 @@ input, select, textarea {
 .r2 .error{
     margin-left:10px;
 }
-#news-title {
-    width: 300px;
+.n-title {
+    width: 498px !important;
 }
-.preview input#news-title,
+.preview input#n-title,
 .preview textarea#comment {
     border: none;
 }
@@ -287,7 +293,7 @@ input, select, textarea {
     visibility: hidden;
 }
 
-.preview input#news-title {
+.preview input#n-title {
     font-weight: bold;
 }
 .overview {
@@ -301,7 +307,7 @@ input, select, textarea {
 #evaluation tr:nth-child(odd),
 #users tbody tr:nth-child(odd),
 .overview tr:nth-child(odd) {
-    background-color: #efefef;
+    background-color: #f8f8f8;
 }
 #data-export{
     list-style: none;
