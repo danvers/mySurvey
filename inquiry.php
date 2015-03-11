@@ -160,11 +160,18 @@ if (isset($_GET['position']) && ($_GET['position'] == 'feedback')) {
         <title><?php echo TITLE;?> | <?php echo WORKSPACE_TITLE; ?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
+        <!--
 
         <script type="text/javascript" src="inc/javascripts/prototype.js"></script>
         <script type="text/javascript" src="inc/javascripts/scriptaculous.js"></script>
         <script type="text/javascript" src="inc/javascripts/effects.js"></script>
         <script type="text/javascript" src="inc/javascripts/simplescripts.js"></script>
+        !-->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script type="text/javascript" src="inc/javascripts/limiter.js"></script>
+        <script type="text/javascript" src="inc/javascripts/simplescripts.js"></script>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
+        <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
     </head>
 
 <body>
@@ -185,12 +192,12 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         <label for="news-title"><?php echo LABEL_ENTRY_TITLE;?></label>
                         <p><?php echo draw_input_field('title', '','id="news-title"'); ?></p>
                         <label>URI</label>
-                        <p><?php echo draw_input_field('url', '','style="width:300px;"'); ?></p>
+                        <p><?php echo draw_input_field('url'); ?></p>
                         <label><?php echo TEXT_DESCRIPTION;?></label>
-                        <p><?php echo draw_textarea_field('description', '60', '10', '', 'id="comment" onKeyDown="textLeft(\'comment\',\'counter\',200);"'); ?></p>
+                        <p><?php echo draw_textarea_field('description', '60', '10', '', 'id="comment"'); ?></p>
 
                         <div class="r2">
-                            <p id="counter" class="error">&nbsp;</p>
+                            <p id="t_comment" class="error">&nbsp;</p>
                             <p><?php echo draw_input_field('send', TITLE_ENTRY_ADD, '', 'submit', false);?></p>
                         </div>
 
@@ -208,15 +215,14 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         <label for="news-title"><?php echo LABEL_ENTRY_TITLE;?></label>
                         <p><?php echo draw_input_field('title', $result['title'],'id="news-title"'); ?></p>
                         <label>URI</label>
-                        <p><?php echo draw_input_field('url', $result['url'],'style="width:300px;"'); ?></p>
+                        <p><?php echo draw_input_field('url', $result['url']); ?></p>
                         <label><?php echo TEXT_DESCRIPTION;?></label>
-                        <p><?php  echo draw_textarea_field('description', '60', '10', $result['description'], 'id="comment" onKeyDown="textLeft(\'comment\',\'counter\',200);"'); ?></p>
+                        <p><?php  echo draw_textarea_field('description', '60', '10', $result['description'], 'id="comment"'); ?></p>
 
                         <div class="r2">
-                            <p id="counter" class="error">&nbsp;</p>
+                            <p id="t_comment" class="error">&nbsp;</p>
                             <p><?php echo draw_input_field('send', TEXT_EDIT, '', 'submit', false);?></p>
                         </div>
-
                     </form>
                     <?php
                     break;
@@ -231,14 +237,10 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     <div>
                         <h2><?php echo TITLE;?>: <?php echo $Avatar->getName($aID);?></h2>
 
-                        <div id="left">
-
+                        <div id="left" class="menu">
                             <?php
                             echo $Cats->listCategories(0, 1, $linkpath, false, $aID);
                             ?>
-                            <p id="legend">
-                                <strong><?php echo TEXT_LEGEND;?></strong> <img src="img/complete.gif" alt=""/> <?php echo TEXT_CATEGORY_COMPLETE;?>
-                            </p>
                         </div>
                         <div id="right">
                             <h3><?php $catname = $Cats->__get($catID);
@@ -262,7 +264,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                                                     if (isset($row['info']) && strlen($row['info'])) {
                                                         ?>
-                                                        <span class="add_info">[<a class="tooltip" href="#">?<span><?php echo $row['info']; ?></span></a>]</span>
+                                                        <a class="tooltip" href="#" title="<?php echo $row['info']; ?>">[?]</a>
                                                     <?php
                                                     }
                                                     ?>
@@ -273,17 +275,17 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                     switch ($row['type']) {
                                                         case 2:
 
-                                                            $jsfieldname = 'feld_' . $row['id'];
+                                                            $jsfieldname = 'field_' . $row['id'];
 
                                                             if (isset($fieldinputs['field_' . $row['id']])) {
                                                                 $data = unserialize($fieldinputs['field_' . $row['id']]);
                                                                 $jsfieldname = 'feld_' . $row['id'];
-                                                                echo draw_textarea_field($row['id'], '45', '5', stripslashes($data['value']), ' id="' . $jsfieldname . '" onKeyDown="textLeft(\'feld_' . $row['id'] . '\',\'counter_' . $row['id'] . '\',200);"');
+                                                                echo draw_textarea_field($row['id'], '45', '5', stripslashes($data['value']), ' id="' . $jsfieldname . '"');
                                                             } else {
-                                                                echo draw_textarea_field($row['id'], '45', '5', '', 'id="' . $jsfieldname . '" onKeyDown="textLeft(\'feld_' . $row['id'] . '\',\'counter_' . $row['id'] . '\',200);"');
+                                                                echo draw_textarea_field($row['id'], '45', '5', '', 'id="' . $jsfieldname . '"');
                                                             }
                                                             ?>
-                                                            <p id="counter_<?php echo $row['id']?>" class="error">&nbsp;</p>
+                                                            <p id="t_<?php echo $jsfieldname?>" class="error">&nbsp;</p>
                                                             <?php
 
                                                             break;
@@ -328,9 +330,9 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                                 ?>
                                                                 <span class="notes_field"><?php echo LABEL_NOTES;?></span>
                                                                 <?php
-                                                                echo draw_textarea_field('note_' . $row['id'], '45', '3', stripslashes($notes), 'id="' . $jsfieldname . '" onKeyDown="textLeft(\'note_' . $row['id'] . '\',\'counter' . $row['id'] . '\',200);"');
+                                                                echo draw_textarea_field('note_' . $row['id'], '45', '3', stripslashes($notes), 'id="' . $jsfieldname . '"');
                                                                 ?>
-                                                                <p id="counter<?php echo $row['id']; ?>" class="error">&nbsp;</p>
+                                                                <p id="t_<?php echo $jsfieldname; ?>" class="error">&nbsp;</p>
                                                             <?php
                                                             }
 
@@ -356,9 +358,9 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                                 ?>
                                                                 <span class="notes_field"><?php echo LABEL_NOTES;?></span>
                                                                 <?php
-                                                                echo draw_textarea_field('note_' . $row['id'], '45', '3', stripslashes($notes), 'id="' . $jsfieldname . '" onKeyDown="textLeft(\'note_' . $row['id'] . '\',\'counter' . $row['id'] . '\',200);"');
+                                                                echo draw_textarea_field('note_' . $row['id'], '45', '3', stripslashes($notes), 'id="' . $jsfieldname . '"');
                                                                 ?>
-                                                                <p id="counter<?php echo $row['id']; ?>" class="error">&nbsp;</p>
+                                                                <p id="t_<?php echo $jsfieldname; ?>" class="error">&nbsp;</p>
                                                             <?php
                                                             }
                                                             break;
@@ -380,9 +382,9 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                                                 ?>
                                                                 <span class="notes_field"><?php echo LABEL_NOTES;?></span>
                                                                 <?php
-                                                                echo draw_textarea_field('note_' . $row['id'], '45', '3', stripslashes($notes), 'id="' . $jsfieldname . '" onKeyDown="textLeft(\'note_' . $row['id'] . '\',\'counter' . $row['id'] . '\',200);"');
+                                                                echo draw_textarea_field('note_' . $row['id'], '45', '3', stripslashes($notes), 'id="' . $jsfieldname . '"');
                                                                 ?>
-                                                                <p id="counter<?php echo $row['id']; ?>" class="error">&nbsp;</p>
+                                                                <p id="t_<?php echo $jsfieldname; ?>" class="error">&nbsp;</p>
                                                             <?php
                                                             }
                                                             break;
@@ -422,7 +424,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                     <div>
                         <h2><?php echo TITLE_OVIERVEW;?>: <?php echo $Avatar->getName($aID);?></h2>
 
-                        <div id="left">
+                        <div id="left" class="menu">
                             <?php
                             echo $Cats->listCategories(0, 1, $linkpath, false, $aID);
                             ?>
@@ -448,8 +450,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                                                 if (isset($row['info']) && strlen($row['info'])) {
                                                     ?>
-                                                    <span class="add_info">
-					                                [<a class="tooltip" href="#">?<span><?php echo $row['info']; ?></span></a>]</span>
+					                                <a class="tooltip" href="#" title="<?php echo $row['info']; ?>">[?]</a>
                                                 <?php
                                                 }
                                                 ?>

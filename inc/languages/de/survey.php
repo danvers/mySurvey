@@ -30,7 +30,7 @@ define('TITLE_FIELD_DELETE','Feld löschen');
 define('TITLE_CAT_DELETE','Kategorie löschen');
 define('TITLE_CAT_EDIT','Kategorie bearbeiten');
 
-define('LABEL_NOTES','Feld für Anmerkungen');
+define('LABEL_NOTES','Feld für Notizen');
 define('LABEL_SELECT','Auswahlfeld');
 define('LABEL_DD_VAL','Dropdown Wert');
 define('LABEL_SLIDER','Slider');

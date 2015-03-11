@@ -68,10 +68,10 @@ function getFields()
 {
     $static_field_types = null;
     $static_field_type_array = array(
-        FIELD_POLAR,
-        FIELD_CHECKBOX,
         sprintf(FIELD_TEXTAREA,TEXTAREA_MAX_LENGTH),
-        FIELD_DROPDOWN
+        FIELD_POLAR,
+        FIELD_DROPDOWN,
+        FIELD_CHECKBOX
     );
 
     for ($x = 0; $x < sizeof($static_field_type_array); $x++) {

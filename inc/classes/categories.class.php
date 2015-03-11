@@ -152,11 +152,7 @@ class Categories
             if ($parent > 0) $start_path .= "_" . $parent;
         }
 
-        if ($parent != 0) {
-            $result .= "<ul class=\"subMenuBox\">\n";
-        } else {
-            $result .= "<ul class=\"box\">\n";
-        }
+        $result .= "<ul>\n";
 
         $cat_subs = array();
         foreach ($this->categories_start as $key => $value) {
@@ -176,18 +172,18 @@ class Categories
             }
             $categories_string = $linkPath['filename'] . $cPath_new;
 
-            $completed = "";
+            $completed = '';
             $isEmpty = false;
             if ($this->isEmpty($v)) $isEmpty = true;
 
-            if (!$isEmpty && $linkPath['position'] == 'evaluate' && $this->isCompleted($survey, $v)) $completed = '<img alt="" src="img/complete.gif"/>';
+            if (!$isEmpty && $linkPath['position'] == 'evaluate' && $this->isCompleted($survey, $v)) $completed = ' class="done"';
 
             if (isset($_GET['cID']) && $v == $_GET['cID']) {
-                $result .= "<li><strong>" . $categories['name'] . "</strong>" . ' ' . $completed;
+                $result .= "<li".$completed."><strong>" . $categories['name'] . "</strong>";
             } elseif ($isEmpty && $survey > 0) {
                 $result .= "<li>" . $categories['name'];
             } else {
-                $result .= "<li><a href=\"" . $categories_string . "\">" . $categories['name'] . "</a>" . ' ' . $completed;
+                $result .= "<li".$completed."><a href=\"" . $categories_string . "\">" . $categories['name'] . "</a>";
             }
 
             if ($display_field_num && $this->getFieldCount($categories['id']) > 0) {

@@ -65,7 +65,6 @@ table td, th { padding: 5px; }
 #leftnav {
     float: left;
 }
-
 .cookie{
     padding:7px;
 }
@@ -73,7 +72,23 @@ table td, th { padding: 5px; }
     width: 80%;
     margin: auto;
 }
-
+.menu{
+    margin-top:2em;
+}
+.menu ul li{
+    list-style: square;
+    color:#777;
+    line-height: 2em;
+}
+.menu .done a{
+    color: #23b744;
+    text-decoration:none;
+}
+.menu .done a:hover,
+.menu .done a:focus{
+    color: #227b3d;
+    text-decoration: underline;
+}
 ul#avatarlist, ul#newslist {
     list-style: none;
     margin: 0;
@@ -94,9 +109,7 @@ ul#avatarlist, ul#newslist {
     float:left;
     line-height:19px;
 }
-#avatarlist .progresswrapper{
-    margin-left:80px;
-}
+
 
 #users tbody tr:hover,
 #users tbody tr:hover td.odd {
@@ -160,62 +173,28 @@ ul#avatarlist, ul#newslist {
     padding: 5px;
     background-color: #fffaea;
 }
-.error { color: red; }
+.error { color: #b1423e; }
 input, select, textarea {
     border: 1px solid #ccc;
 }
-.add_info{
-    width:200px;
+.toggle{
+    display:none;
+}
+.tooltip{
     font-weight: normal;
 }
-a.tooltip {
-    border-bottom: 1px dashed #333;
-    position: relative;
-    z-index: 99;
-    color: #000;
-    cursor: help;
-    text-decoration: none;
-}
-a.tooltip:hover, a.tooltip:focus {
-    border-bottom: 1px dashed #333;
-    z-index: 100;
-    text-decoration: none;
-    color: #000;
-}
-a.tooltip span { display: none; }
-a.tooltip:hover span, a.tooltip:focus span {
-    display: block;
-    position: absolute;
-    top: 1em;
-    left: 1em;
-    padding: 10px 5px 10px 5px;
-    border: 1px solid #333;
-    background-color: #fff;
-    color: #000;
-    text-decoration: none;
-    text-align: center;
-    width: 350px;
-}
-.progressbox {
-    width: 250px;
-    border: 1px solid #999;
-    height: 17px;
-    background: #ccc;
+.progresslabel{
+    margin:0;
+    font-size: 80%;
+    padding:2px 5px;
+    font-weight: bold;
+    color:#888;
 }
 .progressbar {
-    background-image: url("../../img/progressbar.gif");
-    height: 14px;
-    color: #000;
-    text-align: right;
-    padding: 3px 0 0 0;
-    font-family: Verdana, Helvetica, sans-serif;
-    font-size: 10px;
+    width:40%;
+    height:25px !important;
 }
-#legend {
-    margin: 0 1em;
-    border-top: 1px dashed #ccc;
-    padding: 1em 0 0 0;
-}
+
 #form input, #form textarea, #form select {
     padding: 5px;
     -moz-border-radius: 5px;
@@ -277,12 +256,27 @@ a.tooltip:hover span, a.tooltip:focus span {
 #form .r2 {
     margin-left: 160px;
 }
+.r2 .error{
+    margin-left:10px;
+}
 #news-title {
     width: 300px;
 }
 .preview input#news-title,
 .preview textarea#comment {
     border: none;
+}
+.slide{
+    width:400px;
+    height:40px;
+}
+.minlabel{
+    display: block;
+    float:left;
+}
+.maxlabel{
+    display: block;
+    float:right;
 }
 
 .preview label {

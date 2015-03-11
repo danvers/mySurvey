@@ -279,9 +279,7 @@ if (isset($_GET['position']) && $_GET['position'] === 'edit') {
         <title><?php echo TITLE; ?> | <?php echo WORKSPACE_TITLE; ?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
-        <script type="text/javascript" src="inc/javascripts/prototype.js"></script>
-        <script type="text/javascript" src="inc/javascripts/scriptaculous.js"></script>
-        <script type="text/javascript" src="inc/javascripts/effects.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <script type="text/javascript" src="inc/javascripts/simplescripts.js"></script>
     </head>
 <body>
@@ -354,7 +352,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                         <label for="field_name"><?php echo LABEL_DESCRIPTION;?></label>
 
-                        <p><?php echo draw_textarea_field('info', 80, 3, '', 'id="comment"'); ?></p>
+                        <p><?php echo draw_textarea_field('info', 60, 3, '', 'id="comment"'); ?></p>
 
                         <label for="cat_id"><?php echo LABEL_CATEGORY;?></label>
 
@@ -366,14 +364,6 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 ?>
                             </select>
                         </p>
-                        <label for="cat_id"><?php echo LABEL_FIELD_NAME;?></label>
-
-                        <p>
-                            <?php
-                            echo draw_pulldown_menu('field_type', getFields(), 0, 'onchange="showhide(this.form,0);"');
-                            ?>
-                        </p>
-
                         <label for="sort_order"><?php echo LABEL_SORT;?></label>
 
                         <p>
@@ -388,9 +378,17 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             echo draw_pulldown_menu('sort_order', $sortVals, 0);
                             ?>
                         </p>
+                        <label for="cat_id"><?php echo LABEL_FIELD_NAME;?></label>
 
-                        <div style="height:300px;">
-                            <div id="div-polar">
+                        <p>
+                            <?php
+                            echo draw_pulldown_menu('field_type', getFields(), 0, 'id="toggle_switch"');
+                            ?>
+                        </p>
+
+
+                        <div class="class="togglefields">
+                            <div id="div-polar" class="toggle t-1">
                                 <label><?php echo LABEL_SLIDER;?></label>
 
                                 <p>
@@ -401,7 +399,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                     ?>
                                 </p>
                             </div>
-                            <div id="div-dropdown" style="display:none;">
+                            <div id="div-dropdown" class="toggle t-2">
                                 <?php
                                 echo draw_input_field('dd_value0', '&nbsp;', '', 'hidden');
                                 for ($i = 1; $i <= 7; $i++) {
@@ -412,7 +410,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 }
                                 ?>
                             </div>
-                            <div id="div-checkboxes" style="display:none;">
+                            <div id="div-checkboxes" class="toggle t-3">
                                 <?php
                                 echo draw_input_field('cb_value0', '&nbsp;', '', 'hidden');
                                 for ($i = 1; $i <= 7; $i++) {
@@ -425,9 +423,9 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             </div>
                         </div>
 
-                        <label for="notes" class="chklbl"><?php echo LABEL_NOTES;?></label>
+                        <label for="notes"><?php echo LABEL_NOTES;?></label>
 
-                        <p><?php echo draw_checkbox_field('notes'); ?></p>
+                        <p class="cookie"><?php echo draw_checkbox_field('notes'); ?></p>
 
                         <div class="r2">
                             <p><?php echo draw_input_field('send', TEXT_FIELD_ADD, '', 'submit', false); ?></p>
@@ -577,7 +575,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             </p>
                             <label for="info"><?php echo LABEL_DESCRIPTION;?></label>
 
-                            <p><?php echo draw_textarea_field('info', 80, 3, $Fvals['info']); ?></p>
+                            <p><?php echo draw_textarea_field('info', 60, 3, $Fvals['info']); ?></p>
 
                             <label for="cat_id"><?php echo LABEL_CATEGORY;?></label>
 

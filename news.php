@@ -121,10 +121,8 @@ if (isset($_GET['position']) && ($_GET['position'] == 'edit')) {
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
 
-        <script type="text/javascript" src="inc/javascripts/prototype.js"></script>
-        <script type="text/javascript" src="inc/javascripts/scriptaculous.js"></script>
-        <script type="text/javascript" src="inc/javascripts/effects.js"></script>
-        <script type="text/javascript" src="inc/javascripts/simplescripts.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script type="text/javascript" src="inc/javascripts/limiter.js"></script>
     </head>
 
 <body>
@@ -139,7 +137,6 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
         if (isset($_GET['position'])) {
             switch ($_GET['position']) {
                 case 'add':
-
                     ?>
                     <div>
                         <h2><?php echo TITLE_NEWS_ADD;?></h2>
@@ -155,14 +152,12 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                             <p>
                                 <?php
-                                echo draw_textarea_field('text', '60', '10', '', 'id="comment" onKeyDown="textLeft(\'comment\',\'counter\',200);"');
-
+                                echo draw_textarea_field('text', '60', '10', '', 'id="comment"');
                                 ?>
                             </p>
 
                             <div class="r2">
-                                <p id="counter" class="error">&nbsp;</p>
-
+                                <p id="t_comment" class="error">&nbsp;</p>
                                 <p class="submit"><?php echo draw_input_field('send', TEXT_SAVE, '', 'submit', false); ?></p>
                             </div>
                         </form>
@@ -189,13 +184,13 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                             <p>
                                 <?php
-                                echo draw_textarea_field('text', '60', '10', $fields['text'], 'id="comment" onKeyDown="textLeft(\'comment\',\'counter\',200);"');
+                                echo draw_textarea_field('text', '60', '10', $fields['text'], 'id="comment"');
 
                                 ?>
                             </p>
-
+                            <p id="t_comment" class="error"></p>
                             <div class="r2">
-                                <p id="counter" class="error">&nbsp;</p>
+
 
                                 <p class="submit"><?php echo draw_input_field('send', TEXT_SAVE, '', 'submit', false); ?></p>
                             </div>
@@ -225,8 +220,6 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             </p>
 
                             <div class="r2">
-                                <p id="counter" class="error">&nbsp;</p>
-
                                 <p><?php echo draw_input_field('send', TEXT_SUBMIT, '', 'submit', false);?></p>
                             </div>
                         </form>
@@ -246,10 +239,10 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
 
                             <label for="comment"><?php echo TEXT_MESSAGE;?></label>
 
-                            <p><?php  echo draw_textarea_field('text', '60', '10', '', 'id="comment" onKeyDown="textLeft(\'comment\',\'counter\',200);"'); ?></p>
-
+                            <p><?php  echo draw_textarea_field('text', '60', '10', '', 'id="comment"'); ?></p>
+                            <p id="t_comment" class="error"></p>
                             <div class="r2">
-                                <p id="counter" class="error">&nbsp;</p>
+
                                 <p><?php echo draw_input_field('send', LABEL_PREVIEW, '', 'submit', false); ?></p>
                             </div>
                         </form>

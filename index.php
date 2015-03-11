@@ -36,9 +36,9 @@ if (isset($_GET['page']) && $_GET['page'] == 0) {
         <title><?php echo WORKSPACE_TITLE; ?></title>
 
         <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
-        <script type="text/javascript" src="inc/javascripts/prototype.js"></script>
-        <script type="text/javascript" src="inc/javascripts/scriptaculous.js"></script>
-        <script type="text/javascript" src="inc/javascripts/effects.js"></script>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
     </head>
 
 <body>
@@ -300,16 +300,16 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 }
                                 ?>
                                 </p>
-                                <strong class="progresslabel"><?php echo TEXT_PROGRESS; ?> </strong>
 
-                                <div class="progresswrapper">
-                                    <div class="progressbox">
-                                        <div class="progressbar"
-                                             style="width:<?php echo $progress ?>%;"><?php echo $progress ?>%
-                                        </div>
-                                    </div>
+
+                                <div id="progress-<?php echo $row['id'];?>" class="progressbar">
+                                    <p class="progresslabel"><?php echo TEXT_PROGRESS .' '. $progress.'%'; ?> </p>
                                 </div>
-
+                                <script type="text/javascript">
+                                    $( "#progress-<?php echo $row['id'];?>" ).progressbar({
+                                        value: <?php echo $progress;?>
+                                    });
+                                </script>
                             </div>
                         </li>
                         <?php

@@ -200,38 +200,31 @@ function draw_polar_fields($name, $min = '', $max = '', $parameters = '', $size 
 
     return $fieldset;
 }
+function drawSlider($name, $default = 0, $min = '', $max = '', $view = 0){
 
-function drawSlider($name, $default = 0, $min = '', $max = '', $view = 0)
-{
+    $js_disable = '';
 
-    $fieldset = "<div style=\"width:390px;\"><div id=\"track" . $name . "\" style=\"cursor:pointer;width:390px;background-color:#aaa;height:5px;\"><div id=\"handle" . $name . "\" class=\"slider\"> </div></div>";
+    $fieldset = '<div class="slide">';
+    $fieldset .= '<p class="minlabel">' . $min . ' </p>';
+    $fieldset .= '<p class="maxlabel">' . $max . '</p>';
+    $fieldset .= '<div id="slide_'.$name.'"></div>';
 
-    if ($view == 0) $fieldset .= draw_hidden_field($name, $default, 'id="feld_' . $name . '"');
-
-    $fieldset .= '<p style="float:left;">' . $min . ' </p>';
-    $fieldset .= '<p style="text-align:right;float:right;">' . $max . '</p>';
-
-    $fieldset .= '</div>';
-    $fieldset .= '<div class="c"></div>';
-
-    if ($view != 0) {
-        $fieldset .= "<script type=\"text/javascript\">
-		  // <![CDATA[
-				var s" . $name . " = new Control.Slider('handle" . $name . "','track" . $name . "',{sliderValue:" . $default . ",values:[1,2,3,4,5],range:\$R(1,5)})
-		      	s" . $name . ".setValue(" . $default . ");
-		      	s" . $name . ".setDisabled();
-		  // ]]>
-		  </script>";
-    } else {
-        $fieldset .= "<script type=\"text/javascript\">
-		  // <![CDATA[
-				var s" . $name . " = new Control.Slider('handle" . $name . "','track" . $name . "',{sliderValue:" . $default . ",values:[1,2,3,4,5],range:\$R(1,5),
-		        onSlide:function(v){\$('feld_" . $name . "').value= v}
-		        onChange:function(v){\$('feld_" . $name . "').value = v}})
-		  // ]]>
-		  </script>";
+    if ($view == 0){
+        $fieldset .= draw_hidden_field($name, $default, 'id="field_' . $name . '"');
+    }else{
+        $js_disable = '$( "#slide_'.$name.'" ).slider( "disable" )';
     }
 
-    return $fieldset;
+    $fieldset .= '<script>  $( "#slide_'.$name.'" ).slider({min: 1, max:5, value: '.$default.'});
+                            $( "#slide_'.$name.'" ).on( "slidechange", function(event, ui) {
+                                $("#field_'.$name.'").val(ui.value);
+                            });
+                            '.$js_disable.'
+                            </script>';
 
+
+
+    $fieldset .= '<div class"c"></div></div>';
+
+    return $fieldset;
 }
