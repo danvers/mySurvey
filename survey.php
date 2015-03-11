@@ -238,17 +238,19 @@ if (isset($_GET['action'])) {
                 }
                 $messageStack->add_session('general', MSG_DATA_DELETED, 'success');
 
+                header('Location:survey.php?position=edit&cID=' . $id);
+
             } elseif (isset($_GET['fID']) && is_numeric($_GET['fID'])) {
 
                 $id = $_GET['fID'];
-                $db->query('SELECT cat_id FROM ' . table_fields . ' WHERE id= "' . $id . '" LIMIT 1');
+                $db->query('SELECT cat_id FROM ' . table_fields . ' WHERE id= :id LIMIT 1',array(':id'=>$id));
                 $category = $db->fetch();
                 $db->query('ALTER TABLE ' . table_survey . ' DROP field_' . $id);
-                $db->query('DELETE FROM ' . table_fields . ' WHERE id ="' . $id . '" LIMIT 1');
+                $db->query('DELETE FROM ' . table_fields . ' WHERE id =:id LIMIT 1',array(':id'=>$id));
 
                 $messageStack->add_session('general', MSG_DATA_DELETED, 'success');
+                header('Location:survey.php?position=edit&cID=' . $category['cat_id']);
             }
-            header('Location:survey.php?position=edit&cID=' . $category['cat_id']);
             break;
     }
 }
@@ -276,9 +278,12 @@ if (isset($_GET['position']) && $_GET['position'] === 'edit') {
 
         <title><?php echo TITLE; ?> | <?php echo WORKSPACE_TITLE; ?></title>
 
-        <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
         <script type="text/javascript" src="inc/javascripts/helper.js"></script>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" type="text/css" href="inc/stylesheets/layout.css" media="screen"/>
+
     </head>
 <body>
 <div id="wrapper">
@@ -592,7 +597,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                             </p>
                             <label for="field_type"><?php echo LABEL_FIELD_TYPE;?></label>
 
-                            <p><?php echo draw_pulldown_menu('field_type', getFields(), $Fvals['type'], 'onchange="showhide(this.form,1);"'); ?></p>
+                            <p><?php echo draw_pulldown_menu('field_type', getFields(), $Fvals['type'], 'id="toggle_switch"'); ?></p>
 
                             <label for="sort_order"><?php echo LABEL_SORT;?></label>
 
@@ -608,34 +613,26 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                 echo draw_pulldown_menu('sort_order', $sortVals, $Fvals['sort_order']);
                                 ?>
                             </p>
+                            <?php
+                            $edit_params = "";
 
-                            <div>
-                                <?php
-                                $showpol = "";
-                                $showdd = "";
-                                $showcb = "";
-                                $edit_params = "";
-
-                                if ($Fvals['type'] == 0 || $Fvals['type'] == 1 || $Fvals['type'] == 3 && isset($Fvals['params'])) {
-                                    $edit_params = unserialize($Fvals['params']);
-                                }
-                                ?>
-                                <div id="div-polar" <?php echo $showpol; ?>>
+                            if ($Fvals['type'] == 0 || $Fvals['type'] == 1 || $Fvals['type'] == 3 && isset($Fvals['params'])) {
+                                $edit_params = unserialize($Fvals['params']);
+                            }
+                            ?>
+                            <div class="class="togglefields">
+                                <div id="div-polar" class="toggle t-1">
                                     <label><?php echo LABEL_SLIDER;?></label>
-                                    <?php
+                                    <p>
+                                        <?php
+                                        echo draw_input_field('minVal', isset($edit_params['minVal']) ? $edit_params['minVal'] : '' );
+                                        echo ' &lsaquo; &mdash; &rsaquo; ';
+                                        echo draw_input_field('maxVal', isset($edit_params['maxVal']) ? $edit_params['maxVal'] : '' );
+                                        ?>
+                                    </p>
 
-                                    if (isset($Fvals['params']) && (isset($edit_params['minVal']) || isset($edit_params['maxVal']))) {
-                                        echo draw_input_field('minVal', $edit_params['minVal']);
-                                        echo ' &lsaquo; &mdash; &rsaquo; ';
-                                        echo draw_input_field('maxVal', $edit_params['maxVal']);
-                                    } else {
-                                        echo draw_input_field('minVal');
-                                        echo ' &lsaquo; &mdash; &rsaquo; ';
-                                        echo draw_input_field('maxVal');
-                                    }
-                                    ?>
                                 </div>
-                                <div id="div-dropdown" <?php echo $showdd; ?>>
+                                <div id="div-dropdown" class="toggle t-2">
                                     <?php
                                     echo draw_input_field('dd_value0', '&nbsp;', '', 'hidden');
                                     for ($i = 1; $i <= 7; $i++) {
@@ -654,7 +651,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                     }
                                     ?>
                                 </div>
-                                <div id="div-checkboxes" <?php echo $showcb; ?>>
+                                <div id="div-checkboxes" class="toggle t-3">
                                     <?php
                                     echo draw_input_field('cb_value0', '&nbsp;', '', 'hidden');
                                     for ($i = 1; $i <= 7; $i++) {
@@ -675,12 +672,8 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                                     ?>
                                 </div>
                             </div>
-
-                            <label for="notes" class="chklbl"><?php echo LABEL_NOTES;?></label>
-
-                            <p><?php echo draw_checkbox_field('notes', '', $Fvals['notes']); ?></p>
-
-
+                            <label for="notes"><?php echo LABEL_NOTES;?></label>
+                            <p class="cookie"><?php echo draw_checkbox_field('notes','',$Fvals['notes']); ?></p>
                             <div class="r2">
                                 <p><?php echo draw_input_field('send', TEXT_SAVE, '', 'submit', false); ?></p>
                             </div>

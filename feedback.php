@@ -70,9 +70,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
         if (isset($_GET['position'])) {
             switch ($_GET['position']) {
                 case 'add':
-
                     $aID = $_GET['aID'];
-
                     ?>
                     <div>
                         <h2><?php echo sprintf(TITLE_FEEDBACK, $Avatar->getName($aID) );?></h2>
@@ -155,5 +153,4 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
         }
         ?>
     </div>
-
 <?php require('inc/footer.php'); ?>

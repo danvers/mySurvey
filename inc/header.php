@@ -6,7 +6,8 @@
 
 define('IN_PAGE', true);
 header('Content-Type: text/html; charset=UTF-8');
-error_reporting(E_ALL);
+date_default_timezone_set('Europe/Berlin');
+
 session_start();
 
 

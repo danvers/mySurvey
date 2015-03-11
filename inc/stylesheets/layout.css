@@ -199,11 +199,14 @@ input, select, textarea {
     color:lightgreen;
 }
 
-#form input, #form textarea, #form select {
+input,textarea,select {
     padding: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px;
+}
+select{
+    min-width:80px;
 }
 #form input[type="text"],
 #form input[type="password"]{
