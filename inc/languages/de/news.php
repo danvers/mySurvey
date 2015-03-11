@@ -23,5 +23,6 @@ define('TEXT_DELETE_ENTRY','Eintrag löschen');
 
 define('MSG_MAIL_SENT','Rundmail wurde an alle Benutzer verschickt');
 define('MSG_E_TEXT_MIN_LENGTH','Betreff und Text müssen mindestens %s Zeichen lang sein');
-define('MSG_POST_ADDED','Information/Ankündigung hinzugefügt');
-define('MSG_POST_EDITED','Information/Ankündigung aktualisiert');
+define('MSG_POST_ADDED','Nachricht hinzugefügt');
+define('MSG_POST_EDITED','Nachricht aktualisiert');
+define('MSG_POST_DELETED','Nachricht gelöscht');
