@@ -55,19 +55,19 @@ define('NAV_MY_PROFILE','my profile');
 define('NAV_BREADCRUMB','yo are here: ');
 define('NAV_HOME','home');
 
-define('NAV_ADD','Hinzufügen');
-define('NAV_EDIT','Bearbeiten');
-define('NAV_DELETE','Löschen');
-define('NAV_PREVIEW','Vorschau');
+define('NAV_ADD','add');
+define('NAV_EDIT','edit');
+define('NAV_DELETE','delete');
+define('NAV_PREVIEW','preview');
 
-define('TITLE_NEWS','Information');
+define('TITLE_NEWS','news');
 
-define('MAIL_TITLE_PASS_RESET', WORKSPACE_TITLE .' - Passwortänderung');
-define('MAIL_TEXT_PASS_RESET', 'Diese E-Mail wurde gesendet, weil dein Passwort zurückgesetzt werden soll. Dein neues Passwort kannst Du unter folgendem Link eingeben: %s\n\nEinloggen kannst Du dich unter: ' . HOME_DIR);
+define('MAIL_TITLE_PASS_RESET', WORKSPACE_TITLE .' - password change');
+define('MAIL_TEXT_PASS_RESET', 'You are receiving this email because one asked to reset the password linked to this account. Please set your password using the following link: %s\n\nYou can login here: ' . HOME_DIR);
 
-define('MAIL_TITLE_INVITE', WORKSPACE_TITLE .' - Einladung zum Arbeitsbereich');
-define('MAIL_TEXT_INVITE', 'dies ist eine Einladung zum Arbeitsbereich\nBitte nutze den folgenden Link, um dein Passwort festzulegen: %s\n\nEinloggen kannst Du dich danach unter: ' . HOME_DIR);
+define('MAIL_TITLE_INVITE', WORKSPACE_TITLE .' - invitation to workspace');
+define('MAIL_TEXT_INVITE', 'this is an invitation to the workspace\nPlease set your password using the following link: %s\n\nYou can login here: ' . HOME_DIR);
 
-define('TEXT_MY_COMMENT','von mir');
-define('TEXT_COMMENT_BY','von');
-define('TEXT_CREATED','erstellt am');
+define('TEXT_MY_COMMENT','I wrote');
+define('TEXT_COMMENT_BY','from');
+define('TEXT_CREATED','at');
