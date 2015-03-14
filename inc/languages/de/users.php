@@ -21,7 +21,6 @@ define('TEXT_DELETE_USER','Diesen Benutzer löschen');
 define('MSG_E_NOT_LOGGED_IN','Der Benutzer hat sich noch nicht eingeloggt.');
 define('TEXT_REINVITE','Benutzer erneut einladen');
 define('TEXT_EDIT_USER','Benutzerdaten ändern');
-define('TEXT_DELETE_USER_CONFIRM','Benutzer wirklich löschen?');
 define('TEXT_USER_DELETE','Benutzer löschen');
 define('TEXT_USER_DELETE_CONFIRM','Wollen Sie den Benutzer wirklich löschen?');
 define('TITLE_OVERVIEW_USERS','Übersicht der angemeldeten Nutzer');

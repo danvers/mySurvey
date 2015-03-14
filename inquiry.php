@@ -207,7 +207,7 @@ if ($messageStack->size('general') > 0) echo $messageStack->output('general');
                         <label for="n-title"><?php echo LABEL_ENTRY_TITLE;?></label>
                         <p><?php echo draw_input_field('title', $result['title'],'class="n-title"'); ?></p>
                         <label>URI</label>
-                        <p><?php echo draw_input_field('url', $result['url']); ?></p>
+                        <p><?php echo draw_input_field('url', $result['url'],'class="n-title"'); ?></p>
                         <label><?php echo TEXT_DESCRIPTION;?></label>
                         <p><?php  echo draw_textarea_field('description', '60', '10', $result['description'], 'id="comment"'); ?></p>
 

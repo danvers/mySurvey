@@ -196,9 +196,7 @@ input, select, textarea {
     width:40%;
     margin:1em 0;
     height:25px;
-    color:lightgreen;
 }
-
 input,textarea,select {
     padding: 5px;
     -moz-border-radius: 5px;

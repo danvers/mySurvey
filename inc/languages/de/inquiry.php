@@ -19,5 +19,3 @@ define('MSG_ENTRY_ADDED','Eintrag eingefügt Kategorisierung kann beginnen');
 define('MSG_E_TITLE','Es muss ein Titel angegeben werden');
 define('MSG_E_NO_CATEGORY','Keine Kategorie übergeben');
 define('MSG_CATEGORY_UPDATED','Kategorie aktualisiert');
-define('TEXT_LEGEND','Legende: ');
-define('TEXT_CATEGORY_COMPLETE','= Kategorie bearbeitet');
