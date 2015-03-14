@@ -6,7 +6,7 @@
  * Time: 01:29
  */
 
-define('TEXT_SUBMIT','send');
+define('TEXT_SUBMIT','submit');
 define('TEXT_BACK','&laquo; back');
 define('TEXT_EDIT','edit');
 define('LABEL_PASSWORD','password');
