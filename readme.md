@@ -20,7 +20,7 @@ You can see a demo of this framework on https://survey.pixelspace.org/ with the 
 
 ## Requirements
 
-* [PHP 5.2+] (http://www.php.net)
+* [PHP 5.4+] (http://www.php.net)
 * [MySQL 4.0+] (http://www.mysql.com/)
 
 ## Note
