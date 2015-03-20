@@ -94,7 +94,7 @@ function getPosition()
     }else{
         if(isset($_GET['position'])){
             $result[] = '<a href="'. HOME_DIR . '">'.NAV_HOME.'</a>';
-            $result[] = '<a href="'. HOME_DIR . basename($_SERVER['SCRIPT_NAME']).'">'.TITLE.'</a>';
+            $result[] = '<a href="'. HOME_DIR .'/'. basename($_SERVER['SCRIPT_NAME']).'">'.TITLE.'</a>';
         }else{
             $result[] = '<a href="'. HOME_DIR . '">'.NAV_HOME.'</a>';
             $result[] = TITLE;
