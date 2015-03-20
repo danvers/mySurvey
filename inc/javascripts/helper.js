@@ -22,7 +22,7 @@ $(document).ready(function() {
 
         if($(this).attr('data-limit') !== undefined){
             textlimit = parseInt($(this).attr('data-limit'));
-            if(textlimit == 0) return false;
+            if(textlimit == 0) return;
         }
         var remain = parseInt(textlimit - tlength);
         $(this).removeClass('tae');
