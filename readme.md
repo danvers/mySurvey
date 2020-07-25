@@ -6,11 +6,6 @@ This framework basically let's you create a survey on a specific topic. It is a 
 
 The idea came up in a seminar/class back in 2008 where we tried to evaluate and analyze different avatar systems in virtual worlds.
 
-You can see a demo of this framework on https://survey.pixelspace.org/ with the following account
-
-- user: demo@pixelspace.org
-- pass: demo
-
 ## Installation
 
 1. Download the Package
